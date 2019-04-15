@@ -255,7 +255,6 @@ func (self *Node) GetRoot() *Node {
 	}
 }
 
-
 func (self *Node) GetEnd() *Node {
 	node := self
 	for {

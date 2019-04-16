@@ -16,14 +16,6 @@ import (
 const DEFAULT_SIZE = 19
 var MUTORS = []string{"B", "W", "AB", "AW", "AE"}
 
-type Colour int
-
-const (
-	EMPTY = Colour(iota)
-	BLACK
-	WHITE
-)
-
 // -------------------------------------------------------------------------
 
 type Node struct {

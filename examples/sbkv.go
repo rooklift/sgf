@@ -58,6 +58,22 @@ func handle_file(dirname, filename string) error {
 			}
 		}
 
+		if node.Parent != nil {
+			for _, sibling := range node.Parent.Children {
+				_, ok := sibling.GetValue("TE")
+				if ok {
+					b, _ := sibling.GetValue("B")
+					w, _ := sibling.GetValue("W")
+					if b != "" {
+						node.AddValue("TR", b)
+					}
+					if w != "" {
+						node.AddValue("TR", w)
+					}
+				}
+			}
+		}
+
 		if len(node.Children) == 0 {
 			node.Save(path)
 			fmt.Printf("%s\n", path)

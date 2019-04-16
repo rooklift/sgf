@@ -1,12 +1,15 @@
 package sgf
 
+// Note: internally, strings are kept in an escaped state e.g. \] and \\
+// However, when using the API, your functions will send and receive
+// unescaped strings.
+
 import (
 	"bufio"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -27,7 +30,6 @@ type Node struct {
 	Props			map[string][]string
 	Children		[]*Node
 	Parent			*Node
-	SZ_cache		int				// Cached value. 0 means not cached yet.
 }
 
 func NewNode(parent *Node, props map[string][]string) *Node {
@@ -46,7 +48,6 @@ func NewNode(parent *Node, props map[string][]string) *Node {
 		node.Parent.Children = append(node.Parent.Children, node)
 	}
 
-	// node.make_board()
 	return node
 }
 
@@ -69,7 +70,7 @@ func NewTree(size int) *Node {
 
 func new_bare_node(parent *Node) *Node {
 
-	// Doesn't accept properties or make a board.
+	// Doesn't accept properties.
 	// Used only for file loading.
 
 	node := new(Node)
@@ -190,47 +191,6 @@ func (self *Node) DeleteKey(key string) {
 	delete(self.Props, key)
 }
 
-func (self *Node) Size() int {
-
-	// Note that this line is NOT a check of the property SZ:
-
-	if self.SZ_cache == 0 {
-
-		// We don't have the info cached...
-
-		if self.Parent == nil {
-
-			// We are root...
-
-			sz_string, ok := self.GetValue("SZ")
-
-			if ok {
-
-				val, err := strconv.Atoi(sz_string)
-
-				if err == nil {
-
-					if val > 0 && val <= 52 {
-						self.SZ_cache = int(val)
-					}
-				}
-			}
-
-			if self.SZ_cache == 0 {
-				self.SZ_cache = DEFAULT_SIZE
-				self.SetValue("SZ", fmt.Sprintf("%d", DEFAULT_SIZE))			// Set the actual property in the root.
-			}
-
-		} else {
-
-			self.SZ_cache = self.Parent.Size()			// Recurse.
-
-		}
-	}
-
-	return self.SZ_cache
-}
-
 func (self *Node) RemoveChild(child *Node) {
 
 	if self == nil {
@@ -342,7 +302,6 @@ func Load(filename string) (*Node, error) {
 		return nil, err
 	}
 
-	// root.make_board_recursive()
 	return root, nil
 }
 

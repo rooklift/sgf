@@ -17,16 +17,19 @@ import (
 
 func main() {
 
-	dirname := os.Args[1]
+	dirs := os.Args[1:]
 
-	files, err := ioutil.ReadDir(dirname)
+	for _, d := range dirs {
 
-	if err != nil {
-		panic(err.Error())
-	}
+		files, err := ioutil.ReadDir(d)
 
-	for _, f := range files {
-		handle_file(dirname, f.Name())
+		if err != nil {
+			panic(err.Error())
+		}
+
+		for _, f := range files {
+			handle_file(d, f.Name())
+		}
 	}
 }
 
@@ -57,6 +60,7 @@ func handle_file(dirname, filename string) error {
 
 		if len(node.Children) == 0 {
 			node.Save(path)
+			fmt.Printf("%s\n", path)
 			return nil
 		}
 

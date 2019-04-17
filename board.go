@@ -170,7 +170,7 @@ func (self *Board) destroy_group(x, y int) {
 
 	colour := self.State[x][y]
 
-	if colour != BLACK && colour != WHITE {		// Important; removing this would mess with capture count
+	if colour != BLACK && colour != WHITE {		// Removing this might (conceivably) mess with capture count
 		return
 	}
 

@@ -70,16 +70,16 @@ func (self *Board) update(node *Node) {
 		point, ok := PointFromSGF(foo, self.Size)
 		if ok {
 			self.modify_with_move(BLACK, point)
-			self.Player = WHITE
 		}
+		self.Player = WHITE		// even if not "ok" this counts as a pass
 	}
 
 	for _, foo := range node.Props["W"] {
 		point, ok := PointFromSGF(foo, self.Size)
 		if ok {
 			self.modify_with_move(WHITE, point)
-			self.Player = BLACK
 		}
+		self.Player = BLACK		// even if not "ok" this counts as a pass
 	}
 
 	// Respect PL property

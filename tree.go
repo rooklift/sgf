@@ -184,6 +184,10 @@ func (self *Node) DeleteKey(key string) {
 
 func (self *Node) Save(filename string) error {
 
+	if self == nil {
+		return fmt.Errorf("Save() called on nil node")
+	}
+
 	outfile, err := os.Create(filename)
 	if err != nil {
 		return err

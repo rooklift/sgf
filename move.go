@@ -7,6 +7,7 @@ import (
 func (self *Node) PlayMove(p Point) (*Node, error) {
 
 	// Uses board info to determine colour.
+	// Returns the new node on success, or self on failure.
 
 	board := self.Board()
 

@@ -4,29 +4,29 @@ import (
 	"fmt"
 )
 
-func (self *Board) GroupSize(x, y int) int {
+func (self *Board) GroupSize(p Point) int {
 
 	// If the point is empty, should this return 0, or the size of the empty "string"? Hmm.
 
-	if self.State[x][y] == EMPTY {
+	if self.State[p.X][p.Y] == EMPTY {
 		return 0
 	}
 
 	touched := make(map[Point]bool)
-	return self.group_size_recurse(x, y, touched)
+	return self.group_size_recurse(p, touched)
 }
 
-func (self *Board) group_size_recurse(x, y int, touched map[Point]bool) int {
+func (self *Board) group_size_recurse(p Point, touched map[Point]bool) int {
 
-	touched[Point{x, y}] = true
-	colour := self.State[x][y]
+	touched[p] = true
+	colour := self.State[p.X][p.Y]
 
 	count := 1
 
-	for _, point := range AdjacentPoints(x, y, self.Size) {
-		if self.State[point.X][point.Y] == colour {
-			if touched[point] == false {
-				count += self.group_size_recurse(point.X, point.Y, touched)
+	for _, a := range AdjacentPoints(p, self.Size) {
+		if self.State[a.X][a.Y] == colour {
+			if touched[a] == false {
+				count += self.group_size_recurse(a, touched)
 			}
 		}
 	}
@@ -34,22 +34,22 @@ func (self *Board) group_size_recurse(x, y int, touched map[Point]bool) int {
 	return count
 }
 
-func (self *Board) HasLiberties(x, y int) bool {		// Faster than checking if Liberties() == 0
+func (self *Board) HasLiberties(p Point) bool {		// Faster than checking if Liberties() == 0
 	touched := make(map[Point]bool)
-	return self.has_liberties_recurse(x, y, touched)
+	return self.has_liberties_recurse(p, touched)
 }
 
-func (self *Board) has_liberties_recurse(x, y int, touched map[Point]bool) bool {
+func (self *Board) has_liberties_recurse(p Point, touched map[Point]bool) bool {
 
-	touched[Point{x, y}] = true
-	colour := self.State[x][y]
+	touched[p] = true
+	colour := self.State[p.X][p.Y]
 
-	for _, point := range AdjacentPoints(x, y, self.Size) {
-		if self.State[point.X][point.Y] == EMPTY {
+	for _, a := range AdjacentPoints(p, self.Size) {
+		if self.State[a.X][a.Y] == EMPTY {
 			return true
-		} else if self.State[point.X][point.Y] == colour {
-			if touched[point] == false {
-				if self.has_liberties_recurse(point.X, point.Y, touched) {
+		} else if self.State[a.X][a.Y] == colour {
+			if touched[a] == false {
+				if self.has_liberties_recurse(a, touched) {
 					return true
 				}
 			}
@@ -59,35 +59,35 @@ func (self *Board) has_liberties_recurse(x, y int, touched map[Point]bool) bool 
 	return false
 }
 
-func (self *Board) Liberties(x, y int) int {
+func (self *Board) Liberties(p Point) int {
 
 	// What on earth is the correct answer to how many liberties an empty square has?
 
-	if self.State[x][y] == EMPTY {
+	if self.State[p.X][p.Y] == EMPTY {
 		return -1
 	}
 
 	touched := make(map[Point]bool)
-	return self.liberties_recurse(x, y, touched)
+	return self.liberties_recurse(p, touched)
 }
 
-func (self *Board) liberties_recurse(x, y int, touched map[Point]bool) int {
+func (self *Board) liberties_recurse(p Point, touched map[Point]bool) int {
 
 	// Note that this function uses the touched map in a different way from others.
 	// Literally every point that's examined is flagged as touched.
 
-	touched[Point{x, y}] = true
-	colour := self.State[x][y]
+	touched[p] = true
+	colour := self.State[p.X][p.Y]
 
 	count := 0
 
-	for _, point := range AdjacentPoints(x, y, self.Size) {
-		if touched[point] == false {
-			touched[point] = true							// This is fine regardless of what's on the point
-			if self.State[point.X][point.Y] == EMPTY {
+	for _, a := range AdjacentPoints(p, self.Size) {
+		if touched[a] == false {
+			touched[a] = true							// This is fine regardless of what's on the point
+			if self.State[a.X][a.Y] == EMPTY {
 				count += 1
-			} else if self.State[point.X][point.Y] == colour {
-				count += self.liberties_recurse(point.X, point.Y, touched)
+			} else if self.State[a.X][a.Y] == colour {
+				count += self.liberties_recurse(a, touched)
 			}
 		}
 	}
@@ -95,12 +95,12 @@ func (self *Board) liberties_recurse(x, y int, touched map[Point]bool) int {
 	return count
 }
 
-func (self *Board) Singleton(x, y int) bool {
+func (self *Board) Singleton(p Point) bool {
 
-	colour := self.State[x][y]
+	colour := self.State[p.X][p.Y]
 
-	for _, point := range AdjacentPoints(x, y, self.Size) {
-		if self.State[point.X][point.Y] == colour {
+	for _, a := range AdjacentPoints(p, self.Size) {
+		if self.State[a.X][a.Y] == colour {
 			return false
 		}
 	}
@@ -108,16 +108,16 @@ func (self *Board) Singleton(x, y int) bool {
 	return true
 }
 
-func (self *Board) ko_square_finder(x, y int) Point {
+func (self *Board) ko_square_finder(p Point) Point {
 
 	// Only called when we know there is indeed a ko.
-	// Arguments are the location of the capturing stone that caused it.
+	// Argument is the location of the capturing stone that caused it.
 
 	var hits []Point
 
-	for _, point := range AdjacentPoints(x, y, self.Size) {
-		if self.State[point.X][point.Y] == EMPTY {
-			hits = append(hits, point)
+	for _, a := range AdjacentPoints(p, self.Size) {
+		if self.State[a.X][a.Y] == EMPTY {
+			hits = append(hits, a)
 		}
 	}
 

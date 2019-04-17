@@ -20,7 +20,7 @@ func main() {
 			break
 		}
 		board := node.Board()			// This is super-slow and stupid, remaking from scratch every time. FIXME.
-		if board.Ko.X != -1 {
+		if board.HasKo() {
 			fmt.Printf("Move %d\n", n)
 		}
 	}

@@ -5,12 +5,32 @@ import (
 	"strconv"
 )
 
-type Board struct {				// Contains everything about a go position, except superko stuff
+type Board struct {					// Contains everything about a go position, except superko stuff
 	Size				int
 	State				[][]Colour
 	Player				Colour
 	CapturesBy			map[Colour]int
-	Ko					Point				// Uses -1, -1 for no ko. (Lame?)
+
+	ko					Point
+}
+
+func (self *Board) SetKo(p Point) {
+	self.ko = p
+}
+
+func (self *Board) ClearKo() {
+	self.ko = Point{-1, -1}			// Lame way of storing no ko?
+}
+
+func (self *Board) HasKo() bool {
+	return self.ko.X >= 0 && self.ko.Y >= 0 && self.ko.X < self.Size && self.ko.Y < self.Size
+}
+
+func (self *Board) GetKo() Point {
+	if self.HasKo() == false {
+		return Point{-1, -1}
+	}
+	return self.ko
 }
 
 func NewBoard(sz int) *Board {
@@ -27,7 +47,7 @@ func NewBoard(sz int) *Board {
 	}
 	board.Player = BLACK
 	board.CapturesBy = make(map[Colour]int)
-	board.Ko = Point{-1,-1}
+	board.ClearKo()
 	return board
 }
 
@@ -59,42 +79,42 @@ func (self *Node) Board() *Board {
 	for _, node := range line {
 
 		for _, foo := range node.Props["AB"] {
-			x, y, ok := PointFromSGF(foo, sz)
+			point, ok := PointFromSGF(foo, sz)
 			if ok {
-				board.State[x][y] = BLACK
+				board.State[point.X][point.Y] = BLACK
 				board.Player = WHITE
 			}
 		}
 
 		for _, foo := range node.Props["AW"] {
-			x, y, ok := PointFromSGF(foo, sz)
+			point, ok := PointFromSGF(foo, sz)
 			if ok {
-				board.State[x][y] = WHITE
+				board.State[point.X][point.Y] = WHITE
 				board.Player = BLACK			// Prevails in the event of both AB and AW
 			}
 		}
 
 		for _, foo := range node.Props["AE"] {
-			x, y, ok := PointFromSGF(foo, sz)
+			point, ok := PointFromSGF(foo, sz)
 			if ok {
-				board.State[x][y] = EMPTY
+				board.State[point.X][point.Y] = EMPTY
 			}
 		}
 
 		// Play move: B / W
 
 		for _, foo := range node.Props["B"] {
-			x, y, ok := PointFromSGF(foo, sz)
+			point, ok := PointFromSGF(foo, sz)
 			if ok {
-				board.modify_with_move(BLACK, x, y)
+				board.modify_with_move(BLACK, point)
 				board.Player = WHITE
 			}
 		}
 
 		for _, foo := range node.Props["W"] {
-			x, y, ok := PointFromSGF(foo, sz)
+			point, ok := PointFromSGF(foo, sz)
 			if ok {
-				board.modify_with_move(WHITE, x, y)
+				board.modify_with_move(WHITE, point)
 				board.Player = BLACK
 			}
 		}
@@ -113,26 +133,26 @@ func (self *Node) Board() *Board {
 	return board
 }
 
-func (self *Board) modify_with_move(colour Colour, x, y int) error {
+func (self *Board) modify_with_move(colour Colour, p Point) error {
 
 	if colour != BLACK && colour != WHITE {
 		return fmt.Errorf("modify_with_move: bad colour")
 	}
 
-	if x < 0 || x >= self.Size || y < 0 || y >= self.Size {
-		return fmt.Errorf("modify_with_move: bad coordinates %d,%d (size %d)", x, y, self.Size)
+	if p.X < 0 || p.X >= self.Size || p.Y < 0 || p.Y >= self.Size {
+		return fmt.Errorf("modify_with_move: bad coordinates %d,%d (size %d)", p.X, p.Y, self.Size)
 	}
 
 	opponent := colour.Opposite()
 
-	self.State[x][y] = colour
+	self.State[p.X][p.Y] = colour
 
 	caps := 0
 
-	for _, point := range AdjacentPoints(x, y, self.Size) {
-		if self.State[point.X][point.Y] == opponent {
-			if self.HasLiberties(point.X, point.Y) == false {
-				caps = self.destroy_group(point.X, point.Y)
+	for _, a := range AdjacentPoints(p, self.Size) {
+		if self.State[a.X][a.Y] == opponent {
+			if self.HasLiberties(a) == false {
+				caps = self.destroy_group(a)
 				self.CapturesBy[colour] += caps
 			}
 		}
@@ -140,19 +160,19 @@ func (self *Board) modify_with_move(colour Colour, x, y int) error {
 
 	// Handle suicide...
 
-	if self.HasLiberties(x, y) == false {
-		suicide_caps := self.destroy_group(x, y)
+	if self.HasLiberties(p) == false {
+		suicide_caps := self.destroy_group(p)
 		self.CapturesBy[opponent] += suicide_caps
 	}
 
 	// Work out ko square...
 
-	self.Ko = Point{-1,-1}
+	self.ClearKo()
 
 	if caps == 1 {
-		if self.Singleton(x, y) {
-			if self.Liberties(x, y) == 1 {				// Yes, the conditions are met, there is a ko
-				self.Ko = self.ko_square_finder(x, y)
+		if self.Singleton(p) {
+			if self.Liberties(p) == 1 {					// Yes, the conditions are met, there is a ko
+				self.SetKo(self.ko_square_finder(p))
 			}
 		}
 	}
@@ -160,20 +180,20 @@ func (self *Board) modify_with_move(colour Colour, x, y int) error {
 	return nil
 }
 
-func (self *Board) destroy_group(x, y int) int {		// Returns stones removed.
+func (self *Board) destroy_group(p Point) int {			// Returns stones removed.
 
-	colour := self.State[x][y]
+	colour := self.State[p.X][p.Y]
 
 	if colour != BLACK && colour != WHITE {				// Removing this might (conceivably) mess with capture count
 		return 0
 	}
 
-	self.State[x][y] = EMPTY
+	self.State[p.X][p.Y] = EMPTY
 	count := 1
 
-	for _, point := range AdjacentPoints(x, y, self.Size) {
-		if self.State[point.X][point.Y] == colour {
-			count += self.destroy_group(point.X, point.Y)
+	for _, a := range AdjacentPoints(p, self.Size) {
+		if self.State[a.X][a.Y] == colour {
+			count += self.destroy_group(a)
 		}
 	}
 
@@ -181,6 +201,9 @@ func (self *Board) destroy_group(x, y int) int {		// Returns stones removed.
 }
 
 func (self *Board) Dump() {
+
+	ko := self.GetKo()		// Usually -1, -1
+
 	for y := 0; y < self.Size; y++ {
 		for x := 0; x < self.Size; x++ {
 			c := self.State[x][y]
@@ -188,7 +211,7 @@ func (self *Board) Dump() {
 				fmt.Printf(" X")
 			} else if c == WHITE {
 				fmt.Printf(" O")
-			} else if (Point{x, y}) == self.Ko {
+			} else if ko.X == x && ko.Y == y {
 				fmt.Printf(" :")
 			} else {
 				fmt.Printf(" .")

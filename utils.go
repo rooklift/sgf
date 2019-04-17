@@ -5,15 +5,15 @@ type Point struct {
 	Y				int
 }
 
-func AdjacentPoints(x, y, size int) []Point {
+func AdjacentPoints(origin Point, size int) []Point {
 
 	var ret []Point
 
 	possibles := []Point{
-		Point{x - 1, y},
-		Point{x + 1, y},
-		Point{x, y - 1},
-		Point{x, y + 1},
+		Point{origin.X - 1, origin.Y},
+		Point{origin.X + 1, origin.Y},
+		Point{origin.X, origin.Y - 1},
+		Point{origin.X, origin.Y + 1},
 	}
 
 	for _, point := range possibles {
@@ -27,7 +27,7 @@ func AdjacentPoints(x, y, size int) []Point {
 	return ret
 }
 
-func PointFromSGF(s string, size int) (x int, y int, ok bool) {		// Doesn't actually return a Point{}, hmm...
+func PointFromSGF(s string, size int) (p Point, ok bool) {
 
 	// e.g. "cd" --> 2,3
 
@@ -35,13 +35,13 @@ func PointFromSGF(s string, size int) (x int, y int, ok bool) {		// Doesn't actu
 	// i.e. any non-OK string is a pass in SGF, I guess.
 
 	if len(s) < 2 {
-		return -1, -1, false
+		return Point{-1, -1}, false
 	}
 
-	x = int(s[0]) - 97
-	y = int(s[1]) - 97
+	x := int(s[0]) - 97
+	y := int(s[1]) - 97
 
 	ok = x >= 0 && x < size && y >= 0 && y < size
 
-	return x, y, ok
+	return Point{x, y}, ok
 }

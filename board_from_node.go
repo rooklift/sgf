@@ -41,7 +41,7 @@ func (self *Node) Board() *Board {
 func (self *Board) update(node *Node) {
 
 	if node == nil {
-		panic("board.Update(): called with nil node")
+		panic("Board.update(): called with nil node")
 	}
 
 	for _, foo := range node.Props["AB"] {
@@ -99,11 +99,11 @@ func (self *Board) update(node *Node) {
 func (self *Board) modify_with_move(colour Colour, p Point) error {
 
 	if colour != BLACK && colour != WHITE {
-		return fmt.Errorf("modify_with_move: bad colour")
+		return fmt.Errorf("Board.modify_with_move(): bad colour")
 	}
 
 	if p.X < 0 || p.X >= self.Size || p.Y < 0 || p.Y >= self.Size {
-		return fmt.Errorf("modify_with_move: bad coordinates %d,%d (size %d)", p.X, p.Y, self.Size)
+		return fmt.Errorf("Board.modify_with_move(): bad coordinates %d,%d (size %d)", p.X, p.Y, self.Size)
 	}
 
 	opponent := colour.Opposite()

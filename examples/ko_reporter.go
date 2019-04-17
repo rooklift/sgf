@@ -14,12 +14,14 @@ func main() {
 		return
 	}
 
+	board := node.BoardFromScratch()
+
 	for n := 1; true; n++ {
 		node = node.MainChild()
 		if node == nil {
 			break
 		}
-		board := node.Board()			// This is super-slow and stupid, remaking from scratch every time. FIXME.
+		board.Update(node)
 		if board.HasKo() {
 			fmt.Printf("Move %d\n", n)
 		}

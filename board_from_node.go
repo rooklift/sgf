@@ -41,10 +41,6 @@ func (self *Node) Board() *Board {
 
 func (self *Board) update(node *Node) {
 
-	if node == nil {
-		panic("Board.update(): called with nil node")
-	}
-
 	for _, foo := range node.Props["AB"] {
 		point, ok := PointFromSGF(foo, self.Size)
 		if ok {

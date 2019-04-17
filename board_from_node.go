@@ -99,6 +99,9 @@ func (self *Board) update(node *Node) {
 
 func (self *Board) modify_with_move(colour Colour, p Point) error {
 
+	// Other than sanity checks, there is no legality check here.
+	// Nor should there be.
+
 	if colour != BLACK && colour != WHITE {
 		return fmt.Errorf("Board.modify_with_move(): bad colour")
 	}

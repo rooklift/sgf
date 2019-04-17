@@ -51,7 +51,7 @@ func NewBoard(sz int) *Board {
 	return board
 }
 
-func (self *Node) Board() *Board {
+func (self *Node) BoardFromScratch() *Board {
 
 	var sz int
 
@@ -77,60 +77,64 @@ func (self *Node) Board() *Board {
 	// ----------------------------------------------
 
 	for _, node := range line {
-
-		for _, foo := range node.Props["AB"] {
-			point, ok := PointFromSGF(foo, sz)
-			if ok {
-				board.State[point.X][point.Y] = BLACK
-				board.Player = WHITE
-			}
-		}
-
-		for _, foo := range node.Props["AW"] {
-			point, ok := PointFromSGF(foo, sz)
-			if ok {
-				board.State[point.X][point.Y] = WHITE
-				board.Player = BLACK			// Prevails in the event of both AB and AW
-			}
-		}
-
-		for _, foo := range node.Props["AE"] {
-			point, ok := PointFromSGF(foo, sz)
-			if ok {
-				board.State[point.X][point.Y] = EMPTY
-			}
-		}
-
-		// Play move: B / W
-
-		for _, foo := range node.Props["B"] {
-			point, ok := PointFromSGF(foo, sz)
-			if ok {
-				board.modify_with_move(BLACK, point)
-				board.Player = WHITE
-			}
-		}
-
-		for _, foo := range node.Props["W"] {
-			point, ok := PointFromSGF(foo, sz)
-			if ok {
-				board.modify_with_move(WHITE, point)
-				board.Player = BLACK
-			}
-		}
-
-		// Respect PL property
-
-		pl, _ := node.GetValue("PL")
-		if pl == "B" || pl == "b" {
-			board.Player = BLACK
-		}
-		if pl == "W" || pl == "w" {
-			board.Player = WHITE
-		}
+		board.Update(node)
 	}
 
 	return board
+}
+
+func (self *Board) Update(node *Node) {
+
+	for _, foo := range node.Props["AB"] {
+		point, ok := PointFromSGF(foo, self.Size)
+		if ok {
+			self.State[point.X][point.Y] = BLACK
+			self.Player = WHITE
+		}
+	}
+
+	for _, foo := range node.Props["AW"] {
+		point, ok := PointFromSGF(foo, self.Size)
+		if ok {
+			self.State[point.X][point.Y] = WHITE
+			self.Player = BLACK			// Prevails in the event of both AB and AW
+		}
+	}
+
+	for _, foo := range node.Props["AE"] {
+		point, ok := PointFromSGF(foo, self.Size)
+		if ok {
+			self.State[point.X][point.Y] = EMPTY
+		}
+	}
+
+	// Play move: B / W
+
+	for _, foo := range node.Props["B"] {
+		point, ok := PointFromSGF(foo, self.Size)
+		if ok {
+			self.modify_with_move(BLACK, point)
+			self.Player = WHITE
+		}
+	}
+
+	for _, foo := range node.Props["W"] {
+		point, ok := PointFromSGF(foo, self.Size)
+		if ok {
+			self.modify_with_move(WHITE, point)
+			self.Player = BLACK
+		}
+	}
+
+	// Respect PL property
+
+	pl, _ := node.GetValue("PL")
+	if pl == "B" || pl == "b" {
+		self.Player = BLACK
+	}
+	if pl == "W" || pl == "w" {
+		self.Player = WHITE
+	}
 }
 
 func (self *Board) modify_with_move(colour Colour, p Point) error {

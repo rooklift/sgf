@@ -10,7 +10,7 @@ type Board struct {				// Contains everything about a go position, except superk
 	State				[][]Colour
 	Player				Colour
 	CapturesBy			map[Colour]int
-	Ko					Point				// Uses -1, -1 for no ko
+	Ko					Point				// Uses -1, -1 for no ko. (Lame?)
 }
 
 func NewBoard(sz int) *Board {
@@ -146,6 +146,8 @@ func (self *Board) modify_with_move(colour Colour, x, y int) error {
 	}
 
 	// Work out ko square...
+
+	self.Ko = Point{-1,-1}
 
 	if caps == 1 {
 		if self.Singleton(x, y) {

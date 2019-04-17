@@ -95,6 +95,19 @@ func (self *Board) liberties_recurse(x, y int, touched map[Point]bool) int {
 	return count
 }
 
+func (self *Board) Singleton(x, y int) bool {
+
+	colour := self.State[x][y]
+
+	for _, point := range AdjacentPoints(x, y, self.Size) {
+		if self.State[point.X][point.Y] == colour {
+			return false
+		}
+	}
+
+	return true
+}
+
 func (self *Board) ko_square_finder(x, y int) Point {
 
 	// Only called when we know there is indeed a ko.
@@ -113,17 +126,4 @@ func (self *Board) ko_square_finder(x, y int) Point {
 	}
 
 	return hits[0]
-}
-
-func (self *Board) Singleton(x, y int) bool {
-
-	colour := self.State[x][y]
-
-	for _, point := range AdjacentPoints(x, y, self.Size) {
-		if self.State[point.X][point.Y] == colour {
-			return false
-		}
-	}
-
-	return true
 }

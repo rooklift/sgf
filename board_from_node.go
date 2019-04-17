@@ -71,7 +71,7 @@ func (self *Board) update(node *Node) {
 		if ok {
 			self.modify_with_move(BLACK, point)
 		}
-		self.Player = WHITE		// even if not "ok" this counts as a pass
+		self.Player = WHITE		// if not "ok" it counts as a pass and so still changes player
 	}
 
 	for _, foo := range node.Props["W"] {
@@ -79,7 +79,7 @@ func (self *Board) update(node *Node) {
 		if ok {
 			self.modify_with_move(WHITE, point)
 		}
-		self.Player = BLACK		// even if not "ok" this counts as a pass
+		self.Player = BLACK		// if not "ok" it counts as a pass and so still changes player
 	}
 
 	// Respect PL property

@@ -127,10 +127,12 @@ func (self *Board) modify_with_move(colour Colour, x, y int) error {
 
 	self.State[x][y] = colour
 
+	caps := 0
+
 	for _, point := range AdjacentPoints(x, y, self.Size) {
 		if self.State[point.X][point.Y] == opponent {
 			if self.HasLiberties(point.X, point.Y) == false {
-				caps := self.destroy_group(point.X, point.Y)
+				caps = self.destroy_group(point.X, point.Y)
 				self.CapturesBy[colour] += caps
 			}
 		}
@@ -139,37 +141,21 @@ func (self *Board) modify_with_move(colour Colour, x, y int) error {
 	// Handle suicide...
 
 	if self.HasLiberties(x, y) == false {
-		caps := self.destroy_group(x, y)
-		self.CapturesBy[opponent] += caps
+		suicide_caps := self.destroy_group(x, y)
+		self.CapturesBy[opponent] += suicide_caps
 	}
 
-	return nil
-}
+	// Work out ko square...
 
-func (self *Board) HasLiberties(x, y int) bool {
-	touched := make(map[Point]bool)
-	return self.has_liberties_recurse(x, y, touched)
-}
-
-func (self *Board) has_liberties_recurse(x, y int, touched map[Point]bool) bool {
-
-	touched[Point{x, y}] = true
-
-	colour := self.State[x][y]
-
-	for _, point := range AdjacentPoints(x, y, self.Size) {
-		if self.State[point.X][point.Y] == EMPTY {
-			return true
-		} else if self.State[point.X][point.Y] == colour {
-			if touched[Point{point.X, point.Y}] == false {
-				if self.has_liberties_recurse(point.X, point.Y, touched) {
-					return true
-				}
+	if caps == 1 {
+		if self.GroupSize(x, y) == 1 {
+			if self.Liberties(x, y) == 1 {
+				// FIXME
 			}
 		}
 	}
 
-	return false
+	return nil
 }
 
 func (self *Board) destroy_group(x, y int) int {		// Returns stones removed.

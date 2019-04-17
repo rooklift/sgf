@@ -14,6 +14,60 @@ type Board struct {					// Contains everything about a go position, except super
 	ko					Point
 }
 
+func NewBoard(sz int) *Board {
+
+	if sz < 1 || sz > 52 {
+		panic(fmt.Sprintf("NewBoard(): bad size %d", sz))
+	}
+
+	board := new(Board)
+
+	board.Size = sz
+
+	board.State = make([][]Colour, sz)
+	for x := 0; x < sz; x++ {
+		board.State[x] = make([]Colour, sz)
+	}
+
+	board.Player = BLACK
+
+	board.CapturesBy = make(map[Colour]int)
+	board.CapturesBy[BLACK] = 0					// Not strictly
+	board.CapturesBy[WHITE] = 0					// necessary...
+
+	board.ClearKo()
+	return board
+}
+
+func (self *Board) Copy() *Board {
+
+	ret := new(Board)
+
+	// Easy stuff...
+
+	ret.Size = self.Size
+	ret.Player = self.Player
+	ret.ko = self.ko
+
+	// State...
+
+	ret.State = make([][]Colour, ret.Size)
+	for x := 0; x < ret.Size; x++ {
+		ret.State[x] = make([]Colour, ret.Size)
+		for y := 0; y < ret.Size; y++ {
+			ret.State[x][y] = self.State[x][y]
+		}
+	}
+
+	// Captures...
+
+	ret.CapturesBy = make(map[Colour]int)
+	ret.CapturesBy[BLACK] = self.CapturesBy[BLACK]
+	ret.CapturesBy[WHITE] = self.CapturesBy[WHITE]
+
+	return ret
+}
+
 func (self *Board) SetKo(p Point) {
 	self.ko = p
 }
@@ -31,24 +85,6 @@ func (self *Board) GetKo() Point {
 		return Point{-1, -1}
 	}
 	return self.ko
-}
-
-func NewBoard(sz int) *Board {
-
-	if sz < 1 || sz > 52 {
-		panic(fmt.Sprintf("NewBoard(): bad size %d", sz))
-	}
-
-	board := new(Board)
-	board.Size = sz
-	board.State = make([][]Colour, sz)
-	for x := 0; x < sz; x++ {
-		board.State[x] = make([]Colour, sz)
-	}
-	board.Player = BLACK
-	board.CapturesBy = make(map[Colour]int)
-	board.ClearKo()
-	return board
 }
 
 func (self *Node) BoardFromScratch() *Board {

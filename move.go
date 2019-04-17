@@ -45,3 +45,32 @@ func (self *Node) PlayMove(p Point) (*Node, error) {
 
 	return proposed_node, nil
 }
+
+func (self *Node) Pass() *Node {
+
+	// Uses board info to determine colour.
+
+	board := self.Board()
+
+	key := "B"; if board.Player == WHITE { key = "W" }
+
+	// Return the already-extant child if there is such a thing...
+
+	for _, child := range self.Children {
+
+		val, ok := child.GetValue(key)
+
+		if ok {		// i.e. there is a value (possibly empty string) for the key
+
+			_, ok := PointFromSGF(val, board.Size)
+
+			if ok == false {		// move is a pass
+				return child
+			}
+		}
+	}
+
+	new_node := NewNode(self, map[string][]string{key: []string{""}})
+
+	return new_node
+}

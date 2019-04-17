@@ -21,7 +21,7 @@ func main() {
 	properties["AW"] = []string{sgf.SGFFromPoint(sgf.Point{15, 3}), sgf.SGFFromPoint(sgf.Point{3, 15})}		// ["pd", "dp"]
 	properties["SZ"] = []string{"19"}
 
-	node := sgf.NewNode(nil, properties)			// nil means this node has no parent (it's the root)
+	node := sgf.NewNode(nil, properties)				// nil means this node has no parent (it's the root)
 
 	// We can now make moves.
 	// If successful, PlayMove() returns the new node.
@@ -37,14 +37,14 @@ func main() {
 
 	node, err = node.PlayMove(sgf.Point{2, 5})
 	if err != nil {
-		fmt.Printf("%v\n", err)						// Will complain about the occupied point
+		fmt.Printf("%v\n", err)							// Will complain about the occupied point
 	}
 
 	// We can create variations from any node.
 
 	node = node.Parent
-	node.PlayMove(sgf.Point{13, 2})					// Create variation 1
-	node.PlayMove(sgf.Point{16, 5})					// Create variation 2
+	node.PlayMove(sgf.Point{13, 2})						// Create variation 1
+	node.PlayMove(sgf.Point{16, 5})						// Create variation 2
 
 	// We can iterate through a node's children.
 
@@ -55,13 +55,22 @@ func main() {
 	// And we can go down those variations if we wish.
 	// (Errors ignored here for simplicity.)
 
-	node, _ = node.PlayMove(sgf.Point{5, 16})		// Create variation 3 and go down it
-	node, _ = node.PlayMove(sgf.Point{2, 12})		// ...continue going down it
-	node, _ = node.PlayMove(sgf.Point{3, 17})		// ...continue going down it
+	node, _ = node.PlayMove(sgf.Point{5, 16})			// Create variation 3 and go down it
+	node, _ = node.PlayMove(sgf.Point{2, 12})			// ...continue going down it
+	node, _ = node.PlayMove(sgf.Point{3, 17})			// ...continue going down it
+
+	// Passes are a thing.
+	// Doing the same action on the same node many times just returns the first-created child each time.
+
+	foo := node.Pass()
+	bar := node.Pass()
+	node = node.Pass()
+
+	fmt.Printf("%v, %v\n", foo == bar, bar == node)		// true, true
 
 	// We can add properties, EXCEPT board-altering properties...
 
-	val := sgf.SGFFromPoint(sgf.Point{3, 17})		// The string "pr" - corresponds to 15,17
+	val := sgf.SGFFromPoint(sgf.Point{3, 17})			// The string "pr" - corresponds to 15,17
 	node.AddValue("TR", val)
 
 	// Calling Save() will save the entire tree, regardless of node position.

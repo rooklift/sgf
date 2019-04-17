@@ -12,7 +12,8 @@ func (self *Node) Board() *Board {
 	// The cache relies on the fact that mutating properties B, W, AB, AW, AE cannot
 	// be added to a node after creation.
 	//
-	// Every return should be returning a copy, never the cached thing itself.
+	// Every return should be returning a copy, never the cached thing itself, so
+	// that the caller can safely manipulate its copy.
 
 	cached, ok := board_cache[self]
 
@@ -23,7 +24,7 @@ func (self *Node) Board() *Board {
 	var my_board *Board
 
 	if self.Parent != nil {
-		my_board = self.Parent.Board().Copy()
+		my_board = self.Parent.Board()
 	} else {
 		// We are root.
 		sz_string, _ := self.GetValue("SZ")

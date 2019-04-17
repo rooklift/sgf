@@ -5,11 +5,12 @@ import (
 	"strconv"
 )
 
-type Board struct {
+type Board struct {				// Contains everything about a go position, except superko stuff
 	Size				int
 	State				[][]Colour
 	Player				Colour
 	CapturesBy			map[Colour]int
+	Ko					Point				// Uses -1, -1 for no ko
 }
 
 func NewBoard(sz int) *Board {
@@ -26,6 +27,7 @@ func NewBoard(sz int) *Board {
 	}
 	board.Player = BLACK
 	board.CapturesBy = make(map[Colour]int)
+	board.Ko = Point{-1,-1}
 	return board
 }
 
@@ -128,13 +130,17 @@ func (self *Board) modify_with_move(colour Colour, x, y int) error {
 	for _, point := range AdjacentPoints(x, y, self.Size) {
 		if self.State[point.X][point.Y] == opponent {
 			if self.HasLiberties(point.X, point.Y) == false {
-				self.destroy_group(point.X, point.Y)
+				caps := self.destroy_group(point.X, point.Y)
+				self.CapturesBy[colour] += caps
 			}
 		}
 	}
 
+	// Handle suicide...
+
 	if self.HasLiberties(x, y) == false {
-		self.destroy_group(x, y)
+		caps := self.destroy_group(x, y)
+		self.CapturesBy[opponent] += caps
 	}
 
 	return nil
@@ -166,22 +172,24 @@ func (self *Board) has_liberties_recurse(x, y int, touched map[Point]bool) bool 
 	return false
 }
 
-func (self *Board) destroy_group(x, y int) {
+func (self *Board) destroy_group(x, y int) int {		// Returns stones removed.
 
 	colour := self.State[x][y]
 
-	if colour != BLACK && colour != WHITE {		// Removing this might (conceivably) mess with capture count
-		return
+	if colour != BLACK && colour != WHITE {				// Removing this might (conceivably) mess with capture count
+		return 0
 	}
 
-	self.CapturesBy[colour.Opposite()] += 1
 	self.State[x][y] = EMPTY
+	count := 1
 
 	for _, point := range AdjacentPoints(x, y, self.Size) {
 		if self.State[point.X][point.Y] == colour {
-			self.destroy_group(point.X, point.Y)
+			count += self.destroy_group(point.X, point.Y)
 		}
 	}
+
+	return count
 }
 
 func (self *Board) Dump() {

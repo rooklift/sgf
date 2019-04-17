@@ -22,6 +22,9 @@ func main() {
 		board := node.Board()
 		if board.HasKo() {
 			fmt.Printf("Move %d\n", n)
+			// As a test, try making a new node by playing in the ko square. Should fail...
+			_, err := node.PlayMove(board.GetKo())
+			fmt.Printf("%v\n", err)
 		}
 	}
 }

@@ -1,5 +1,9 @@
 package sgf
 
+import (
+	"fmt"
+)
+
 func (self *Board) GroupSize(x, y int) int {
 
 	// If the point is empty, should this return 0, or the size of the empty "string"? Hmm.
@@ -22,7 +26,7 @@ func (self *Board) group_size_recurse(x, y int, touched map[Point]bool) int {
 	for _, point := range AdjacentPoints(x, y, self.Size) {
 		if self.State[point.X][point.Y] == colour {
 			if touched[point] == false {
-				count += self.group_size_recurse(x, y, touched)
+				count += self.group_size_recurse(point.X, point.Y, touched)
 			}
 		}
 	}
@@ -89,4 +93,37 @@ func (self *Board) liberties_recurse(x, y int, touched map[Point]bool) int {
 	}
 
 	return count
+}
+
+func (self *Board) ko_square_finder(x, y int) Point {
+
+	// Only called when we know there is indeed a ko.
+	// Arguments are the location of the capturing stone that caused it.
+
+	var hits []Point
+
+	for _, point := range AdjacentPoints(x, y, self.Size) {
+		if self.State[point.X][point.Y] == EMPTY {
+			hits = append(hits, point)
+		}
+	}
+
+	if len(hits) != 1 {
+		panic(fmt.Sprintf("ko_square_finder() got %d hits", hits))
+	}
+
+	return hits[0]
+}
+
+func (self *Board) Singleton(x, y int) bool {
+
+	colour := self.State[x][y]
+
+	for _, point := range AdjacentPoints(x, y, self.Size) {
+		if self.State[point.X][point.Y] == colour {
+			return false
+		}
+	}
+
+	return true
 }

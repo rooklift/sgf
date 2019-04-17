@@ -148,9 +148,9 @@ func (self *Board) modify_with_move(colour Colour, x, y int) error {
 	// Work out ko square...
 
 	if caps == 1 {
-		if self.GroupSize(x, y) == 1 {
-			if self.Liberties(x, y) == 1 {
-				// FIXME
+		if self.Singleton(x, y) {
+			if self.Liberties(x, y) == 1 {				// Yes, the conditions are met, there is a ko
+				self.Ko = self.ko_square_finder(x, y)
 			}
 		}
 	}
@@ -186,6 +186,8 @@ func (self *Board) Dump() {
 				fmt.Printf(" X")
 			} else if c == WHITE {
 				fmt.Printf(" O")
+			} else if (Point{x, y}) == self.Ko {
+				fmt.Printf(" :")
 			} else {
 				fmt.Printf(" .")
 			}

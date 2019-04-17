@@ -16,5 +16,6 @@ func main() {
 		return
 	}
 	node = node.GetEnd()		// Jump to end of the main line
-	node.Board().Dump()
+	board := node.Board()
+	board.Dump()
 }

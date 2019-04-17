@@ -15,7 +15,7 @@ import (
 
 var MUTORS = []string{"B", "W", "AB", "AW", "AE"}
 
-// -------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 type Node struct {
 	Props			map[string][]string
@@ -74,6 +74,8 @@ func new_bare_node(parent *Node) *Node {
 
 	return node
 }
+
+// -----------------------------------------------------------------------------
 
 func (self *Node) AddValue(key, value string) {
 
@@ -182,6 +184,8 @@ func (self *Node) DeleteKey(key string) {
 	delete(self.Props, key)
 }
 
+// -----------------------------------------------------------------------------
+
 func (self *Node) Save(filename string) error {
 
 	if self == nil {
@@ -246,7 +250,7 @@ func (self *Node) WriteTree(outfile io.Writer) {		// Relies on values already be
 	return
 }
 
-// -------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 func Load(filename string) (*Node, error) {
 
@@ -366,6 +370,8 @@ func load_sgf(sgf string) (*Node, error) {
 	root, _, err := load_sgf_tree(sgf, nil)
 	return root, err
 }
+
+// -----------------------------------------------------------------------------
 
 func escape_string(s string) string {
 

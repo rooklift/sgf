@@ -1,5 +1,12 @@
 package sgf
 
+func (self *Node) MainChild() *Node {
+	if len(self.Children) == 0 {
+		return nil
+	}
+	return self.Children[0]
+}
+
 func (self *Node) RemoveChild(child *Node) {
 
 	if self == nil {

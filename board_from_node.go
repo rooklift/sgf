@@ -119,11 +119,12 @@ func (self *Board) modify_with_move(colour Colour, p Point) error {
 	for _, a := range AdjacentPoints(p, self.Size) {
 		if self.State[a.X][a.Y] == opponent {
 			if self.HasLiberties(a) == false {
-				caps = self.destroy_group(a)
-				self.CapturesBy[colour] += caps
+				caps += self.destroy_group(a)
 			}
 		}
 	}
+
+	self.CapturesBy[colour] += caps
 
 	// Handle suicide...
 

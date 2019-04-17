@@ -8,11 +8,6 @@ func (self *Node) MainChild() *Node {
 }
 
 func (self *Node) RemoveChild(child *Node) {
-
-	if self == nil {
-		return
-	}
-
 	for i := len(self.Children) - 1; i >= 0; i-- {
 		if self.Children[i] == child {
 			self.Children = append(self.Children[:i], self.Children[i+1:]...)

@@ -8,13 +8,16 @@ import (
 )
 
 func main() {
-	node, err := sgf.Load(os.Args[1])
+
+	root, err := sgf.Load(os.Args[1])
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		return
 	}
 
-	board := node.BoardFromScratch()
+	board := root.BoardFromScratch()
+
+	node := root
 
 	for n := 1; true; n++ {
 		node = node.MainChild()

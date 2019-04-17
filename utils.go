@@ -1,17 +1,5 @@
 package sgf
 
-var ColourShortNames = map[Colour]string{
-	EMPTY: "?",
-	BLACK: "B",
-	WHITE: "W",
-}
-
-var ColourLongNames = map[Colour]string {
-	EMPTY: "??",
-	BLACK: "Black",
-	WHITE: "White",
-}
-
 type Point struct {
 	X				int
 	Y				int
@@ -39,13 +27,7 @@ func AdjacentPoints(x, y, size int) []Point {
 	return ret
 }
 
-func (c Colour) Opposite() Colour {
-	if c == WHITE { return BLACK }
-	if c == BLACK { return WHITE }
-	return EMPTY
-}
-
-func PointFromSGF(s string, size int) (x int, y int, ok bool) {
+func PointFromSGF(s string, size int) (x int, y int, ok bool) {		// Doesn't actually return a Point{}, hmm...
 
 	// e.g. "cd" --> 2,3
 

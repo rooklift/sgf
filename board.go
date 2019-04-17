@@ -5,14 +5,6 @@ import (
 	"strconv"
 )
 
-type Colour int
-
-const (
-	EMPTY = Colour(iota)
-	BLACK
-	WHITE
-)
-
 type Board struct {
 	Size				int
 	State				[][]Colour

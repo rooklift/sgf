@@ -1,5 +1,7 @@
 package main
 
+// This shows the final board position in the main line.
+
 import (
 	"fmt"
 	"os"
@@ -13,6 +15,6 @@ func main() {
 		fmt.Printf("%v\n", err)
 		return
 	}
-	node = node.GetEnd()
+	node = node.GetEnd()		// Jump to end of the main line
 	node.Board().Dump()
 }

@@ -63,11 +63,14 @@ func (self *Board) Liberties(x, y int) int {
 		return -1
 	}
 
-	touched := make(map[Point]bool)					// Used for both group and liberties
+	touched := make(map[Point]bool)
 	return self.liberties_recurse(x, y, touched)
 }
 
 func (self *Board) liberties_recurse(x, y int, touched map[Point]bool) int {
+
+	// Note that this function uses the touched map in a different way from others.
+	// Literally every point that's examined is flagged as touched.
 
 	touched[Point{x, y}] = true
 	colour := self.State[x][y]

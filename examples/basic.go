@@ -7,6 +7,15 @@ import (
 
 func main() {
 
+	// To create a plain new Tree, you can generally use:
+	//
+	//      node := k.NewTree(size)
+	//
+	// But if you want handicap or other stones, one must pass
+	// some actual properties and use k.NewNode().
+	//
+	// In this example, we create the ancient Chinese pattern.
+
 	properties := make(map[string][]string)
 	properties["AB"] = []string{sgf.SGFFromPoint(sgf.Point{3, 3}), sgf.SGFFromPoint(sgf.Point{15, 15})}		// ["dd", "pp"]
 	properties["AW"] = []string{sgf.SGFFromPoint(sgf.Point{15, 3}), sgf.SGFFromPoint(sgf.Point{3, 15})}		// ["pd", "dp"]

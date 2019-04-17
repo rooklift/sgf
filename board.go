@@ -13,10 +13,10 @@ type Board struct {					// Contains everything about a go position, except super
 	ko					Point
 }
 
-func NewBoard(sz int) *Board {
+func new_board(sz int) *Board {
 
 	if sz < 1 || sz > 52 {
-		panic(fmt.Sprintf("NewBoard(): bad size %d", sz))
+		panic(fmt.Sprintf("new_board(): bad size %d", sz))
 	}
 
 	board := new(Board)

@@ -31,7 +31,7 @@ func (self *Node) Board() *Board {
 		sz, _ := strconv.Atoi(sz_string)
 		if sz < 1  { sz = 19 }
 		if sz > 52 { sz = 52 }		// SGF limit
-		my_board = NewBoard(sz)
+		my_board = new_board(sz)
 	}
 
 	my_board.update(self)

@@ -85,6 +85,10 @@ func (self *Node) BoardFromScratch() *Board {
 
 func (self *Board) Update(node *Node) {
 
+	if node == nil {
+		panic("board.Update(): called with nil node")
+	}
+
 	for _, foo := range node.Props["AB"] {
 		point, ok := PointFromSGF(foo, self.Size)
 		if ok {

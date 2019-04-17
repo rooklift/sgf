@@ -9,7 +9,7 @@ func (self *Board) GroupSize(x, y int) int {
 	}
 
 	touched := make(map[Point]bool)
-	return self.group_size_recurse(x, y int, touched map[Point]bool)
+	return self.group_size_recurse(x, y, touched)
 }
 
 func (self *Board) group_size_recurse(x, y int, touched map[Point]bool) int {
@@ -22,7 +22,7 @@ func (self *Board) group_size_recurse(x, y int, touched map[Point]bool) int {
 	for _, point := range AdjacentPoints(x, y, self.Size) {
 		if self.State[point.X][point.Y] == colour {
 			if touched[point] == false {
-				count += group_size_recurse(x, y, touched)
+				count += self.group_size_recurse(x, y, touched)
 			}
 		}
 	}

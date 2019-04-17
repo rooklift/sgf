@@ -50,7 +50,7 @@ func PointFromSGF(s string, size int) (p Point, ok bool) {
 	return Point{x, y}, ok
 }
 
-func SGFFromPoint(x, y int) string {
+func SGFFromPoint(p Point) string {
 	const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	return fmt.Sprintf("%c%c", alpha[x], alpha[y])
+	return fmt.Sprintf("%c%c", alpha[p.X], alpha[p.Y])
 }

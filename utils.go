@@ -1,5 +1,9 @@
 package sgf
 
+import (
+	"fmt"
+)
+
 type Point struct {
 	X				int
 	Y				int
@@ -44,4 +48,9 @@ func PointFromSGF(s string, size int) (p Point, ok bool) {
 	ok = x >= 0 && x < size && y >= 0 && y < size
 
 	return Point{x, y}, ok
+}
+
+func SGFFromPoint(x, y int) string {
+	const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	return fmt.Sprintf("%c%c", alpha[x], alpha[y])
 }

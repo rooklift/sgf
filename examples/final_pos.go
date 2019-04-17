@@ -10,12 +10,10 @@ import (
 )
 
 func main() {
-	node, err := sgf.Load(os.Args[1])
+	root, err := sgf.Load(os.Args[1])
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		return
 	}
-	node = node.GetEnd()		// Jump to end of the main line
-	board := node.Board()
-	board.Dump()
+	root.GetEnd().Board().Dump()
 }

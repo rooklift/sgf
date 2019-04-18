@@ -51,10 +51,10 @@ func NewTree(size int) *Node {
 	}
 
 	properties := make(map[string][]string)
-	size_string := fmt.Sprintf("%d", size)
-	properties["SZ"] = []string{size_string}
+
 	properties["GM"] = []string{"1"}
 	properties["FF"] = []string{"4"}
+	properties["SZ"] = []string{fmt.Sprintf("%d", size)}
 
 	return NewNode(nil, properties)
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	root, err := sgf.Load(os.Args[1])
+	root, err := sgf.Load(os.Args[1], true)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		return

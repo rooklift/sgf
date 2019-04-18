@@ -252,12 +252,14 @@ func (self *Node) WriteTree(outfile io.Writer) {		// Relies on values already be
 
 // -----------------------------------------------------------------------------
 
-func Load(filename string) (*Node, error) {
+func Load(filename string, clear_cache bool) (*Node, error) {
 
-	// Clear the board cache, on the assumption we only have 1 file open at a time.
-	// Not doing this will mean RAM can fill up if we handle many files...
+	// Caller must say whether to clear the board cache or not.
+	// Any app that's gonna open a ton of files should.
 
-	board_cache = make(map[*Node]*Board)
+	if clear_cache {
+		ClearBoardCache()
+	}
 
 	sgf_bytes, err := ioutil.ReadFile(filename)
 

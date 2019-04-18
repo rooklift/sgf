@@ -37,7 +37,7 @@ func handle_file(dirname, filename string) error {
 
 	path := filepath.Join(dirname, filename)
 
-	node, err := sgf.Load(path)
+	node, err := sgf.Load(path, true)
 	if err != nil {
 		return err
 	}

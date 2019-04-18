@@ -7,6 +7,8 @@ import (
 
 var board_cache = make(map[*Node]*Board)
 
+func ClearBoardCache() { board_cache = make(map[*Node]*Board) }
+
 func (self *Node) Board() *Board {
 
 	// The cache relies on the fact that mutating properties B, W, AB, AW, AE cannot

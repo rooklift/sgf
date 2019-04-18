@@ -4,7 +4,7 @@ Architecture notes:
 
 * A tree is just a bunch of nodes connected together.
 * Nodes do not contain any board representation.
-* Boards can be generated as needed and cached.
+* Boards are generated as needed and cached.
 * Therefore, properties (B, W, AB, AW, AE) cannot be altered after node creation.
 * Generally nodes are created by playing a move.
 * Boards cannot be directly manipulated.

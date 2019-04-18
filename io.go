@@ -137,7 +137,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree: node == nil after: else if c == ']'")
 				}
-				node.add_value(key, value)
+				node.Props[key] = append(node.Props[key], value)
 			} else {
 				value += string(c)
 			}

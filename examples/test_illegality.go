@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	root, err := sgf.Load("test.sgf", true)
+	root, err := sgf.Load("test_illegality.sgf", true)
 	node := root.GetEnd()
 	original_end := node
 
@@ -22,7 +22,7 @@ func main() {
 	node, err = node.PlayMove(sgf.Point(19,19))
 	fmt.Printf("%v\n", err)
 
-	fmt.Printf("%v\n", node == original_end)
-	fmt.Printf("%v\n", len(node.Children))
+	fmt.Printf("Node is original node? %v.\n", node == original_end)
+	fmt.Printf("Node has %v children.\n", len(node.Children))
 	node.Board().Dump()
 }

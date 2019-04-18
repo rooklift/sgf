@@ -121,7 +121,11 @@ func (self *Board) Dump() {
 			} else if ko_x == x && ko_y == y {
 				fmt.Printf(" :")
 			} else {
-				fmt.Printf(" .")
+				if IsStarPoint(Point(x, y), self.Size) {
+					fmt.Printf(" _")
+				} else {
+					fmt.Printf(" .")
+				}
 			}
 		}
 		fmt.Printf("\n")

@@ -71,3 +71,51 @@ func Point(x, y int) string {
 	}
 	return fmt.Sprintf("%c%c", alpha[x], alpha[y])
 }
+
+func IsStarPoint(p string, size int) bool {
+
+	if size < 9 {
+		return false
+	}
+
+	x, y, onboard := XYFromSGF(p, size)
+
+	if onboard == false {
+		return false
+	}
+
+	// This function was written in my Python project gofish,
+	// in which I used non-zeroth coordinates. For that reason...
+
+	x += 1
+	y += 1
+
+	var good_x, good_y bool
+
+	if size >= 15 || x == y {
+		if x == (size + 1) / 2 && (size + 1) % 2 == 0 {
+			good_x = true
+		}
+		if y == (size + 1) / 2 && (size + 1) % 2 == 0 {
+			good_y = true
+		}
+	}
+
+	if size >= 12 {
+		if x == 4 || x + 4 == size + 1 {
+			good_x = true
+		}
+		if y == 4 || y + 4 == size + 1 {
+			good_y = true
+		}
+	} else {
+		if x == 3 || x + 3 == size + 1 {
+			good_x = true
+		}
+		if y == 3 || y + 3 == size + 1 {
+			good_y = true
+		}
+	}
+
+	return good_x && good_y
+}

@@ -84,35 +84,29 @@ func IsStarPoint(p string, size int) bool {
 		return false
 	}
 
-	// This function was written in my Python project gofish,
-	// in which I used non-zeroth coordinates. For that reason...
-
-	x += 1
-	y += 1
-
 	var good_x, good_y bool
 
 	if size >= 15 || x == y {
-		if x == (size + 1) / 2 && (size + 1) % 2 == 0 {
+		if x + 1 == (size + 1) / 2 && (size + 1) % 2 == 0 {
 			good_x = true
 		}
-		if y == (size + 1) / 2 && (size + 1) % 2 == 0 {
+		if y + 1 == (size + 1) / 2 && (size + 1) % 2 == 0 {
 			good_y = true
 		}
 	}
 
 	if size >= 12 {
-		if x == 4 || x + 4 == size + 1 {
+		if x == 3 || x + 4 == size {
 			good_x = true
 		}
-		if y == 4 || y + 4 == size + 1 {
+		if y == 3 || y + 4 == size {
 			good_y = true
 		}
 	} else {
-		if x == 3 || x + 3 == size + 1 {
+		if x == 2 || x + 3 == size {
 			good_x = true
 		}
-		if y == 3 || y + 3 == size + 1 {
+		if y == 2 || y + 3 == size {
 			good_y = true
 		}
 	}

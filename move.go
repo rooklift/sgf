@@ -11,7 +11,7 @@ func (self *Node) PlayMove(p string) (*Node, error) {
 
 	board := self.Board()
 
-	x, y, onboard := XYFromSGF(p, board.size)
+	x, y, onboard := XYFromSGF(p, board.Size)
 
 	if onboard == false {
 		return self, fmt.Errorf("Node.PlayMove(): invalid or off-board string \"%v\"", p)
@@ -25,7 +25,7 @@ func (self *Node) PlayMove(p string) (*Node, error) {
 		return self, fmt.Errorf("Node.PlayMove(): ko recapture forbidden")
 	}
 
-	key := "B"; if board.player == WHITE { key = "W" }
+	key := "B"; if board.Player == WHITE { key = "W" }
 
 	// Return the already-extant child if there is such a thing...
 
@@ -55,14 +55,14 @@ func (self *Node) Pass() *Node {
 
 	board := self.Board()
 
-	key := "B"; if board.player == WHITE { key = "W" }
+	key := "B"; if board.Player == WHITE { key = "W" }
 
 	// Return the already-extant child if there is such a thing...
 
 	for _, child := range self.Children {
 		mv, ok := child.GetValue(key)
 		if ok {
-			if Onboard(mv, board.size) == false {
+			if Onboard(mv, board.Size) == false {
 				return child
 			}
 		}

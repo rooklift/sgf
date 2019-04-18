@@ -5,12 +5,7 @@ package sgf
 // unescaped strings.
 
 import (
-	"bufio"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"os"
-	"strings"
 )
 
 var MUTORS = []string{"B", "W", "AB", "AW", "AE"}

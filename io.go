@@ -1,5 +1,14 @@
 package sgf
 
+import (
+	"bufio"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+	"strings"
+)
+
 func (self *Node) Save(filename string) error {
 
 	if self == nil {

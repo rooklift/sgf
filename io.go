@@ -152,7 +152,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): node == nil after: else if c == '('")
 				}
-				_, chars_to_skip, err = load_sgf_tree(sgf[i + 1:], node)
+				_, chars_to_skip, err = load_sgf_tree(sgf[i + 1:], node)		// substrings are memory efficient in Golang
 				if err != nil {
 					return nil, 0, err
 				}

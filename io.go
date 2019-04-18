@@ -142,7 +142,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): node == nil after: else if c == ']'")
 				}
-				node.add_value(key, value)		// This handles escaping.
+				node.add_value(key, value)		// This handles escaping. Also note, add_value() doesn't prevent MUTORS
 			} else {
 				value += string(c)
 			}

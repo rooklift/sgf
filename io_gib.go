@@ -47,8 +47,8 @@ func load_gib(gib string) (*Node, error) {
 			y, _ := strconv.Atoi(fields[5])
 			key := "B"; if fields[3] == "2" { key = "W" }
 			val := Point(x, y)
-			new_node := NewNode(node, map[string][]string{key: []string{val}})
-			node = new_node
+			node = new_bare_node(node)
+			node.add_value(key, val)		// Note add_value() doesn't prevent MUTORS
 		}
 	}
 

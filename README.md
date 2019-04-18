@@ -101,6 +101,7 @@ func main() {
 	
 	// We can also load files.
 	
-	node, err = sgf.Load("foo.sgf", true)		// true here clears the board cache. This only affects whether your RAM is eaten up.
+	node, err = sgf.Load("foo.sgf", true)       		// true here clears the board cache. This
+														// only affects RAM usage, nothing else.
 }
 ```

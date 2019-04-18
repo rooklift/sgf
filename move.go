@@ -14,11 +14,11 @@ func (self *Node) PlayMove(p string) (*Node, error) {
 	x, y, onboard := XYFromSGF(p, board.Size)
 
 	if onboard == false {
-		return self, fmt.Errorf("Node.PlayMove(): offboard coordinates")
+		return self, fmt.Errorf("Node.PlayMove(): invalid or off-board string \"%v\"", p)
 	}
 
 	if board.GetState(p) != EMPTY {
-		return self, fmt.Errorf("Node.PlayMove(): point %d,%d was not empty", x, y)
+		return self, fmt.Errorf("Node.PlayMove(): point \"%v\" (%v,%v) was not empty", p, x, y)
 	}
 
 	if board.HasKo() && board.GetKo() == p {

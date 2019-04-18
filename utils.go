@@ -56,7 +56,11 @@ func PointFromSGF(s string, size int) (p Point, ok bool) {
 
 	ok = x >= 0 && x < size && y >= 0 && y < size
 
-	return Point{x, y}, ok
+	if ok == false {
+		return Point{-1, -1}, false
+	} else {
+		return Point{x, y}, true
+	}
 }
 
 func SGFIsPass(s string, size int) bool {		// Our definition of pass

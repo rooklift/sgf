@@ -49,6 +49,11 @@ func PointFromSGF(s string, size int) (p Point, ok bool) {
 	x := int(s[0]) - 97
 	y := int(s[1]) - 97
 
+	// Except, if the letters are capitals, different letters apply...
+
+	if s[0] >= 'A' && s[0] <= 'Z' { x = int(s[0]) - 39 }
+	if s[1] >= 'A' && s[1] <= 'Z' { y = int(s[1]) - 39 }
+
 	ok = x >= 0 && x < size && y >= 0 && y < size
 
 	return Point{x, y}, ok

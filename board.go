@@ -86,11 +86,11 @@ func (self *Board) HasKo() bool {
 	return self.Ko != ""
 }
 
-func (self *Board) SetKo(s string) {
-	if Onboard(s, self.Size) == false {
+func (self *Board) SetKo(p string) {
+	if Onboard(p, self.Size) == false {
 		self.Ko = ""
 	} else {
-		self.Ko = s
+		self.Ko = p
 	}
 }
 

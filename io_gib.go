@@ -44,12 +44,14 @@ func load_gib(gib string) (*Node, error) {
 		fields := strings.Fields(line)
 
 		if len(fields) == 6 && fields[0] == "STO" {
-			x, _ := strconv.Atoi(fields[4])
-			y, _ := strconv.Atoi(fields[5])
-			key := "B"; if fields[3] == "2" { key = "W" }
-			val := Point(x, y)
-			node = new_bare_node(node)
-			node.add_value(key, val)		// Note add_value() doesn't prevent MUTORS
+			x, err1 := strconv.Atoi(fields[4])
+			y, err2 := strconv.Atoi(fields[5])
+			if err1 == nil && err2 == nil {
+				key := "B"; if fields[3] == "2" { key = "W" }
+				val := Point(x, y)
+				node = new_bare_node(node)
+				node.add_value(key, val)		// Note add_value() doesn't prevent MUTORS
+			}
 		}
 	}
 

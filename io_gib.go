@@ -1,7 +1,6 @@
 package sgf
 
 // Basic GIB parser (i.e. for Tygem files)
-// FIXME: needs to parse handicaps.
 
 import (
 	"fmt"

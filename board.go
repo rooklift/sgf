@@ -116,7 +116,7 @@ func (self *Board) Dump() {
 				fmt.Printf(" X")
 			} else if c == WHITE {
 				fmt.Printf(" O")
-			} else if ko.X == x && ko.Y == y {
+			} else if ko_x == x && ko_y == y {
 				fmt.Printf(" :")
 			} else {
 				fmt.Printf(" .")

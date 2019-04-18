@@ -1,7 +1,6 @@
 package sgf
 
 import (
-	"fmt"
 	"strconv"
 )
 
@@ -89,9 +88,7 @@ func (self *Board) modify_with_move(p string, colour Colour) {
 		panic("modify_with_move(): no colour")
 	}
 
-	x, y, onboard := XYFromSGF(p, self.Size)
-
-	if onboard == false {		// Consider this a pass
+	if Onboard(p, self.Size) == false {		// Consider this a pass
 		return
 	}
 
@@ -129,7 +126,7 @@ func (self *Board) modify_with_move(p string, colour Colour) {
 		}
 	}
 
-	return nil
+	return
 }
 
 func (self *Board) destroy_group(p string) int {		// Returns stones removed.

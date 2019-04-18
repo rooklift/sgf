@@ -17,16 +17,16 @@ func AdjacentPoints(s string, size int) []string {
 	var ret []string
 
 	if x > 0 {
-		ret = append(ret, string(alpha[x - 1]) + s[1])		// Left
+		ret = append(ret, string(alpha[x - 1]) + string(s[1]))		// Left
 	}
 	if x < size - 1 {
-		ret = append(ret, string(alpha[x + 1]) + s[1])		// Right
+		ret = append(ret, string(alpha[x + 1]) + string(s[1]))		// Right
 	}
 	if y > 0 {
-		ret = append(ret, s[0] + string(alpha[y - 1]))		// Up
+		ret = append(ret, string(s[0]) + string(alpha[y - 1]))		// Up
 	}
 	if y < size - 1 {
-		ret = append(ret, s[0] + string(alpha[y + 1]))		// Down
+		ret = append(ret, string(s[0]) + string(alpha[y + 1]))		// Down
 	}
 
 	return ret
@@ -43,11 +43,11 @@ func XYFromSGF(s string, size int) (x, y int, onboard bool) {
 		return -1, -1, false
 	}
 
-	x := -1
-	y := -1
+	x = -1
+	y = -1
 
 	if s[0] >= 'a' && s[0] <= 'z' { x = int(s[0]) - 97 }
-	if s[1] >= 'a' && s[0] <= 'z' { y = int(s[0]) - 97 }
+	if s[1] >= 'a' && s[1] <= 'z' { y = int(s[1]) - 97 }
 	if s[0] >= 'A' && s[0] <= 'Z' { x = int(s[0]) - 39 }
 	if s[1] >= 'A' && s[1] <= 'Z' { y = int(s[1]) - 39 }
 

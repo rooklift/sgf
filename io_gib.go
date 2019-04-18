@@ -67,7 +67,7 @@ func parse_gib_gametag(line string) (dt, re, km string) {
 
 	for _, s := range fields {
 
-		if len(s) == 0 {
+		if len(s) < 2 {
 			continue
 		}
 

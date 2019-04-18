@@ -15,5 +15,8 @@ func main() {
 		fmt.Printf("%v\n", err)
 		return
 	}
+	km, _ := root.GetValue("KM")
+	re, _ := root.GetValue("RE")
+	fmt.Printf("Komi: \"%v\", Result: \"%v\"\n\n", km, re)
 	root.GetEnd().Board().Dump()
 }

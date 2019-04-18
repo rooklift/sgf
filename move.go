@@ -14,7 +14,7 @@ func (self *Node) PlayMove(p string) (*Node, error) {
 	x, y, onboard := XYFromSGF(p, board.Size)
 
 	if onboard == false {
-		return self, fmt.Errorf("Node.PlayMove(): offboard coordinates %d,%d", x, y)
+		return self, fmt.Errorf("Node.PlayMove(): offboard coordinates")
 	}
 
 	if board.GetState(p) != EMPTY {

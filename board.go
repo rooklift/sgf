@@ -34,7 +34,7 @@ func new_board(sz int) *Board {
 	board.CapturesBy[BLACK] = 0					// Not strictly
 	board.CapturesBy[WHITE] = 0					// necessary...
 
-	board.ClearKo()
+	board.clear_ko()
 	return board
 }
 
@@ -67,14 +67,6 @@ func (self *Board) Copy() *Board {
 	return ret
 }
 
-func (self *Board) SetKo(p Point) {
-	self.ko = p
-}
-
-func (self *Board) ClearKo() {
-	self.ko = Point{-1, -1}			// Lame way of storing no ko?
-}
-
 func (self *Board) HasKo() bool {
 	return self.ko.X >= 0 && self.ko.Y >= 0 && self.ko.X < self.Size && self.ko.Y < self.Size
 }
@@ -84,6 +76,14 @@ func (self *Board) GetKo() Point {
 		return Point{-1, -1}
 	}
 	return self.ko
+}
+
+func (self *Board) set_ko(p Point) {
+	self.ko = p
+}
+
+func (self *Board) clear_ko() {
+	self.ko = Point{-1, -1}			// Lame way of storing no ko?
 }
 
 func (self *Board) Dump() {

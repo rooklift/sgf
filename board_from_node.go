@@ -133,12 +133,12 @@ func (self *Board) modify_with_move(colour Colour, p Point) error {
 
 	// Work out ko square...
 
-	self.ClearKo()
+	self.clear_ko()
 
 	if caps == 1 {
 		if self.Singleton(p) {
 			if self.Liberties(p) == 1 {					// Yes, the conditions are met, there is a ko
-				self.SetKo(self.ko_square_finder(p))
+				self.set_ko(self.ko_square_finder(p))
 			}
 		}
 	}

@@ -11,6 +11,8 @@ Architecture notes:
 * Such strings can be produced with sgf.Point(3,3) - the numbers are zeroth based.
 * Escaping of ] and \ characters is handled invisibly to the user.
 
+# Example
+
 ```golang
 package main
 

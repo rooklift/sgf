@@ -37,6 +37,8 @@ func NewNode(parent *Node, props map[string][]string) *Node {
 
 func (self *Node) AddValue(key, value string) {
 
+	if self == nil { panic("Node.AddValue(): called on nil node") }
+
 	// Disallow keys that change the board...
 
 	for _, s := range MUTORS {
@@ -63,6 +65,8 @@ func (self *Node) add_value(key, value string) {			// Handles escaping; no other
 
 func (self *Node) SetValue(key, value string) {
 
+	if self == nil { panic("Node.SetValue(): called on nil node") }
+
 	// Disallow keys that change the board...
 
 	for _, s := range MUTORS {
@@ -79,6 +83,8 @@ func (self *Node) GetValue(key string) (value string, ok bool) {
 
 	// Get the value for the key, on the assumption that there's only 1 value.
 
+	if self == nil { panic("Node.GetValue(): called on nil node") }
+
 	list := self.Props[key]
 
 	if len(list) == 0 {
@@ -91,6 +97,8 @@ func (self *Node) GetValue(key string) (value string, ok bool) {
 func (self *Node) AllValues(key string) []string {
 
 	// Return all values for the key, possibly zero
+
+	if self == nil { panic("Node.AllValues(): called on nil node") }
 
 	list := self.Props[key]
 
@@ -108,6 +116,8 @@ func (self *Node) AllValues(key string) []string {
 }
 
 func (self *Node) DeleteValue(key, value string) {
+
+	if self == nil { panic("Node.DeleteValue(): called on nil node") }
 
 	// Disallow keys that change the board...
 
@@ -132,6 +142,8 @@ func (self *Node) DeleteValue(key, value string) {
 }
 
 func (self *Node) DeleteKey(key string) {
+
+	if self == nil { panic("Node.DeleteKey(): called on nil node") }
 
 	// Disallow keys that change the board...
 

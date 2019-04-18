@@ -1,6 +1,7 @@
 package sgf
 
 func (self *Node) MainChild() *Node {
+	if self == nil { panic("Node.MainChild(): called on nil node") }
 	if len(self.Children) == 0 {
 		return nil
 	}
@@ -8,6 +9,7 @@ func (self *Node) MainChild() *Node {
 }
 
 func (self *Node) RemoveChild(child *Node) {
+	if self == nil { panic("Node.RemoveChild(): called on nil node") }
 	for i := len(self.Children) - 1; i >= 0; i-- {
 		if self.Children[i] == child {
 			self.Children = append(self.Children[:i], self.Children[i+1:]...)
@@ -16,6 +18,7 @@ func (self *Node) RemoveChild(child *Node) {
 }
 
 func (self *Node) GetRoot() *Node {
+	if self == nil { panic("Node.GetRoot(): called on nil node") }
 	node := self
 	for {
 		if node.Parent != nil {
@@ -27,6 +30,7 @@ func (self *Node) GetRoot() *Node {
 }
 
 func (self *Node) GetEnd() *Node {
+	if self == nil { panic("Node.GetEnd(): called on nil node") }
 	node := self
 	for {
 		if len(node.Children) > 0 {
@@ -38,6 +42,8 @@ func (self *Node) GetEnd() *Node {
 }
 
 func (self *Node) GetLine() []*Node {		// The line of nodes from root to here
+
+	if self == nil { panic("Node.GetLine(): called on nil node") }
 
 	var ret []*Node
 

@@ -117,6 +117,8 @@ func (self *Node) DeleteValue(key, value string) {
 		}
 	}
 
+	value = escape_string(value)
+
 	for i := len(self.Props[key]) - 1; i >= 0; i-- {
 		v := self.Props[key][i]
 		if v == value {

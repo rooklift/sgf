@@ -42,44 +42,44 @@ func (self *Node) Board() *Board {
 func (self *Board) update(node *Node) {
 
 	for _, val := range node.Props["AB"] {
-		point, ok := PointFromSGF(val, self.Size)
-		if ok {
+		point, onboard := PointFromSGF(val, self.Size)
+		if onboard {
 			self.State[point.X][point.Y] = BLACK
 			self.Player = WHITE
 		}
 	}
 
 	for _, val := range node.Props["AW"] {
-		point, ok := PointFromSGF(val, self.Size)
-		if ok {
+		point, onboard := PointFromSGF(val, self.Size)
+		if onboard {
 			self.State[point.X][point.Y] = WHITE
 			self.Player = BLACK			// Prevails in the event of both AB and AW
 		}
 	}
 
 	for _, val := range node.Props["AE"] {
-		point, ok := PointFromSGF(val, self.Size)
-		if ok {
+		point, onboard := PointFromSGF(val, self.Size)
+		if onboard {
 			self.State[point.X][point.Y] = EMPTY
 		}
 	}
 
-	// Play move: B / W
+	// Play move: B / W. Note that "moves" which are not valid onboard points are passes.
 
 	for _, val := range node.Props["B"] {
-		point, ok := PointFromSGF(val, self.Size)
-		if ok {
+		point, onboard := PointFromSGF(val, self.Size)
+		if onboard {
 			self.modify_with_move(BLACK, point)
 		}
-		self.Player = WHITE		// if not "ok" it counts as a pass and so still changes player
+		self.Player = WHITE
 	}
 
 	for _, val := range node.Props["W"] {
-		point, ok := PointFromSGF(val, self.Size)
-		if ok {
+		point, onboard := PointFromSGF(val, self.Size)
+		if onboard {
 			self.modify_with_move(WHITE, point)
 		}
-		self.Player = BLACK		// if not "ok" it counts as a pass and so still changes player
+		self.Player = BLACK
 	}
 
 	// Respect PL property

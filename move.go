@@ -29,9 +29,11 @@ func (self *Node) PlayMove(p Point) (*Node, error) {
 	// Return the already-extant child if there is such a thing...
 
 	for _, child := range self.Children {
-		mv, _ := child.GetValue(key)
-		if mv == val {
-			return child, nil
+		mv, ok := child.GetValue(key)
+		if ok {
+			if mv == val {
+				return child, nil
+			}
 		}
 	}
 
@@ -57,14 +59,9 @@ func (self *Node) Pass() *Node {
 	// Return the already-extant child if there is such a thing...
 
 	for _, child := range self.Children {
-
-		val, ok := child.GetValue(key)
-
-		if ok {		// i.e. there is a value (possibly empty string) for the key
-
-			_, ok := PointFromSGF(val, board.Size)
-
-			if ok == false {		// move is a pass
+		mv, ok := child.GetValue(key)
+		if ok {
+			if SGFIsPass(mv, board.Size) {
 				return child
 			}
 		}

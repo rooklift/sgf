@@ -50,6 +50,11 @@ func PointFromSGF(s string, size int) (p Point, ok bool) {
 	return Point{x, y}, ok
 }
 
+func SGFIsPass(s string, size int) bool {		// Our definition of pass
+	_, ok := PointFromSGF(s, size)
+	return !ok
+}
+
 func SGFFromPoint(p Point) string {
 	const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	return fmt.Sprintf("%c%c", alpha[p.X], alpha[p.Y])

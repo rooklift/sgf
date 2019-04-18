@@ -37,39 +37,6 @@ func NewNode(parent *Node, props map[string][]string) *Node {
 	return node
 }
 
-func NewTree(size int) *Node {
-
-	// Sizes over 25 are not recommended. But 52 is the hard limit for SGF.
-
-	if size < 1 || size > 52 {
-		panic(fmt.Sprintf("NewTree(): invalid size %v", size))
-	}
-
-	properties := make(map[string][]string)
-
-	properties["GM"] = []string{"1"}
-	properties["FF"] = []string{"4"}
-	properties["SZ"] = []string{fmt.Sprintf("%d", size)}
-
-	return NewNode(nil, properties)
-}
-
-func new_bare_node(parent *Node) *Node {
-
-	// Doesn't accept properties.
-	// Used only for file loading.
-
-	node := new(Node)
-	node.Parent = parent
-	node.Props = make(map[string][]string)
-
-	if parent != nil {
-		parent.Children = append(parent.Children, node)
-	}
-
-	return node
-}
-
 // -----------------------------------------------------------------------------
 
 func (self *Node) AddValue(key, value string) {

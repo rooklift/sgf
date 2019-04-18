@@ -198,3 +198,19 @@ func load_sgf(sgf string) (*Node, error) {
 	root, _, err := load_sgf_tree(sgf, nil)
 	return root, err
 }
+
+func new_bare_node(parent *Node) *Node {
+
+	// Doesn't accept properties.
+	// Used only for file loading.
+
+	node := new(Node)
+	node.Parent = parent
+	node.Props = make(map[string][]string)
+
+	if parent != nil {
+		parent.Children = append(parent.Children, node)
+	}
+
+	return node
+}

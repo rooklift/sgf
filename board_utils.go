@@ -106,6 +106,10 @@ func (self *Board) Singleton(p string) bool {
 
 	colour := self.GetState(p)
 
+	if colour == EMPTY {
+		return false
+	}
+
 	for _, a := range AdjacentPoints(p, self.Size) {
 		if self.GetState(a) == colour {
 			return false

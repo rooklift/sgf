@@ -9,6 +9,8 @@ func (self *Node) PlayMove(p string) (*Node, error) {
 	// Uses board info to determine colour.
 	// Returns the new node on success, or self on failure.
 
+	if self == nil { panic("Node.PlayMove(): called on nil node") }
+
 	board := self.Board()
 
 	x, y, onboard := XYFromSGF(p, board.Size)
@@ -50,6 +52,8 @@ func (self *Node) PlayMove(p string) (*Node, error) {
 }
 
 func (self *Node) Pass() *Node {
+
+	if self == nil { panic("Node.Pass(): called on nil node") }
 
 	// Uses board info to determine colour.
 

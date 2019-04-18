@@ -6,6 +6,8 @@ import (
 
 func (self *Board) GroupSize(p string) int {
 
+	if self == nil { panic("Board.GroupSize(): called on nil board") }
+
 	// If the point is empty, should this return 0, or the size of the empty "string"? Hmm.
 
 	if self.GetState(p) == EMPTY {
@@ -35,6 +37,7 @@ func (self *Board) group_size_recurse(p string, touched map[string]bool) int {
 }
 
 func (self *Board) HasLiberties(p string) bool {		// Faster than checking if Liberties() == 0
+	if self == nil { panic("Board.HasLiberties(): called on nil board") }
 	touched := make(map[string]bool)
 	return self.has_liberties_recurse(p, touched)
 }
@@ -60,6 +63,8 @@ func (self *Board) has_liberties_recurse(p string, touched map[string]bool) bool
 }
 
 func (self *Board) Liberties(p string) int {
+
+	if self == nil { panic("Board.Liberties(): called on nil board") }
 
 	// What on earth is the correct answer to how many liberties an empty square has?
 
@@ -96,6 +101,8 @@ func (self *Board) liberties_recurse(p string, touched map[string]bool) int {
 }
 
 func (self *Board) Singleton(p string) bool {
+
+	if self == nil { panic("Board.Singleton(): called on nil board") }
 
 	colour := self.GetState(p)
 

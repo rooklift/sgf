@@ -15,6 +15,8 @@ func (self *Node) Board() *Board {
 	// The cache relies on the fact that mutating properties B, W, AB, AW, AE cannot
 	// be added to a node after creation.
 
+	if self == nil { panic("Node.Board(): called on nil node") }
+
 	cached, ok := board_cache[self]
 
 	if ok {
@@ -83,6 +85,8 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 	// Other than sanity checks, there is no legality check here.
 	// Nor should there be.
 
+	if self == nil { panic("Board.PlaceStone(): called on nil board") }
+
 	if colour != BLACK && colour != WHITE {
 		panic("Board.PlaceStone(): no colour")
 	}
@@ -129,6 +133,8 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 }
 
 func (self *Board) DestroyGroup(p string) int {			// Returns stones removed.
+
+	if self == nil { panic("Board.DestroyGroup(): called on nil board") }
 
 	colour := self.GetState(p)
 

@@ -11,9 +11,7 @@ import (
 
 func (self *Node) Save(filename string) error {
 
-	if self == nil {
-		return fmt.Errorf("Save() called on nil node")
-	}
+	if self == nil { return fmt.Errorf("Node.Save() called on nil node") }
 
 	outfile, err := os.Create(filename)
 	if err != nil {

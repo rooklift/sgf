@@ -14,6 +14,7 @@ type Board struct {					// Contains everything about a go position, except super
 }
 
 func (self *Board) GetState(p string) Colour {
+	if self == nil { panic("Board.GetState(): called on nil board") }
 	x, y, onboard := XYFromSGF(p, self.Size)
 	if onboard == false {
 		return EMPTY
@@ -22,6 +23,7 @@ func (self *Board) GetState(p string) Colour {
 }
 
 func (self *Board) SetState(p string, c Colour) {
+	if self == nil { panic("Board.SetState(): called on nil board") }
 	x, y, onboard := XYFromSGF(p, self.Size)
 	if onboard == false {
 		return
@@ -55,6 +57,8 @@ func NewBoard(sz int) *Board {
 
 func (self *Board) Copy() *Board {
 
+	if self == nil { panic("Board.Copy(): called on nil board") }
+
 	ret := new(Board)
 
 	// Easy stuff...
@@ -83,10 +87,12 @@ func (self *Board) Copy() *Board {
 }
 
 func (self *Board) HasKo() bool {
+	if self == nil { panic("Board.HasKo(): called on nil board") }
 	return self.Ko != ""
 }
 
 func (self *Board) SetKo(p string) {
+	if self == nil { panic("Board.SetKo(): called on nil board") }
 	if Onboard(p, self.Size) == false {
 		self.Ko = ""
 	} else {
@@ -95,10 +101,13 @@ func (self *Board) SetKo(p string) {
 }
 
 func (self *Board) ClearKo() {
+	if self == nil { panic("Board.ClearKo(): called on nil board") }
 	self.Ko = ""
 }
 
 func (self *Board) Dump() {
+
+	if self == nil { panic("Board.Dump(): called on nil board") }
 
 	ko_x, ko_y, _ := XYFromSGF(self.Ko, self.Size)		// Usually -1, -1
 

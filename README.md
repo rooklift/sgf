@@ -1,6 +1,6 @@
 Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu).
 
-Architecture notes:
+# Technical notes:
 
 * A tree is just a bunch of nodes connected together.
 * Nodes do not contain any board representation.

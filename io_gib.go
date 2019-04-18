@@ -39,11 +39,34 @@ func load_gib(gib string) (*Node, error) {
 			if km != "" { root.SetValue("KM", km) }
 		}
 
-		// Moves...
+		// Split the line into tokens for the handicap and move parsing...
 
 		fields := strings.Fields(line)
 
-		if len(fields) == 6 && fields[0] == "STO" {
+		// Handicap...
+
+		if len(fields) >= 4 && fields[0] == "INI" {
+
+			if node != root {
+				return nil, fmt.Errorf("load_gib(): got INI field after moves were made")
+			}
+
+			handicap, _ := strconv.Atoi(fields[3])
+
+			var stones []string
+
+			if handicap > 1 {
+				stones = HandicapPoints19(handicap, true)
+			}
+
+			for _, stone := range stones {
+				root.add_value("AB", stone)		// Note add_value() doesn't prevent MUTORS
+			}
+		}
+
+		// Moves...
+
+		if len(fields) >= 6 && fields[0] == "STO" {
 			x, err1 := strconv.Atoi(fields[4])
 			y, err2 := strconv.Atoi(fields[5])
 			if err1 == nil && err2 == nil {

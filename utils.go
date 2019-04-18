@@ -119,3 +119,30 @@ func IsStarPoint(p string, size int) bool {
 
 	return good_x && good_y
 }
+
+func HandicapPoints19(handicap int, tygem bool) []string {
+
+	if handicap > 9 {
+		handicap = 9
+	}
+
+	var ret []string
+
+	if handicap >= 1 { ret = append(ret, "pd") }
+	if handicap >= 2 { ret = append(ret, "dp") }
+	if handicap >= 3 { ret = append(ret, "pp") }
+	if handicap >= 4 { ret = append(ret, "dd") }
+
+	if handicap >= 6 { ret = append(ret, "dj", "pj") }
+	if handicap >= 8 { ret = append(ret, "jd", "jp") }
+
+	if handicap >= 5 && handicap % 2 == 1 { ret = append(ret, "jj") }
+
+	// Tygem seems to put its 3rd handicap stone in the top left...
+
+	if tygem && handicap == 3 {
+		ret[2] = "dd"
+	}
+
+	return ret
+}

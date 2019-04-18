@@ -2,6 +2,10 @@ Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu).
 
 Architecture notes:
 
-* A tree is just a bunch of nodes connected together. Nodes do not contain any board representation.
+* A tree is just a bunch of nodes connected together.
+* Node properties can be altered after creation, except B, W, AB, AW, AE
+* Nodes do not contain any board representation.
 * Boards can be generated as needed and cached.
-* Coordinates are zeroth-based.
+* Boards cannot be directly manipulated.
+* Coordinates are zeroth-based, from top left.
+* Escaping of ] and \ characters is handled invisibly to the user.

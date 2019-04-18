@@ -8,22 +8,18 @@ import (
 func main() {
 
 	// To create a plain new Tree, you can generally use:
+	//      node := sgf.NewTree(size)
 	//
-	//      node := k.NewTree(size)
+	// If you want handicap or other stones, you can use:
+	//		node := sgf.NewSetup(size, black_stones, white_stones, next_player)
 	//
-	// But if you want handicap or other stones, one must pass
-	// some actual properties and use k.NewNode().
-	//
-	// In this example, we create the ancient Chinese pattern.
+	// Here we create the ancient Chinese starting position, and specify that
+	// Black plays first...
 
-	properties := make(map[string][]string)
-	properties["GM"] = []string{"1"}
-	properties["FF"] = []string{"4"}
-	properties["SZ"] = []string{"19"}
-	properties["AB"] = []string{sgf.SGFFromPoint(sgf.Point{3, 3}), sgf.SGFFromPoint(sgf.Point{15, 15})}		// ["dd", "pp"]
-	properties["AW"] = []string{sgf.SGFFromPoint(sgf.Point{15, 3}), sgf.SGFFromPoint(sgf.Point{3, 15})}		// ["pd", "dp"]
+	black_stones := []sgf.Point{sgf.Point{3, 3}, sgf.Point{15, 15}}
+	white_stones := []sgf.Point{sgf.Point{15, 3}, sgf.Point{3, 15}}
 
-	node := sgf.NewNode(nil, properties)				// nil means this node has no parent (it's the root)
+	node := sgf.NewSetup(19, black_stones, white_stones, sgf.BLACK)
 
 	// We can now make moves.
 	// If successful, PlayMove() returns the new node.

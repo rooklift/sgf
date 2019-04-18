@@ -32,7 +32,7 @@ func (self *Node) Board() *Board {
 		sz, _ := strconv.Atoi(sz_string)
 		if sz < 1  { sz = 19 }
 		if sz > 52 { sz = 52 }		// SGF limit
-		my_board = new_board(sz)
+		my_board = NewBoard(sz)
 	}
 
 	my_board.update(self)
@@ -116,12 +116,12 @@ func (self *Board) modify_with_move(p string, colour Colour) {
 
 	// Work out ko square...
 
-	self.clear_ko()
+	self.ClearKo()
 
 	if caps == 1 {
 		if self.Singleton(p) {
 			if self.Liberties(p) == 1 {					// Yes, the conditions are met, there is a ko
-				self.set_ko(self.ko_square_finder(p))
+				self.SetKo(self.ko_square_finder(p))
 			}
 		}
 	}

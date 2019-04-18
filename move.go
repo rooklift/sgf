@@ -21,7 +21,7 @@ func (self *Node) PlayMove(p string) (*Node, error) {
 		return self, fmt.Errorf("Node.PlayMove(): point \"%v\" (%v,%v) was not empty", p, x, y)
 	}
 
-	if board.HasKo() && board.GetKo() == p {
+	if board.HasKo() && board.Ko == p {
 		return self, fmt.Errorf("Node.PlayMove(): ko recapture forbidden")
 	}
 

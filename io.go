@@ -80,16 +80,23 @@ func Load(filename string, clear_cache bool) (*Node, error) {
 		ClearBoardCache()
 	}
 
-	sgf_bytes, err := ioutil.ReadFile(filename)
+	file_bytes, err := ioutil.ReadFile(filename)
 
 	if err != nil {
 		return nil, err
 	}
 
-	root, err := load_sgf(string(sgf_bytes))
+	root, err := load_sgf(string(file_bytes))
 
 	if err != nil {
-		return nil, err
+		if strings.HasSuffix(filename, ".gib") {
+			root, err = load_gib(string(file_bytes))
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			return nil, err
+		}
 	}
 
 	return root, nil

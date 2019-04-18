@@ -87,10 +87,10 @@ func IsStarPoint(p string, size int) bool {
 	var good_x, good_y bool
 
 	if size >= 15 || x == y {
-		if x + 1 == (size + 1) / 2 && (size + 1) % 2 == 0 {
+		if x + 1 == (size + 1) / 2 && size % 2 == 1 {
 			good_x = true
 		}
-		if y + 1 == (size + 1) / 2 && (size + 1) % 2 == 0 {
+		if y + 1 == (size + 1) / 2 && size % 2 == 1 {
 			good_y = true
 		}
 	}

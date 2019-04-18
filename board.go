@@ -4,6 +4,8 @@ import (
 	"fmt"
 )
 
+var HoshiString = "."
+
 type Board struct {					// Contains everything about a go position, except superko stuff
 	Size				int
 	Player				Colour
@@ -122,7 +124,8 @@ func (self *Board) Dump() {
 				fmt.Printf(" :")
 			} else {
 				if IsStarPoint(Point(x, y), self.Size) {
-					fmt.Printf(" .")
+					fmt.Printf(" ")
+					fmt.Printf(HoshiString)
 				} else {
 					fmt.Printf(" .")
 				}

@@ -23,7 +23,7 @@ func (self *Board) group_size_recurse(p string, touched map[string]bool) int {
 
 	count := 1
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.size) {
 		if self.GetState(a) == colour {
 			if touched[a] == false {
 				count += self.group_size_recurse(a, touched)
@@ -44,7 +44,7 @@ func (self *Board) has_liberties_recurse(p string, touched map[string]bool) bool
 	touched[p] = true
 	colour := self.GetState(p)
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.size) {
 		if self.GetState(a) == EMPTY {
 			return true
 		} else if self.GetState(a) == colour {
@@ -81,7 +81,7 @@ func (self *Board) liberties_recurse(p string, touched map[string]bool) int {
 
 	count := 0
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.size) {
 		if touched[a] == false {
 			touched[a] = true							// This is fine regardless of what's on the point
 			if self.GetState(a) == EMPTY {
@@ -99,7 +99,7 @@ func (self *Board) Singleton(p string) bool {
 
 	colour := self.GetState(p)
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.size) {
 		if self.GetState(a) == colour {
 			return false
 		}
@@ -115,7 +115,7 @@ func (self *Board) ko_square_finder(p string) string {
 
 	var hits []string
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.size) {
 		if self.GetState(a) == EMPTY {
 			hits = append(hits, a)
 		}

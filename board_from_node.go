@@ -43,39 +43,39 @@ func (self *Node) Board() *Board {
 func (self *Board) update(node *Node) {
 
 	for _, p := range node.Props["AB"] {
-		self.SetState(p, BLACK)
-		self.Player = WHITE
+		self.set_state(p, BLACK)
+		self.player = WHITE
 	}
 
 	for _, p := range node.Props["AW"] {
-		self.SetState(p, WHITE)
-		self.Player = BLACK			// Prevails in the event of both AB and AW
+		self.set_state(p, WHITE)
+		self.player = BLACK			// Prevails in the event of both AB and AW
 	}
 
 	for _, p := range node.Props["AE"] {
-		self.SetState(p, EMPTY)
+		self.set_state(p, EMPTY)
 	}
 
 	// Play move: B / W. Note that "moves" which are not valid onboard points are passes.
 
 	for _, p := range node.Props["B"] {
 		self.modify_with_move(p, BLACK)
-		self.Player = WHITE
+		self.player = WHITE
 	}
 
 	for _, p := range node.Props["W"] {
 		self.modify_with_move(p, WHITE)
-		self.Player = BLACK
+		self.player = BLACK
 	}
 
 	// Respect PL property
 
 	pl, _ := node.GetValue("PL")
 	if pl == "B" || pl == "b" {
-		self.Player = BLACK
+		self.player = BLACK
 	}
 	if pl == "W" || pl == "w" {
-		self.Player = WHITE
+		self.player = WHITE
 	}
 }
 
@@ -88,16 +88,16 @@ func (self *Board) modify_with_move(p string, colour Colour) {
 		panic("modify_with_move(): no colour")
 	}
 
-	if Onboard(p, self.Size) == false {		// Consider this a pass
+	if Onboard(p, self.size) == false {		// Consider this a pass
 		return
 	}
 
-	self.SetState(p, colour)
+	self.set_state(p, colour)
 
 	opponent := colour.Opposite()
 	caps := 0
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.size) {
 		if self.GetState(a) == opponent {
 			if self.HasLiberties(a) == false {
 				caps += self.destroy_group(a)
@@ -105,13 +105,13 @@ func (self *Board) modify_with_move(p string, colour Colour) {
 		}
 	}
 
-	self.CapturesBy[colour] += caps
+	self.captures_by[colour] += caps
 
 	// Handle suicide...
 
 	if self.HasLiberties(p) == false {
 		suicide_caps := self.destroy_group(p)
-		self.CapturesBy[opponent] += suicide_caps
+		self.captures_by[opponent] += suicide_caps
 	}
 
 	// Work out ko square...
@@ -137,10 +137,10 @@ func (self *Board) destroy_group(p string) int {		// Returns stones removed.
 		return 0
 	}
 
-	self.SetState(p, EMPTY)
+	self.set_state(p, EMPTY)
 	count := 1
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.size) {
 
 		if self.GetState(a) == colour {
 			count += self.destroy_group(a)

@@ -24,12 +24,12 @@ func (self *Node) Save(filename string) error {
 	w := bufio.NewWriter(outfile)						// bufio for speedier output if file is huge.
 	defer w.Flush()
 
-	self.GetRoot().WriteTree(w)
+	self.GetRoot().write_tree(w)
 
 	return nil
 }
 
-func (self *Node) WriteTree(outfile io.Writer) {		// Relies on values already being correctly backslash-escaped
+func (self *Node) write_tree(outfile io.Writer) {		// Relies on values already being correctly backslash-escaped
 
 	node := self
 

@@ -51,7 +51,7 @@ func (self *Node) write_tree(outfile io.Writer) {		// Relies on values already b
 		if len(node.Children) > 1 {
 
 			for _, child := range node.Children {
-				child.WriteTree(outfile)
+				child.write_tree(outfile)
 			}
 
 			break

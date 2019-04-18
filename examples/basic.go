@@ -66,10 +66,14 @@ func main() {
 
 	fmt.Printf("%v, %v\n", foo == bar, bar == node)		// true, true
 
-	// We can add properties, EXCEPT board-altering properties...
+	// We can add and delete properties, EXCEPT board-altering properties...
 
-	val := sgf.SGFFromPoint(sgf.Point{3, 17})			// The string "pr" - corresponds to 15,17
-	node.AddValue("TR", val)
+	node.AddValue("TR", sgf.String(3, 3))				// "dd"
+	node.AddValue("TR", sgf.String(3, 15))				// "dp"
+	node.AddValue("TR", sgf.String(15, 3))				// "pd"
+	node.AddValue("TR", "pp")							// We can of course name the point directly
+
+	node.DeleteValue("TR", "dp")
 
 	// Calling Save() will save the entire tree, regardless of node position.
 

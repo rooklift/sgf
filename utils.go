@@ -9,6 +9,10 @@ type Point struct {
 	Y				int
 }
 
+func (self Point) String() string {
+	return SGFFromPoint(self)
+}
+
 func AdjacentPoints(origin Point, size int) []Point {
 
 	var ret []Point
@@ -58,4 +62,8 @@ func SGFIsPass(s string, size int) bool {		// Our definition of pass
 func SGFFromPoint(p Point) string {
 	const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	return fmt.Sprintf("%c%c", alpha[p.X], alpha[p.Y])
+}
+
+func String(x, y int) string {
+	return SGFFromPoint(Point{x, y})
 }

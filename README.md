@@ -12,6 +12,11 @@ Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu).
 * Escaping of ] and \ characters is handled invisibly to the user.
 * Behind the scenes, properties are stored in an escaped state.
 
+# Limitations
+
+* Not unicode aware. Some potential problems if a unicode character contains a ] or \ byte.
+* Assumes an SGF file has one game (the normal case) and doesn't handle collections.
+
 # Example
 
 ```golang

@@ -65,11 +65,9 @@ func Onboard(s string, size int) bool {
 	return onboard
 }
 
-func String(x, y int) string {
-
+func Point(x, y int) string {
 	if x < 0 || x >= 52 || y < 0 || y >= 52 {
 		return ""
 	}
-
 	return fmt.Sprintf("%c%c", alpha[x], alpha[y])
 }

@@ -34,9 +34,9 @@ func main() {
 	// You may still wish to check for errors...
 
 	node, err = node.PlayMove(sgf.Point(2, 5))
-	if err != nil {
-		fmt.Printf("%v\n", err)							// Will complain about the occupied point
-	}
+	fmt.Printf("%v\n", err)
+	node, err = node.PlayMove(sgf.Point(19, 19))
+	fmt.Printf("%v\n", err)
 
 	// We can create variations from any node.
 

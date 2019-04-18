@@ -17,9 +17,11 @@ func main() {
 	// In this example, we create the ancient Chinese pattern.
 
 	properties := make(map[string][]string)
+	properties["GM"] = []string{"1"}
+	properties["FF"] = []string{"4"}
+	properties["SZ"] = []string{"19"}
 	properties["AB"] = []string{sgf.SGFFromPoint(sgf.Point{3, 3}), sgf.SGFFromPoint(sgf.Point{15, 15})}		// ["dd", "pp"]
 	properties["AW"] = []string{sgf.SGFFromPoint(sgf.Point{15, 3}), sgf.SGFFromPoint(sgf.Point{3, 15})}		// ["pd", "dp"]
-	properties["SZ"] = []string{"19"}
 
 	node := sgf.NewNode(nil, properties)				// nil means this node has no parent (it's the root)
 

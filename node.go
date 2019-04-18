@@ -4,10 +4,6 @@ package sgf
 // However, when using the API, your functions will send and receive
 // unescaped strings.
 
-import (
-	"fmt"
-)
-
 var MUTORS = []string{"B", "W", "AB", "AW", "AE"}
 
 // -----------------------------------------------------------------------------

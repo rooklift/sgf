@@ -1,7 +1,6 @@
 package sgf
 
 import (
-	"fmt"
 	"strconv"
 )
 
@@ -11,11 +10,10 @@ func ClearBoardCache() { board_cache = make(map[*Node]*Board) }
 
 func (self *Node) Board() *Board {
 
+	// Returns a __COPY__ of the cached board for this node, creating that if needed.
+	//
 	// The cache relies on the fact that mutating properties B, W, AB, AW, AE cannot
 	// be added to a node after creation.
-	//
-	// Every return should be returning a copy, never the cached thing itself, so
-	// that the caller can safely manipulate its copy.
 
 	cached, ok := board_cache[self]
 
@@ -33,7 +31,7 @@ func (self *Node) Board() *Board {
 		sz, _ := strconv.Atoi(sz_string)
 		if sz < 1  { sz = 19 }
 		if sz > 52 { sz = 52 }		// SGF limit
-		my_board = new_board(sz)
+		my_board = NewBoard(sz)
 	}
 
 	my_board.update(self)
@@ -43,44 +41,29 @@ func (self *Node) Board() *Board {
 
 func (self *Board) update(node *Node) {
 
-	for _, val := range node.Props["AB"] {
-		point, onboard := PointFromSGF(val, self.Size)
-		if onboard {
-			self.State[point.X][point.Y] = BLACK
-			self.Player = WHITE
-		}
+	for _, p := range node.Props["AB"] {
+		self.SetState(p, BLACK)
+		self.Player = WHITE
 	}
 
-	for _, val := range node.Props["AW"] {
-		point, onboard := PointFromSGF(val, self.Size)
-		if onboard {
-			self.State[point.X][point.Y] = WHITE
-			self.Player = BLACK			// Prevails in the event of both AB and AW
-		}
+	for _, p := range node.Props["AW"] {
+		self.SetState(p, WHITE)
+		self.Player = BLACK			// Prevails in the event of both AB and AW
 	}
 
-	for _, val := range node.Props["AE"] {
-		point, onboard := PointFromSGF(val, self.Size)
-		if onboard {
-			self.State[point.X][point.Y] = EMPTY
-		}
+	for _, p := range node.Props["AE"] {
+		self.SetState(p, EMPTY)
 	}
 
 	// Play move: B / W. Note that "moves" which are not valid onboard points are passes.
 
-	for _, val := range node.Props["B"] {
-		point, onboard := PointFromSGF(val, self.Size)
-		if onboard {
-			self.modify_with_move(BLACK, point)
-		}
+	for _, p := range node.Props["B"] {
+		self.PlaceStone(p, BLACK)
 		self.Player = WHITE
 	}
 
-	for _, val := range node.Props["W"] {
-		point, onboard := PointFromSGF(val, self.Size)
-		if onboard {
-			self.modify_with_move(WHITE, point)
-		}
+	for _, p := range node.Props["W"] {
+		self.PlaceStone(p, WHITE)
 		self.Player = BLACK
 	}
 
@@ -95,29 +78,28 @@ func (self *Board) update(node *Node) {
 	}
 }
 
-func (self *Board) modify_with_move(colour Colour, p Point) error {
+func (self *Board) PlaceStone(p string, colour Colour) {
 
 	// Other than sanity checks, there is no legality check here.
 	// Nor should there be.
 
 	if colour != BLACK && colour != WHITE {
-		return fmt.Errorf("Board.modify_with_move(): bad colour")
+		panic("Board.PlaceStone(): no colour")
 	}
 
-	if p.X < 0 || p.X >= self.Size || p.Y < 0 || p.Y >= self.Size {
-		return fmt.Errorf("Board.modify_with_move(): bad coordinates %d,%d (size %d)", p.X, p.Y, self.Size)
+	if Onboard(p, self.Size) == false {		// Consider this a pass
+		return
 	}
+
+	self.SetState(p, colour)
 
 	opponent := colour.Opposite()
-
-	self.State[p.X][p.Y] = colour
-
 	caps := 0
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.State[a.X][a.Y] == opponent {
+		if self.GetState(a) == opponent {
 			if self.HasLiberties(a) == false {
-				caps += self.destroy_group(a)
+				caps += self.DestroyGroup(a)
 			}
 		}
 	}
@@ -127,39 +109,40 @@ func (self *Board) modify_with_move(colour Colour, p Point) error {
 	// Handle suicide...
 
 	if self.HasLiberties(p) == false {
-		suicide_caps := self.destroy_group(p)
+		suicide_caps := self.DestroyGroup(p)
 		self.CapturesBy[opponent] += suicide_caps
 	}
 
 	// Work out ko square...
 
-	self.clear_ko()
+	self.ClearKo()
 
 	if caps == 1 {
 		if self.Singleton(p) {
 			if self.Liberties(p) == 1 {					// Yes, the conditions are met, there is a ko
-				self.set_ko(self.ko_square_finder(p))
+				self.SetKo(self.ko_square_finder(p))
 			}
 		}
 	}
 
-	return nil
+	return
 }
 
-func (self *Board) destroy_group(p Point) int {			// Returns stones removed.
+func (self *Board) DestroyGroup(p string) int {			// Returns stones removed.
 
-	colour := self.State[p.X][p.Y]
+	colour := self.GetState(p)
 
-	if colour != BLACK && colour != WHITE {				// Removing this might (conceivably) mess with capture count
+	if colour != BLACK && colour != WHITE {				// Also happens if p is off board.
 		return 0
 	}
 
-	self.State[p.X][p.Y] = EMPTY
+	self.SetState(p, EMPTY)
 	count := 1
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.State[a.X][a.Y] == colour {
-			count += self.destroy_group(a)
+
+		if self.GetState(a) == colour {
+			count += self.DestroyGroup(a)
 		}
 	}
 

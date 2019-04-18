@@ -61,8 +61,8 @@ func main() {
 	// Doing the same action on the same node many times just returns the first-created child each time.
 
 	foo := node.Pass()
-	bar := node.Pass()
-	node = node.Pass()
+	bar := node.Pass()									// Does not create a new node.
+	node = node.Pass()									// Does not create a new node.
 
 	fmt.Printf("%v, %v\n", foo == bar, bar == node)		// true, true
 

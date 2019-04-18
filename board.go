@@ -122,7 +122,7 @@ func (self *Board) Dump() {
 				fmt.Printf(" :")
 			} else {
 				if IsStarPoint(Point(x, y), self.Size) {
-					fmt.Printf(" _")
+					fmt.Printf(" .")
 				} else {
 					fmt.Printf(" .")
 				}

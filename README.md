@@ -4,7 +4,7 @@ Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu).
 
 * A tree is just a bunch of nodes connected together.
 * Nodes do not contain any board representation.
-* Boards are generated as needed and cached.
+* Boards are generated only as needed, and cached.
 * Therefore, properties (B, W, AB, AW, AE) cannot be altered after node creation.
 * Nodes are generally created by playing a move at an existing node.
 * Functions that want a point expect it to be an SGF-string e.g. "dd" is the top-left hoshi.

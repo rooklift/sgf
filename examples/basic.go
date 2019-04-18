@@ -66,7 +66,7 @@ func main() {
 
 	fmt.Printf("%v, %v\n", foo == bar, bar == node)		// true, true
 
-	// We can add and delete properties, EXCEPT board-altering properties...
+	// We can directly manipulate SGF properties, EXCEPT board-altering properties...
 
 	node.AddValue("TR", sgf.String(3, 3))				// "dd"
 	node.AddValue("TR", sgf.String(3, 15))				// "dp"

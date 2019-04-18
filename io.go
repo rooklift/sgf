@@ -129,7 +129,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if len(sgf) <= i + 1 {
 					return nil, 0, fmt.Errorf("load_sgf_tree: escape character at end of input")
 				}
-				value += string('\\')
+				// value += string('\\')		// Do not do this. Discard the escape slash.
 				value += string(sgf[i + 1])
 				chars_to_skip = 1
 			} else if c == ']' {
@@ -137,7 +137,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree: node == nil after: else if c == ']'")
 				}
-				node.Props[key] = append(node.Props[key], value)
+				node.add_value(key, value)		// This handles escaping.
 			} else {
 				value += string(c)
 			}

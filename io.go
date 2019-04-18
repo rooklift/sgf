@@ -127,7 +127,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
 			if c == '\\' {
 				if len(sgf) <= i + 1 {
-					return nil, 0, fmt.Errorf("load_sgf_tree: escape character at end of input")
+					return nil, 0, fmt.Errorf("load_sgf_tree(): escape character at end of input")
 				}
 				// value += string('\\')		// Do not do this. Discard the escape slash.
 				value += string(sgf[i + 1])
@@ -135,7 +135,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 			} else if c == ']' {
 				inside = false
 				if node == nil {
-					return nil, 0, fmt.Errorf("load_sgf_tree: node == nil after: else if c == ']'")
+					return nil, 0, fmt.Errorf("load_sgf_tree(): node == nil after: else if c == ']'")
 				}
 				node.add_value(key, value)		// This handles escaping.
 			} else {
@@ -150,7 +150,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				keycomplete = true
 			} else if c == '(' {
 				if node == nil {
-					return nil, 0, fmt.Errorf("load_sgf_tree: node == nil after: else if c == '('")
+					return nil, 0, fmt.Errorf("load_sgf_tree(): node == nil after: else if c == '('")
 				}
 				_, chars_to_skip, err = load_sgf_tree(sgf[i + 1:], node)
 				if err != nil {
@@ -158,7 +158,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				}
 			} else if c == ')' {
 				if root == nil {
-					return nil, 0, fmt.Errorf("load_sgf_tree: root == nil after: else if c == ')'")
+					return nil, 0, fmt.Errorf("load_sgf_tree(): root == nil after: else if c == ')'")
 				}
 				return root, i + 1, nil		// Return characters read.
 			} else if c == ';' {
@@ -183,7 +183,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	}
 
 	if root == nil {
-		return nil, 0, fmt.Errorf("load_sgf_tree: root == nil at function end")
+		return nil, 0, fmt.Errorf("load_sgf_tree(): root == nil at function end")
 	}
 
 	return root, len(sgf), nil		// Return characters read.

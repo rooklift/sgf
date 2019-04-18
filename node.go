@@ -41,7 +41,7 @@ func (self *Node) AddValue(key, value string) {
 
 	for _, s := range MUTORS {
 		if key == s {
-			panic("AddValue(): Can't change board-altering properties")
+			panic("Node.AddValue(): Can't change board-altering properties")
 		}
 	}
 
@@ -67,7 +67,7 @@ func (self *Node) SetValue(key, value string) {
 
 	for _, s := range MUTORS {
 		if key == s {
-			panic("SetValue(): Can't change board-altering properties")
+			panic("Node.SetValue(): Can't change board-altering properties")
 		}
 	}
 
@@ -113,7 +113,7 @@ func (self *Node) DeleteValue(key, value string) {
 
 	for _, s := range MUTORS {
 		if key == s {
-			panic("DeleteValue(): Can't change board-altering properties")
+			panic("Node.DeleteValue(): Can't change board-altering properties")
 		}
 	}
 
@@ -137,7 +137,7 @@ func (self *Node) DeleteKey(key string) {
 
 	for _, s := range MUTORS {
 		if key == s {
-			panic("DeleteKey(): Can't change board-altering properties")
+			panic("Node.DeleteKey(): Can't change board-altering properties")
 		}
 	}
 

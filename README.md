@@ -42,9 +42,7 @@ func main() {
 	// If successful, PlayMove() returns the new node.
 
 	node, err := node.PlayMove(sgf.Point(2, 5))
-	if err != nil {
-		fmt.Printf("%v\n", err)
-	}
+	fmt.Printf("%v\n", err)								// Prints nil
 
 	// Illegal moves (including suicide and basic ko) will return an error.
 	// As a convenience, PlayMove() returns the original node in this case.

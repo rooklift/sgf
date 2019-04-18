@@ -91,6 +91,8 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 		panic("Board.PlaceStone(): no colour")
 	}
 
+	self.ClearKo()
+
 	if Onboard(p, self.Size) == false {		// Consider this a pass
 		return
 	}
@@ -118,8 +120,6 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 	}
 
 	// Work out ko square...
-
-	self.ClearKo()
 
 	if caps == 1 {
 		if self.Singleton(p) {

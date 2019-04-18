@@ -4,75 +4,77 @@ import (
 	"fmt"
 )
 
-type Point struct {
-	X				int
-	Y				int
-}
+const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-func (self Point) String() string {
-	return SGFFromPoint(self)
-}
+func AdjacentPoints(s string, size int) []string {
 
-func AdjacentPoints(origin Point, size int) []Point {
+	x, y, onboard := XYFromSGF(s, size)
 
-	var ret []Point
-
-	possibles := []Point{
-		Point{origin.X - 1, origin.Y},
-		Point{origin.X + 1, origin.Y},
-		Point{origin.X, origin.Y - 1},
-		Point{origin.X, origin.Y + 1},
+	if onboard == false {
+		return nil
 	}
 
-	for _, point := range possibles {
-		if point.X >= 0 && point.X < size {
-			if point.Y >= 0 && point.Y < size {
-				ret = append(ret, point)
-			}
-		}
+	var ret []string
+
+	if x > 0 {
+		ret = append(ret, string(alpha[x - 1]) + s[1])		// Left
+	}
+	if x < size - 1 {
+		ret = append(ret, string(alpha[x + 1]) + s[1])		// Right
+	}
+	if y > 0 {
+		ret = append(ret, s[0] + string(alpha[y - 1]))		// Up
+	}
+	if y < size - 1 {
+		ret = append(ret, s[0] + string(alpha[y + 1]))		// Down
 	}
 
 	return ret
 }
 
-func PointFromSGF(s string, size int) (p Point, ok bool) {
+func XYFromSGF(s string, size int) (x, y int, onboard bool) {
 
 	// e.g. "cd" --> 2,3
 
-	// If ok == false, that means the move was a pass.
-	// i.e. any non-OK string is a pass in SGF, I guess.
+	// Any string that does not yield an onboard coordinate
+	// is considered a pass.
 
-	if len(s) < 2 {
-		return Point{-1, -1}, false
+	if len(s) != 2 {
+		return -1, -1, false
 	}
 
-	x := int(s[0]) - 97
-	y := int(s[1]) - 97
+	x := -1
+	y := -1
 
-	// Except, if the letters are capitals, different rules apply...
-
+	if s[0] >= 'a' && s[0] <= 'z' { x = int(s[0]) - 97 }
+	if s[1] >= 'a' && s[0] <= 'z' { y = int(s[0]) - 97 }
 	if s[0] >= 'A' && s[0] <= 'Z' { x = int(s[0]) - 39 }
 	if s[1] >= 'A' && s[1] <= 'Z' { y = int(s[1]) - 39 }
 
-	ok = x >= 0 && x < size && y >= 0 && y < size
+	onboard = x >= 0 && x < size && y >= 0 && y < size
 
-	if ok == false {
-		return Point{-1, -1}, false
+	if onboard == false {
+		return -1, -1, false
 	} else {
-		return Point{x, y}, true
+		return x, y, true
 	}
 }
 
-func SGFIsPass(s string, size int) bool {		// Our definition of pass
-	_, ok := PointFromSGF(s, size)
-	return !ok
+func Onboard(s string, size int) bool {
+	_, _, onboard := XYFromSGF(s, size)
+	return onboard
 }
 
-func SGFFromPoint(p Point) string {
-	const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	return fmt.Sprintf("%c%c", alpha[p.X], alpha[p.Y])
+func IsPass(s string, size int) bool {		// Our definition of pass
+	_, _, onboard := XYFromSGF(s, size)
+	return !onboard
 }
 
 func String(x, y int) string {
-	return SGFFromPoint(Point{x, y})
+
+	if x < 0 || x >= 52 || y < 0 || y >= 52 {
+		return ""
+	}
+
+	return fmt.Sprintf("%c%c", alpha[x], alpha[y])
 }

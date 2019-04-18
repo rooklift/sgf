@@ -10,7 +10,23 @@ type Board struct {					// Contains everything about a go position, except super
 	Player				Colour
 	CapturesBy			map[Colour]int
 
-	ko					Point
+	ko					string
+}
+
+func (self *Board) GetState(p string) Colour {
+	x, y, onboard := XYFromSGF(p, self.Size)
+	if onboard == false {
+		return EMPTY
+	}
+	return self.State[x][y]
+}
+
+func (self *Board) SetState(p string, c Colour) {
+	x, y, onboard := XYFromSGF(p, self.Size)
+	if onboard == false {
+		return
+	}
+	self.State[x][y] = c
 }
 
 func new_board(sz int) *Board {
@@ -68,27 +84,28 @@ func (self *Board) Copy() *Board {
 }
 
 func (self *Board) HasKo() bool {
-	return self.ko.X >= 0 && self.ko.Y >= 0 && self.ko.X < self.Size && self.ko.Y < self.Size
+	return self.ko != ""
 }
 
 func (self *Board) GetKo() Point {
-	if self.HasKo() == false {
-		return Point{-1, -1}
-	}
 	return self.ko
 }
 
-func (self *Board) set_ko(p Point) {
-	self.ko = p
+func (self *Board) set_ko(s string) {
+	if Onboard(s, self.Size) == false {
+		self.ko = ""
+	} else {
+		self.ko = s
+	}
 }
 
 func (self *Board) clear_ko() {
-	self.ko = Point{-1, -1}			// Lame way of storing no ko?
+	self.ko = ""
 }
 
 func (self *Board) Dump() {
 
-	ko := self.GetKo()		// Usually -1, -1
+	ko_x, ko_y, _ := XYFromSGF(self.GetKo(), self.Size)		// Usually -1, -1
 
 	for y := 0; y < self.Size; y++ {
 		for x := 0; x < self.Size; x++ {

@@ -43,44 +43,29 @@ func (self *Node) Board() *Board {
 
 func (self *Board) update(node *Node) {
 
-	for _, val := range node.Props["AB"] {
-		point, onboard := PointFromSGF(val, self.Size)
-		if onboard {
-			self.State[point.X][point.Y] = BLACK
-			self.Player = WHITE
-		}
+	for _, p := range node.Props["AB"] {
+		self.SetState(p, BLACK)
+		self.Player = WHITE
 	}
 
-	for _, val := range node.Props["AW"] {
-		point, onboard := PointFromSGF(val, self.Size)
-		if onboard {
-			self.State[point.X][point.Y] = WHITE
-			self.Player = BLACK			// Prevails in the event of both AB and AW
-		}
+	for _, p := range node.Props["AW"] {
+		self.SetState(p, WHITE)
+		self.Player = BLACK			// Prevails in the event of both AB and AW
 	}
 
-	for _, val := range node.Props["AE"] {
-		point, onboard := PointFromSGF(val, self.Size)
-		if onboard {
-			self.State[point.X][point.Y] = EMPTY
-		}
+	for _, p := range node.Props["AE"] {
+		self.SetState(p, EMPTY)
 	}
 
 	// Play move: B / W. Note that "moves" which are not valid onboard points are passes.
 
-	for _, val := range node.Props["B"] {
-		point, onboard := PointFromSGF(val, self.Size)
-		if onboard {
-			self.modify_with_move(BLACK, point)
-		}
+	for _, p := range node.Props["B"] {
+		self.modify_with_move(p, BLACK)
 		self.Player = WHITE
 	}
 
-	for _, val := range node.Props["W"] {
-		point, onboard := PointFromSGF(val, self.Size)
-		if onboard {
-			self.modify_with_move(WHITE, point)
-		}
+	for _, p := range node.Props["W"] {
+		self.modify_with_move(p, WHITE)
 		self.Player = BLACK
 	}
 
@@ -95,27 +80,30 @@ func (self *Board) update(node *Node) {
 	}
 }
 
-func (self *Board) modify_with_move(colour Colour, p Point) error {
+func (self *Board) modify_with_move(p string, colour Colour) {
 
 	// Other than sanity checks, there is no legality check here.
 	// Nor should there be.
 
 	if colour != BLACK && colour != WHITE {
-		return fmt.Errorf("Board.modify_with_move(): bad colour")
+		panic("modify_with_move(): no colour")
 	}
 
-	if p.X < 0 || p.X >= self.Size || p.Y < 0 || p.Y >= self.Size {
-		return fmt.Errorf("Board.modify_with_move(): bad coordinates %d,%d (size %d)", p.X, p.Y, self.Size)
+	x, y, onboard := XYFromSGF(p, self.Size)
+
+	if onboard == false {		// Consider this a pass
+		return
 	}
 
 	opponent := colour.Opposite()
 
-	self.State[p.X][p.Y] = colour
+	self.State[x][y] = colour
 
 	caps := 0
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.State[a.X][a.Y] == opponent {
+		ax, ay, _ := XYFromSGF(a, self.Size)
+		if self.State[ax][ay] == opponent {
 			if self.HasLiberties(a) == false {
 				caps += self.destroy_group(a)
 			}
@@ -146,18 +134,25 @@ func (self *Board) modify_with_move(colour Colour, p Point) error {
 	return nil
 }
 
-func (self *Board) destroy_group(p Point) int {			// Returns stones removed.
+func (self *Board) destroy_group(p string) int {		// Returns stones removed.
 
-	colour := self.State[p.X][p.Y]
+	x, y, onboard := XYFromSGF(p, self.Size)
 
-	if colour != BLACK && colour != WHITE {				// Removing this might (conceivably) mess with capture count
+	if onboard == false {
 		return 0
 	}
 
-	self.State[p.X][p.Y] = EMPTY
+	colour := self.State[x][y]
+
+	if colour != BLACK && colour != WHITE {
+		return 0
+	}
+
+	self.State[x][y] = EMPTY
 	count := 1
 
 	for _, a := range AdjacentPoints(p, self.Size) {
+
 		if self.State[a.X][a.Y] == colour {
 			count += self.destroy_group(a)
 		}

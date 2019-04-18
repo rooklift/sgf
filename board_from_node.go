@@ -95,15 +95,13 @@ func (self *Board) modify_with_move(p string, colour Colour) {
 		return
 	}
 
+	self.SetState(p, colour)
+
 	opponent := colour.Opposite()
-
-	self.State[x][y] = colour
-
 	caps := 0
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		ax, ay, _ := XYFromSGF(a, self.Size)
-		if self.State[ax][ay] == opponent {
+		if self.GetState(a) == opponent {
 			if self.HasLiberties(a) == false {
 				caps += self.destroy_group(a)
 			}
@@ -136,24 +134,18 @@ func (self *Board) modify_with_move(p string, colour Colour) {
 
 func (self *Board) destroy_group(p string) int {		// Returns stones removed.
 
-	x, y, onboard := XYFromSGF(p, self.Size)
+	colour := self.GetState(p)
 
-	if onboard == false {
+	if colour != BLACK && colour != WHITE {				// Also happens if p is off board.
 		return 0
 	}
 
-	colour := self.State[x][y]
-
-	if colour != BLACK && colour != WHITE {
-		return 0
-	}
-
-	self.State[x][y] = EMPTY
+	self.SetState(p, EMPTY)
 	count := 1
 
 	for _, a := range AdjacentPoints(p, self.Size) {
 
-		if self.State[a.X][a.Y] == colour {
+		if self.GetState(a) == colour {
 			count += self.destroy_group(a)
 		}
 	}

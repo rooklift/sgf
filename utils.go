@@ -65,11 +65,6 @@ func Onboard(s string, size int) bool {
 	return onboard
 }
 
-func IsPass(s string, size int) bool {		// Our definition of pass
-	_, _, onboard := XYFromSGF(s, size)
-	return !onboard
-}
-
 func String(x, y int) string {
 
 	if x < 0 || x >= 52 || y < 0 || y >= 52 {

@@ -4,27 +4,27 @@ import (
 	"fmt"
 )
 
-func (self *Board) GroupSize(p Point) int {
+func (self *Board) GroupSize(p string) int {
 
 	// If the point is empty, should this return 0, or the size of the empty "string"? Hmm.
 
-	if self.State[p.X][p.Y] == EMPTY {
+	if self.GetState(p) == EMPTY {
 		return 0
 	}
 
-	touched := make(map[Point]bool)
+	touched := make(map[string]bool)
 	return self.group_size_recurse(p, touched)
 }
 
-func (self *Board) group_size_recurse(p Point, touched map[Point]bool) int {
+func (self *Board) group_size_recurse(p string, touched map[string]bool) int {
 
 	touched[p] = true
-	colour := self.State[p.X][p.Y]
+	colour := self.GetState(p)
 
 	count := 1
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.State[a.X][a.Y] == colour {
+		if self.GetState(a) == colour {
 			if touched[a] == false {
 				count += self.group_size_recurse(a, touched)
 			}
@@ -34,20 +34,20 @@ func (self *Board) group_size_recurse(p Point, touched map[Point]bool) int {
 	return count
 }
 
-func (self *Board) HasLiberties(p Point) bool {		// Faster than checking if Liberties() == 0
-	touched := make(map[Point]bool)
+func (self *Board) HasLiberties(p string) bool {		// Faster than checking if Liberties() == 0
+	touched := make(map[string]bool)
 	return self.has_liberties_recurse(p, touched)
 }
 
-func (self *Board) has_liberties_recurse(p Point, touched map[Point]bool) bool {
+func (self *Board) has_liberties_recurse(p string, touched map[string]bool) bool {
 
 	touched[p] = true
-	colour := self.State[p.X][p.Y]
+	colour := self.GetState(p)
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.State[a.X][a.Y] == EMPTY {
+		if self.GetState(a) == EMPTY {
 			return true
-		} else if self.State[a.X][a.Y] == colour {
+		} else if self.GetState(a) == colour {
 			if touched[a] == false {
 				if self.has_liberties_recurse(a, touched) {
 					return true
@@ -59,34 +59,34 @@ func (self *Board) has_liberties_recurse(p Point, touched map[Point]bool) bool {
 	return false
 }
 
-func (self *Board) Liberties(p Point) int {
+func (self *Board) Liberties(p string) int {
 
 	// What on earth is the correct answer to how many liberties an empty square has?
 
-	if self.State[p.X][p.Y] == EMPTY {
+	if self.GetState(p) == EMPTY {
 		return -1
 	}
 
-	touched := make(map[Point]bool)
+	touched := make(map[string]bool)
 	return self.liberties_recurse(p, touched)
 }
 
-func (self *Board) liberties_recurse(p Point, touched map[Point]bool) int {
+func (self *Board) liberties_recurse(p string, touched map[string]bool) int {
 
 	// Note that this function uses the touched map in a different way from others.
 	// Literally every point that's examined is flagged as touched.
 
 	touched[p] = true
-	colour := self.State[p.X][p.Y]
+	colour := self.GetState(p)
 
 	count := 0
 
 	for _, a := range AdjacentPoints(p, self.Size) {
 		if touched[a] == false {
 			touched[a] = true							// This is fine regardless of what's on the point
-			if self.State[a.X][a.Y] == EMPTY {
+			if self.GetState(a) == EMPTY {
 				count += 1
-			} else if self.State[a.X][a.Y] == colour {
+			} else if self.GetState(a) == colour {
 				count += self.liberties_recurse(a, touched)
 			}
 		}
@@ -95,12 +95,12 @@ func (self *Board) liberties_recurse(p Point, touched map[Point]bool) int {
 	return count
 }
 
-func (self *Board) Singleton(p Point) bool {
+func (self *Board) Singleton(p string) bool {
 
-	colour := self.State[p.X][p.Y]
+	colour := self.GetState(p)
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.State[a.X][a.Y] == colour {
+		if self.GetState(a) == colour {
 			return false
 		}
 	}
@@ -108,15 +108,15 @@ func (self *Board) Singleton(p Point) bool {
 	return true
 }
 
-func (self *Board) ko_square_finder(p Point) Point {
+func (self *Board) ko_square_finder(p string) string {
 
 	// Only called when we know there is indeed a ko.
 	// Argument is the location of the capturing stone that caused it.
 
-	var hits []Point
+	var hits []string
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.State[a.X][a.Y] == EMPTY {
+		if self.GetState(a) == EMPTY {
 			hits = append(hits, a)
 		}
 	}

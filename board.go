@@ -13,6 +13,8 @@ type Board struct {					// Contains everything about a go position, except super
 	ko					string
 }
 
+// FIXME: unexport SetState.
+
 func (self *Board) GetState(p string) Colour {
 	x, y, onboard := XYFromSGF(p, self.Size)
 	if onboard == false {
@@ -87,7 +89,7 @@ func (self *Board) HasKo() bool {
 	return self.ko != ""
 }
 
-func (self *Board) GetKo() Point {
+func (self *Board) GetKo() string {
 	return self.ko
 }
 

@@ -125,6 +125,9 @@ func parse_gib_gametag(line string) (dt, re, km string) {
 			gongje, err := strconv.Atoi(s[1:])
 			if err == nil {
 				km = fmt.Sprintf("%.1f", float64(gongje) / 10.0)
+				if strings.HasSuffix(km, ".0") {
+					km = km[:len(km) - 2]
+				}
 			}
 		}
 
@@ -136,6 +139,9 @@ func parse_gib_gametag(line string) (dt, re, km string) {
 	if re == "B+" || re == "W+" {
 		if zipsu > 0 {
 			re += fmt.Sprintf("%.1f", float64(zipsu) / 10.0)
+		}
+		if strings.HasSuffix(re, ".0") {
+			re = re[:len(re) - 2]
 		}
 	}
 

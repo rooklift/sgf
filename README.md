@@ -10,6 +10,7 @@ Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu).
 * Functions that want a point expect it to be an SGF-string e.g. "dd" is the top-left hoshi.
 * Such strings can be produced with sgf.Point(3,3) - the numbers are zeroth based.
 * Escaping of ] and \ characters is handled invisibly to the user.
+* Behind the scenes, properties are stored in an escaped state.
 
 # Example
 

@@ -5,7 +5,7 @@ Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu).
 * A tree is just a bunch of nodes connected together.
 * Nodes do not contain any board representation.
 * Boards are generated only as needed, and cached.
-* Therefore, properties (B, W, AB, AW, AE) cannot be altered after node creation.
+* Thus, board-altering properties (B, W, AB, AW, AE, PL) can't be set after node creation.
 * Nodes are generally created by playing a move at an existing node.
 * Functions that want a point expect it to be an SGF-string e.g. "dd" is the top-left hoshi.
 * Such strings can be produced with sgf.Point(3,3) - the numbers are zeroth based.
@@ -102,9 +102,9 @@ func main() {
 	// Calling Save() will save the entire tree, regardless of node position.
 
 	node.Save("foo.sgf")
-	
+
 	// We can also load files.
-	
+
     node, err = sgf.Load("foo.sgf", true)               // true here clears the board cache.
                                                         // This affects RAM usage and speed.
 }

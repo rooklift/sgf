@@ -6,6 +6,8 @@ import (
 
 func NewTree(size int) *Node {
 
+	// Creates a new root node.
+
 	if size < 1 || size > 52 {
 		panic(fmt.Sprintf("NewTree(): invalid size %v", size))
 	}
@@ -20,6 +22,8 @@ func NewTree(size int) *Node {
 }
 
 func NewSetup(size int, black, white []string, next_player Colour) *Node {
+
+	// Creates a new root node, with handicap (or other) stones.
 
 	if size < 1 || size > 52 {
 		panic(fmt.Sprintf("NewSetup(): invalid size %v", size))

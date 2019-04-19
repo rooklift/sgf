@@ -23,8 +23,10 @@ func main() {
 	}
 
 	mutated := original.MutateTree(mirror_diagonal)
-	mutated.Save(os.Args[1] + ".mirror.sgf")
-	original.Save(os.Args[1] + ".original.sgf")		// Unharmed
+
+	mutated.GetEnd().Board().Dump()
+	original.GetEnd().Board().Dump()		// Unharmed
+
 }
 
 func mirror_diagonal(props map[string][]string) map[string][]string {

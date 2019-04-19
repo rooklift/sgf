@@ -4,9 +4,18 @@ import (
 	"fmt"
 )
 
-func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {
+func (self *Node) PlayMove(p string) (*Node, error) {							// Uses board info to determine colour.
+	if self == nil { panic("Node.PlayMove(): called on nil node") }
+	return self.PlayMoveColour(p, self.Board().Player)
+}
+
+func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// Returns new node on success; self on failure.
 
 	if self == nil { panic("Node.PlayMoveColour(): called on nil node") }
+
+	if colour != BLACK && colour != WHITE {
+		panic("Node.PlayMoveColour(): no colour specified")						// This is a programming error, so panic, not error.
+	}
 
 	board := self.Board()
 
@@ -20,14 +29,10 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {
 		return self, fmt.Errorf("Node.PlayMoveColour(): point \"%v\" (%v,%v) was not empty", p, x, y)
 	}
 
-	// FIXME? (Likely no.) Slight issue with ko square when a move of the the wrong colour is forced.
-
 	if board.HasKo() && board.Ko == p {
-		return self, fmt.Errorf("Node.PlayMoveColour(): ko point forbidden")
-	}
-
-	if colour != BLACK && colour != WHITE {
-		return self, fmt.Errorf("Node.PlayMoveColour(): no colour specified")
+		if colour == board.Player {			// i.e. we've not forced a move by the wrong colour.
+			return self, fmt.Errorf("Node.PlayMoveColour(): ko recapture forbidden")
+		}
 	}
 
 	// Return the already-extant child if there is such a thing...
@@ -54,25 +59,22 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {
 	return proposed_node, nil
 }
 
-func (self *Node) PlayMove(p string) (*Node, error) {
-
-	// Uses board info to determine colour.
-	// Returns the new node on success, or self on failure.
-
-	if self == nil { panic("Node.PlayMove(): called on nil node") }
-
-	return self.PlayMoveColour(p, self.Board().Player)
+func (self *Node) Pass() *Node {												// Uses board info to determine colour.
+	if self == nil { panic("Node.Pass(): called on nil node") }
+	return self.PassColour(self.Board().Player)
 }
 
-func (self *Node) Pass() *Node {
+func (self *Node) PassColour(colour Colour) *Node {
 
-	if self == nil { panic("Node.Pass(): called on nil node") }
+	if self == nil { panic("Node.PassColour(): called on nil node") }
 
-	// Uses board info to determine colour.
+	if colour != BLACK && colour != WHITE {
+		panic("Node.PassColour(): no colour specified")							// This is a programming error, so panic, not error.
+	}
 
 	board := self.Board()
 
-	key := "B"; if board.Player == WHITE { key = "W" }
+	key := "B"; if colour == WHITE { key = "W" }
 
 	// Return the already-extant child if there is such a thing...
 

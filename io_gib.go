@@ -56,7 +56,7 @@ func load_gib(gib string) (*Node, error) {
 
 			if handicap > 1 {
 				stones = HandicapPoints19(handicap, true)
-				root.SetValue("HA", fmt.Sprintf("%d", handicap))
+				root.SetValue("HA", strconv.Itoa(handicap))
 			}
 
 			for _, stone := range stones {

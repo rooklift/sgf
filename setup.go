@@ -2,6 +2,7 @@ package sgf
 
 import (
 	"fmt"
+	"strconv"
 )
 
 func NewTree(size int) *Node {
@@ -16,7 +17,7 @@ func NewTree(size int) *Node {
 
 	properties["GM"] = []string{"1"}
 	properties["FF"] = []string{"4"}
-	properties["SZ"] = []string{fmt.Sprintf("%d", size)}
+	properties["SZ"] = []string{strconv.Itoa(size)}
 
 	return NewNode(nil, properties)
 }
@@ -33,7 +34,7 @@ func NewSetup(size int, black, white []string, next_player Colour) *Node {
 
 	properties["GM"] = []string{"1"}
 	properties["FF"] = []string{"4"}
-	properties["SZ"] = []string{fmt.Sprintf("%d", size)}
+	properties["SZ"] = []string{strconv.Itoa(size)}
 
 	if next_player == WHITE {
 		properties["PL"] = []string{"W"}

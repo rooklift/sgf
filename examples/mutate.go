@@ -30,7 +30,7 @@ func main() {
 
 }
 
-func mirror_diagonal(props map[string][]string) map[string][]string {
+func mirror_diagonal(props map[string][]string, board *sgf.Board) map[string][]string {
 	for _, key := range []string{"AB", "AW", "AE", "B", "CR", "MA", "SL", "SQ", "TR", "W"} {
 		for i, s := range props[key] {
 			if len(s) == 2 {

@@ -1,13 +1,13 @@
 package sgf
 
-func (self *Node) MutateTree(mutator func(props map[string][]string) map[string][]string) *Node {
+func (self *Node) MutateTree(mutator func(props map[string][]string, board *Board) map[string][]string) *Node {
 	if self == nil { panic("Node.MutateTree(): called on nil node") }
 	root := self.GetRoot()
 	mutant_root := mutate_recursive(root, mutator)
 	return mutant_root
 }
 
-func mutate_recursive(node *Node, mutator func(props map[string][]string) map[string][]string) *Node {
+func mutate_recursive(node *Node, mutator func(props map[string][]string, board *Board) map[string][]string) *Node {
 
 	mutant := make_mutant(node, mutator)
 
@@ -20,11 +20,11 @@ func mutate_recursive(node *Node, mutator func(props map[string][]string) map[st
 	return mutant
 }
 
-func make_mutant(node *Node, mutator func(props map[string][]string) map[string][]string) *Node {
+func make_mutant(node *Node, mutator func(props map[string][]string, board *Board) map[string][]string) *Node {
 
 	props := node.AllProperties()		// This returns a deep copy, so is safe to modify.
 
-	new_props := mutator(props)
+	new_props := mutator(props, node.Board())
 
 	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
 	// We could in fact pass the parent as an argument to make_mutant() and so on but it is less clean.

@@ -81,7 +81,6 @@ func load_gib(gib string) (*Node, error) {
 	return root, nil
 }
 
-
 func parse_gib_gametag(line string) (dt, re, km string) {
 
 	fields := strings.Split(line, ",")

@@ -1,9 +1,5 @@
 package sgf
 
-import (
-	"fmt"
-)
-
 const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 func AdjacentPoints(s string, size int) []string {
@@ -69,7 +65,7 @@ func Point(x, y int) string {
 	if x < 0 || x >= 52 || y < 0 || y >= 52 {
 		return ""
 	}
-	return fmt.Sprintf("%c%c", alpha[x], alpha[y])
+	return string(alpha[x]) + string(alpha[y])
 }
 
 func IsStarPoint(p string, size int) bool {

@@ -9,27 +9,20 @@ func (self *Node) MutateTree(mutator func(props map[string][]string, board *Boar
 
 func mutate_recursive(node *Node, mutator func(props map[string][]string, board *Board) map[string][]string) *Node {
 
-	mutant := make_mutant(node, mutator)
+	// Note that the mutator function only receives copies of stuff as its arguments, so it can do whatever.
+
+	new_props := mutator(node.AllProperties(), node.Board())
+
+	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
+	// We could in fact pass the parent as an argument to mutate_recursive() and so on but it is less clean.
+
+	mutant := NewNode(nil, new_props)
 
 	for _, child := range(node.Children) {
 		mutant_child := mutate_recursive(child, mutator)
 		mutant_child.Parent = mutant
 		mutant.Children = append(mutant.Children, mutant_child)
 	}
-
-	return mutant
-}
-
-func make_mutant(node *Node, mutator func(props map[string][]string, board *Board) map[string][]string) *Node {
-
-	// Note that the mutator function only receives copies of stuff as its arguments, so it can do whatever.
-
-	new_props := mutator(node.AllProperties(), node.Board())
-
-	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
-	// We could in fact pass the parent as an argument to make_mutant() and so on but it is less clean.
-
-	mutant := NewNode(nil, new_props)
 
 	return mutant
 }

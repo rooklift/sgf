@@ -81,7 +81,7 @@ func (self *Node) SetValue(key, value string) {
 
 func (self *Node) GetValue(key string) (value string, ok bool) {
 
-	// Get the value for the key, on the assumption that there's only 1 value.
+	// Get the __UNESCAPED__ value for the key, on the assumption that there's only 1 value.
 
 	if self == nil { panic("Node.GetValue(): called on nil node") }
 
@@ -96,7 +96,7 @@ func (self *Node) GetValue(key string) (value string, ok bool) {
 
 func (self *Node) AllValues(key string) []string {
 
-	// Return all values for the key, possibly zero
+	// Return all __UNESCAPED__ values for the key, possibly zero
 
 	if self == nil { panic("Node.AllValues(): called on nil node") }
 
@@ -117,7 +117,7 @@ func (self *Node) AllValues(key string) []string {
 
 func (self *Node) AllProperties() map[string][]string {
 
-	// Return a copy of the entire dictionary.
+	// Return an __UNESCAPED__ copy of the entire dictionary.
 
 	if self == nil { panic("Node.AllProperties(): called on nil node") }
 

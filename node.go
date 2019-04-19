@@ -35,6 +35,19 @@ func NewNode(parent *Node, props map[string][]string) *Node {
 
 // -----------------------------------------------------------------------------
 
+func (self *Node) add_value(key, value string) {			// Handles escaping; no other function should
+
+	value = escape_string(value)
+
+	for i := 0; i < len(self.Props[key]); i++ {				// Ignore if the value already exists
+		if self.Props[key][i] == value {
+			return
+		}
+	}
+
+	self.Props[key] = append(self.Props[key], value)
+}
+
 func (self *Node) AddValue(key, value string) {
 
 	if self == nil { panic("Node.AddValue(): called on nil node") }
@@ -48,19 +61,6 @@ func (self *Node) AddValue(key, value string) {
 	}
 
 	self.add_value(key, value)
-}
-
-func (self *Node) add_value(key, value string) {			// Handles escaping; no other function should
-
-	value = escape_string(value)
-
-	for i := 0; i < len(self.Props[key]); i++ {				// Ignore if the value already exists
-		if self.Props[key][i] == value {
-			return
-		}
-	}
-
-	self.Props[key] = append(self.Props[key], value)
 }
 
 func (self *Node) SetValue(key, value string) {

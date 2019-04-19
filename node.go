@@ -102,10 +102,6 @@ func (self *Node) AllValues(key string) []string {
 
 	list := self.Props[key]
 
-	if len(list) == 0 {
-		return nil
-	}
-
 	var ret []string		// Make a new slice to avoid aliasing.
 
 	for _, s := range list {

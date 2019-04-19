@@ -4,22 +4,12 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	sgf ".."
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Printf("Need filename\n")
-		return
-	}
-	original, err := sgf.Load(os.Args[1], true)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		return
-	}
-
+	original, _ := sgf.Load("example.sgf", true)
 	mutated := original.MutateTree(rotate_clockwise)
 	original.GetEnd().Board().DumpBoard()				// Unharmed
 	fmt.Printf("\n")

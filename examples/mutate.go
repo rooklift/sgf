@@ -1,6 +1,8 @@
 package main
 
 // Example of mutating an entire game tree.
+// The node.MutateTree() function is called with a function argument
+// which adjusts properties.
 
 import (
 	"fmt"
@@ -10,35 +12,18 @@ import (
 )
 
 func main() {
-
-	node, err := sgf.Load(os.Args[1], true)
+	original, err := sgf.Load(os.Args[1], true)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		return
 	}
 
-	mutant := mutate_recursive(node)
-
-	mutant.Save(os.Args[1] + ".mirror.sgf")
+	mutated := original.MutateTree(mirror_diagonal)
+	mutated.Save(os.Args[1] + ".mirror.sgf")
+	original.Save(os.Args[1] + ".original.sgf")		// Unharmed
 }
 
-func mutate_recursive(node *sgf.Node) *sgf.Node {
-
-	mutant := make_mutant(node)
-
-	for _, child := range(node.Children) {
-		mutant_child := mutate_recursive(child)
-		mutant_child.Parent = mutant
-		mutant.Children = append(mutant.Children, mutant_child)
-	}
-
-	return mutant
-}
-
-func make_mutant(node *sgf.Node) *sgf.Node {
-
-	props := node.AllProperties()
-
+func mirror_diagonal(props map[string][]string) {
 	for _, key := range []string{"B", "W", "AB", "AW", "AE"} {
 		for i, s := range props[key] {
 			if len(s) == 2 {
@@ -46,12 +31,4 @@ func make_mutant(node *sgf.Node) *sgf.Node {
 			}
 		}
 	}
-
-	// We call NewNode with a nil parent so that we can handle parent/child relationships manually.
-	// We could in fact pass the parent as an argument to make_mutant() and so on but it is less clean.
-
-	mutant := sgf.NewNode(nil, props)
-
-	return mutant
 }
-

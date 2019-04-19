@@ -115,6 +115,21 @@ func (self *Node) AllValues(key string) []string {
 	return ret
 }
 
+func (self *Node) AllProperties() map[string][]string {
+
+	// Return a copy of the entire dictionary.
+
+	ret := make(map[string][]string)
+
+	for key, _ := range self.Props {
+		for _, s := range self.Props[key] {
+			ret[key] = append(ret[key], s)
+		}
+	}
+
+	return ret
+}
+
 func (self *Node) DeleteValue(key, value string) {
 
 	if self == nil { panic("Node.DeleteValue(): called on nil node") }

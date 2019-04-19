@@ -28,7 +28,7 @@ func main() {
 }
 
 func mirror_diagonal(props map[string][]string) map[string][]string {
-	for _, key := range []string{"B", "W", "AB", "AW", "AE"} {
+	for _, key := range []string{"AB", "AW", "AE", "B", "CR", "MA", "SL", "SQ", "TR", "W"} {
 		for i, s := range props[key] {
 			if len(s) == 2 {
 				props[key][i] = string(props[key][i][1]) + string(props[key][i][0])		// Diagonal mirror

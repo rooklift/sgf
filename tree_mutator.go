@@ -24,7 +24,7 @@ func make_mutant(node *Node, mutator func(props map[string][]string, board *Boar
 
 	props := node.AllProperties()		// This returns a deep copy, so is safe to modify.
 
-	new_props := mutator(props, node.Board())
+	new_props := mutator(props, node.Board())		// Board() likewise returns a copy.
 
 	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
 	// We could in fact pass the parent as an argument to make_mutant() and so on but it is less clean.

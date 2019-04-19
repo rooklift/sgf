@@ -88,6 +88,9 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 	// Other than sanity checks, there is no legality check here.
 	// Nor should there be. This only alters a board, and if called
 	// by the user program, will have no effect whatsoever on any node.
+	//
+	// Instead of this, node.PlayMove() is the correct way to make a
+	// new node from an existing one.
 
 	if self == nil { panic("Board.PlaceStone(): called on nil board") }
 

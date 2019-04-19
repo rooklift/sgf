@@ -8,6 +8,10 @@ import (
 )
 
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Printf("Need filename\n")
+		return
+	}
 	node, err := sgf.Load(os.Args[1], true)
 	if err != nil {
 		fmt.Printf("%v\n", err)

@@ -42,6 +42,10 @@ func main() {
 	node.PlayMove(sgf.Point(13, 2))						// Create variation 1
 	node.PlayMove(sgf.Point(16, 5))						// Create variation 2
 
+	// Colours are determined intelligently, but we can always force a colour.
+
+	node.PlayMoveColour(sgf.Point(2, 5), sgf.WHITE)		// Create variation 3
+
 	// By the way, what are these mysterious sgf.Points, anyway?
 
 	fmt.Printf("%v\n", sgf.Point(0, 0))					// Prints "aa"
@@ -55,7 +59,7 @@ func main() {
 	// And we can go down those variations if we wish.
 	// (Errors ignored here for simplicity.)
 
-	node, _ = node.PlayMove(sgf.Point(5, 16))			// Create variation 3 and go down it
+	node, _ = node.PlayMove(sgf.Point(5, 16))			// Create variation 4 and go down it
 	node, _ = node.PlayMove(sgf.Point(2, 12))			// ...continue going down it
 	node, _ = node.PlayMove(sgf.Point(3, 17))			// ...continue going down it
 

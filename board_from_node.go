@@ -1,5 +1,8 @@
 package sgf
 
+// Note: boards are created only as needed, and some SGF manipulation
+// can be done creating no boards whatsoever.
+
 import (
 	"strconv"
 )
@@ -12,8 +15,8 @@ func (self *Node) Board() *Board {
 
 	// Returns a __COPY__ of the cached board for this node, creating that if needed.
 	//
-	// The cache relies on the fact that mutating properties B, W, AB, AW, AE cannot
-	// be added to a node after creation.
+	// The cache relies on the fact that mutating properties B, W, AB, AW, AE, PL
+	// cannot be added to a node after creation.
 
 	if self == nil { panic("Node.Board(): called on nil node") }
 
@@ -36,12 +39,12 @@ func (self *Node) Board() *Board {
 		my_board = NewBoard(sz)
 	}
 
-	my_board.update(self)
+	my_board.update_from_node(self)
 	board_cache[self] = my_board
 	return my_board.Copy()
 }
 
-func (self *Board) update(node *Node) {
+func (self *Board) update_from_node(node *Node) {
 
 	for _, p := range node.Props["AB"] {
 		self.SetState(p, BLACK)
@@ -83,7 +86,8 @@ func (self *Board) update(node *Node) {
 func (self *Board) PlaceStone(p string, colour Colour) {
 
 	// Other than sanity checks, there is no legality check here.
-	// Nor should there be.
+	// Nor should there be. This only alters a board, and if called
+	// by the user program, will have no effect whatsoever on any node.
 
 	if self == nil { panic("Board.PlaceStone(): called on nil board") }
 

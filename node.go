@@ -124,9 +124,7 @@ func (self *Node) AllProperties() map[string][]string {
 	ret := make(map[string][]string)
 
 	for key, _ := range self.Props {
-		for _, s := range self.Props[key] {
-			ret[key] = append(ret[key], s)
-		}
+		ret[key] = self.AllValues(key)		// Will handle the unescaping and copying (anti-aliasing).
 	}
 
 	return ret

@@ -1,7 +1,7 @@
 package main
 
 // Example of mutating an entire game tree.
-// The node.MutateTree() function is called with a function argument
+// The MutateTree() method is called with a function argument
 // which takes the current property map and returns the new one.
 
 import (

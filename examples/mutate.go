@@ -24,7 +24,7 @@ func main() {
 
 	mutated := original.MutateTree(mirror_diagonal)
 
-	mutated.GetEnd().Board().DumpBoard()
+	mutated.GetEnd().Board().DumpBoard()		// We could also save the new tree with mutated.Save()
 	fmt.Printf("\n")
 	original.GetEnd().Board().DumpBoard()		// Unharmed
 

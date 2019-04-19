@@ -24,7 +24,7 @@ func rotate_clockwise(props map[string][]string, board *sgf.Board) map[string][]
 	for _, key := range []string{"AB", "AW", "AE", "B", "CR", "MA", "SL", "SQ", "TR", "W"} {
 		for i, s := range props[key] {
 			if len(s) == 2 {
-				x, y, onboard := sgf.XYFromSGF(s, board.Size)
+				x, y, onboard := sgf.ParsePoint(s, board.Size)
 				if onboard {
 					new_x := board.Size - 1 - y
 					new_y := x

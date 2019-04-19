@@ -8,7 +8,7 @@ const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 func AdjacentPoints(s string, size int) []string {
 
-	x, y, onboard := XYFromSGF(s, size)
+	x, y, onboard := ParsePoint(s, size)
 
 	if onboard == false {
 		return nil
@@ -32,7 +32,7 @@ func AdjacentPoints(s string, size int) []string {
 	return ret
 }
 
-func XYFromSGF(s string, size int) (x, y int, onboard bool) {
+func ParsePoint(s string, size int) (x, y int, onboard bool) {
 
 	// e.g. "cd" --> 2,3
 
@@ -61,7 +61,7 @@ func XYFromSGF(s string, size int) (x, y int, onboard bool) {
 }
 
 func Onboard(s string, size int) bool {
-	_, _, onboard := XYFromSGF(s, size)
+	_, _, onboard := ParsePoint(s, size)
 	return onboard
 }
 
@@ -78,7 +78,7 @@ func IsStarPoint(p string, size int) bool {
 		return false
 	}
 
-	x, y, onboard := XYFromSGF(p, size)
+	x, y, onboard := ParsePoint(p, size)
 
 	if onboard == false {
 		return false

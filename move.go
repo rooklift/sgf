@@ -19,7 +19,7 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 
 	board := self.Board()
 
-	x, y, onboard := XYFromSGF(p, board.Size)
+	x, y, onboard := ParsePoint(p, board.Size)
 
 	if onboard == false {
 		return self, fmt.Errorf("Node.PlayMoveColour(): invalid or off-board string \"%v\"", p)

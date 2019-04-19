@@ -17,7 +17,7 @@ type Board struct {					// Contains everything about a go position, except super
 
 func (self *Board) GetState(p string) Colour {
 	if self == nil { panic("Board.GetState(): called on nil board") }
-	x, y, onboard := XYFromSGF(p, self.Size)
+	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
 		return EMPTY
 	}
@@ -26,7 +26,7 @@ func (self *Board) GetState(p string) Colour {
 
 func (self *Board) SetState(p string, c Colour) {
 	if self == nil { panic("Board.SetState(): called on nil board") }
-	x, y, onboard := XYFromSGF(p, self.Size)
+	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
 		return
 	}
@@ -121,7 +121,7 @@ func (self *Board) DumpBoard() {
 
 	if self == nil { panic("Board.DumpBoard(): called on nil board") }
 
-	ko_x, ko_y, _ := XYFromSGF(self.Ko, self.Size)		// Usually -1, -1
+	ko_x, ko_y, _ := ParsePoint(self.Ko, self.Size)		// Usually -1, -1
 
 	for y := 0; y < self.Size; y++ {
 		for x := 0; x < self.Size; x++ {

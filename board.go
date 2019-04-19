@@ -108,8 +108,18 @@ func (self *Board) ClearKo() {
 }
 
 func (self *Board) Dump() {
-
 	if self == nil { panic("Board.Dump(): called on nil board") }
+	self.DumpBoard()
+	fmt.Printf("\n")
+	fmt.Printf("Captures by Black: %d\n", self.CapturesBy[BLACK])
+	fmt.Printf("Captures by White: %d\n", self.CapturesBy[WHITE])
+	fmt.Printf("\n")
+	fmt.Printf("Next to play: %v\n", ColourLongNames[self.Player])
+}
+
+func (self *Board) DumpBoard() {
+
+	if self == nil { panic("Board.DumpBoard(): called on nil board") }
 
 	ko_x, ko_y, _ := XYFromSGF(self.Ko, self.Size)		// Usually -1, -1
 
@@ -133,9 +143,4 @@ func (self *Board) Dump() {
 		}
 		fmt.Printf("\n")
 	}
-	fmt.Printf("\n")
-	fmt.Printf("Captures by Black: %d\n", self.CapturesBy[BLACK])
-	fmt.Printf("Captures by White: %d\n", self.CapturesBy[WHITE])
-	fmt.Printf("\n")
-	fmt.Printf("Next to play: %v\n", ColourLongNames[self.Player])
 }

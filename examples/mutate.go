@@ -24,8 +24,9 @@ func main() {
 
 	mutated := original.MutateTree(mirror_diagonal)
 
-	mutated.GetEnd().Board().Dump()
-	original.GetEnd().Board().Dump()		// Unharmed
+	mutated.GetEnd().Board().DumpBoard()
+	fmt.Printf("\n")
+	original.GetEnd().Board().DumpBoard()		// Unharmed
 
 }
 

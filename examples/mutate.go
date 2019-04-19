@@ -47,7 +47,10 @@ func make_mutant(node *sgf.Node) *sgf.Node {
 		}
 	}
 
-	mutant := sgf.NewNode(nil, props)		// nil here because we'll handle parent/child relationship manually.
+	// We call NewNode with a nil parent so that we can handle parent/child relationships manually.
+	// We could in fact pass the parent as an argument to make_mutant() and so on but it is less clean.
+
+	mutant := sgf.NewNode(nil, props)
 
 	return mutant
 }

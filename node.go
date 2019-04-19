@@ -119,6 +119,8 @@ func (self *Node) AllProperties() map[string][]string {
 
 	// Return a copy of the entire dictionary.
 
+	if self == nil { panic("Node.AllProperties(): called on nil node") }
+
 	ret := make(map[string][]string)
 
 	for key, _ := range self.Props {

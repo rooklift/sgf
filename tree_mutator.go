@@ -27,7 +27,7 @@ func (self *Node) MutateTree(mutator mutFunc) *Node {
 func mutate_recursive(node *Node, mutator mutFunc, foo **Node) *Node {
 
 	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
-	// We could pass the parent as an argument to mutate_recursive() and so on, but the code is less clear.
+	// Although not essential, the code is clearer this way.
 
 	mutant := NewNode(nil)
 

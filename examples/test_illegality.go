@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	root, err := sgf.Load("test_illegality.sgf")
+	root, err := sgf.Load("kifu/test_illegality.sgf")
 	node := root.GetEnd()
 	original_end := node
 

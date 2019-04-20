@@ -11,32 +11,32 @@ func (self *Node) MutateTree(mutator mutFunc) *Node {
 
 	// We mutate the entire tree but we want to return the node that's equivalent to self.
 	// To accomplish this, mutate_recursive() gets a pointer to a pointer which it can set
-	// when it sees that it is mutating self, which we also have to send. This is a bit more
-	// complicated that one would wish.
+	// when it sees that it is mutating self, which is the initial value of that pointer.
 
-	var final_return *Node
+	foo := self
 
-	mutate_recursive(self.GetRoot(), mutator, self, &final_return)
+	mutate_recursive(self.GetRoot(), mutator, &foo)
 
-	if final_return == nil {
+	if foo == self {
 		panic("Node.MutateTree(): failed to set equivalent node, this is normally impossible")
 	}
 
-	return final_return
+	return foo
 }
 
-func mutate_recursive(node *Node, mutator mutFunc, initial_caller *Node, final_return **Node) *Node {
+func mutate_recursive(node *Node, mutator mutFunc, foo **Node) *Node {
 
 	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
 	// We could pass the parent as an argument to mutate_recursive() and so on, but the code is less clear.
 
 	mutant := NewNode(nil)
 
-	// initial_caller is the node whose equivalent we ultimately want to return at the top level.
-	// See note in MutateTree().
+	// foo starts off as the node whose equivalent we ultimately want to return at the top level.
+	// When we actually see that node, we set foo to be the mutant. See note in MutateTree().
+	// This is a slightly-too-cute way of doing it.
 
-	if node == initial_caller {
-		*final_return = mutant
+	if node == *foo {
+		*foo = mutant
 	}
 
 	new_props := mutator(node)
@@ -48,7 +48,7 @@ func mutate_recursive(node *Node, mutator mutFunc, initial_caller *Node, final_r
 	}
 
 	for _, child := range(node.children) {
-		mutant_child := mutate_recursive(child, mutator, initial_caller, final_return)
+		mutant_child := mutate_recursive(child, mutator, foo)
 		mutant_child.parent = mutant
 		mutant.children = append(mutant.children, mutant_child)
 	}

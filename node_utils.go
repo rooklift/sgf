@@ -94,36 +94,6 @@ func (self *Node) GetLine() []*Node {		// The line of nodes from root to here
 	return ret
 }
 
-func (self *Node) GetLineIndices() []int {	// The child indices from the root to get to here
-
-	if self == nil { panic("Node.GetLineIndices(): called on nil node") }
-
-	var ret []int
-
-	node := self
-
-	for {
-		if node.parent == nil {
-			break
-		}
-		for n, sibling := range node.parent.children {
-			if sibling == node {
-				ret = append(ret, n)
-				break
-			}
-		}
-		node = node.parent
-	}
-
-	// Reverse the slice...
-
-	for left, right := 0, len(ret) - 1; left < right; left, right = left + 1, right - 1 {
-		ret[left], ret[right] = ret[right], ret[left]
-	}
-
-	return ret
-}
-
 func (self *Node) CountDescendents() int {
 
 	if self == nil { panic("Node.CountDescendents(): called on nil node") }

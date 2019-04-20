@@ -64,6 +64,8 @@ func (self *Node) clear_board_cache_recursive() {
 	}
 }
 
+// -----------------------------------------------------------------------------
+
 func (self *Node) AddValue(key, value string) {			// Handles escaping; no other function should!
 
 	if self == nil { panic("Node.AddValue(): called on nil node") }

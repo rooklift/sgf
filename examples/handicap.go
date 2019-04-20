@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	sgf ".."
 )
 
@@ -11,5 +12,6 @@ func main() {
 			root.AddValue("AB", stone)
 		}
 		root.Board().DumpBoard()
+		fmt.Printf("\n")
 	}
 }

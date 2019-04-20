@@ -48,10 +48,10 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 		}
 	}
 
-	proposed_node := NewNode(self, map[string][]string{key: []string{p}})		// Note: already appends child to self
-	proposed_board := proposed_node.Board()
+	proposed_node := NewNode(self)					// Note: already appends child to self
+	proposed_node.SetValue(key, p)
 
-	if proposed_board.GetState(p) == EMPTY {									// Because of suicide
+	if proposed_node.Board().GetState(p) == EMPTY {								// Because of suicide
 		self.RemoveChild(proposed_node)											// Delete child (see above)
 		return self, fmt.Errorf("Node.PlayMoveColour(): suicide forbidden")
 	}
@@ -87,7 +87,8 @@ func (self *Node) PassColour(colour Colour) *Node {
 		}
 	}
 
-	new_node := NewNode(self, map[string][]string{key: []string{""}})
+	new_node := NewNode(self)
+	new_node.SetValue(key, "")
 
 	return new_node
 }

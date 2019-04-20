@@ -16,17 +16,11 @@ type Node struct {
 	board_cache		*Board
 }
 
-func NewNode(parent *Node, props map[string][]string) *Node {
+func NewNode(parent *Node) *Node {
 
 	node := new(Node)
 	node.parent = parent
 	node.props = make(map[string][]string)
-
-	for key, _ := range props {
-		for _, s := range props[key] {
-			node.add_value(key, s)
-		}
-	}
 
 	if node.parent != nil {
 		node.parent.children = append(node.parent.children, node)
@@ -37,11 +31,29 @@ func NewNode(parent *Node, props map[string][]string) *Node {
 
 // -----------------------------------------------------------------------------
 
-func (self *Node) add_value(key, value string) {			// Handles escaping; no other function should
+func (self *Node) mutor_check(key string) {
+
+	// If the key changes the board, disallow it if we have children.
+	// Otherwise, clear the board_cache.
+
+	for _, s := range MUTORS {
+		if key == s {
+			if len(self.children) > 0 {
+				panic("notify_change(): node has children; so can't change board altering property " + key)
+			}
+			self.board_cache = nil
+		}
+	}
+}
+
+func (self *Node) AddValue(key, value string) {			// Handles escaping; no other function should!
+
+	if self == nil { panic("Node.AddValue(): called on nil node") }
+
+	self.mutor_check(key)								// If key is a MUTOR, clear board cache or disallow entirely.
 
 	value = escape_string(value)
-
-	for i := 0; i < len(self.props[key]); i++ {				// Ignore if the value already exists
+	for i := 0; i < len(self.props[key]); i++ {			// Ignore if the value already exists.
 		if self.props[key][i] == value {
 			return
 		}
@@ -50,35 +62,14 @@ func (self *Node) add_value(key, value string) {			// Handles escaping; no other
 	self.props[key] = append(self.props[key], value)
 }
 
-func (self *Node) AddValue(key, value string) {
-
-	if self == nil { panic("Node.AddValue(): called on nil node") }
-
-	// Disallow keys that change the board...
-
-	for _, s := range MUTORS {
-		if key == s {
-			panic("Node.AddValue(): Can't change board-altering properties")
-		}
-	}
-
-	self.add_value(key, value)
-}
-
 func (self *Node) SetValue(key, value string) {
 
 	if self == nil { panic("Node.SetValue(): called on nil node") }
 
-	// Disallow keys that change the board...
-
-	for _, s := range MUTORS {
-		if key == s {
-			panic("Node.SetValue(): Can't change board-altering properties")
-		}
-	}
+	// self.notify_change(key)							// Not needed because AddValue() will call it.
 
 	self.props[key] = nil
-	self.add_value(key, value)
+	self.AddValue(key, value)
 }
 
 func (self *Node) GetValue(key string) (value string, ok bool) {
@@ -104,7 +95,7 @@ func (self *Node) AllValues(key string) []string {
 
 	list := self.props[key]
 
-	var ret []string		// Make a new slice to avoid aliasing.
+	var ret []string									// Make a new slice to avoid aliasing.
 
 	for _, s := range list {
 		ret = append(ret, unescape_string(s))
@@ -122,7 +113,7 @@ func (self *Node) AllProperties() map[string][]string {
 	ret := make(map[string][]string)
 
 	for key, _ := range self.props {
-		ret[key] = self.AllValues(key)		// Will handle the unescaping and copying (anti-aliasing).
+		ret[key] = self.AllValues(key)					// Will handle the unescaping and copying (anti-aliasing).
 	}
 
 	return ret
@@ -132,13 +123,7 @@ func (self *Node) DeleteValue(key, value string) {
 
 	if self == nil { panic("Node.DeleteValue(): called on nil node") }
 
-	// Disallow keys that change the board...
-
-	for _, s := range MUTORS {
-		if key == s {
-			panic("Node.DeleteValue(): Can't change board-altering properties")
-		}
-	}
+	self.mutor_check(key)								// If key is a MUTOR, clear board cache or disallow entirely.
 
 	value = escape_string(value)
 
@@ -158,13 +143,7 @@ func (self *Node) DeleteKey(key string) {
 
 	if self == nil { panic("Node.DeleteKey(): called on nil node") }
 
-	// Disallow keys that change the board...
-
-	for _, s := range MUTORS {
-		if key == s {
-			panic("Node.DeleteKey(): Can't change board-altering properties")
-		}
-	}
+	self.mutor_check(key)								// If key is a MUTOR, clear board cache or disallow entirely.
 
 	delete(self.props, key)
 }

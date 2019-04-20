@@ -1,6 +1,28 @@
 package sgf
 
+import (
+	"fmt"
+	"strconv"
+)
+
 const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+func NewTree(size int) *Node {
+
+	// Creates a new root node with standard properties.
+
+	if size < 1 || size > 52 {
+		panic(fmt.Sprintf("NewTree(): invalid size %v", size))
+	}
+
+	node := NewNode(nil)
+
+	node.SetValue("GM", "1")
+	node.SetValue("FF", "4")
+	node.SetValue("SZ", strconv.Itoa(size))
+
+	return node
+}
 
 func AdjacentPoints(s string, size int) []string {
 

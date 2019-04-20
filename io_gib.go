@@ -60,7 +60,7 @@ func load_gib(gib string) (*Node, error) {
 			}
 
 			for _, stone := range stones {
-				root.add_value("AB", stone)		// Note add_value() doesn't prevent MUTORS
+				root.AddValue("AB", stone)
 			}
 		}
 
@@ -72,8 +72,8 @@ func load_gib(gib string) (*Node, error) {
 			if err1 == nil && err2 == nil {
 				key := "B"; if fields[3] == "2" { key = "W" }
 				val := Point(x, y)
-				node = new_bare_node(node)
-				node.add_value(key, val)		// Note add_value() doesn't prevent MUTORS
+				node = NewNode(node)
+				node.SetValue(key, val)
 			}
 		}
 	}

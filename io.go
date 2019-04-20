@@ -135,7 +135,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): node == nil after: else if c == ']'")
 				}
-				node.add_value(key, value)		// This handles escaping. Also note, add_value() doesn't prevent MUTORS
+				node.AddValue(key, value)		// This handles escaping.
 			} else {
 				value += string(c)
 			}
@@ -161,11 +161,11 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				return root, i + 1, nil		// Return characters read.
 			} else if c == ';' {
 				if node == nil {
-					newnode := new_bare_node(parent_of_local_root)
+					newnode := NewNode(parent_of_local_root)
 					root = newnode
 					node = newnode
 				} else {
-					newnode := new_bare_node(node)
+					newnode := NewNode(node)
 					node = newnode
 				}
 			} else {
@@ -196,20 +196,4 @@ func load_sgf(sgf string) (*Node, error) {
 
 	root, _, err := load_sgf_tree(sgf, nil)
 	return root, err
-}
-
-func new_bare_node(parent *Node) *Node {
-
-	// Doesn't accept properties.
-	// Used only for file loading.
-
-	node := new(Node)
-	node.parent = parent
-	node.props = make(map[string][]string)
-
-	if parent != nil {
-		parent.children = append(parent.children, node)
-	}
-
-	return node
 }

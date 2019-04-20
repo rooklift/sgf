@@ -25,7 +25,13 @@ func mutate_recursive(node *Node, mutator func(original *Node) map[string][]stri
 	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
 	// We could pass the parent as an argument to mutate_recursive() and so on, but the code is less clear.
 
-	mutant := NewNode(nil, new_props)
+	mutant := NewNode(nil)
+
+	for key, list := range new_props {
+		for _, val := range list {
+			mutant.AddValue(key, val)
+		}
+	}
 
 	for _, child := range(node.children) {
 		mutant_child := mutate_recursive(child, mutator)

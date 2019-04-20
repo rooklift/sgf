@@ -7,6 +7,8 @@ import (
 	"strconv"
 )
 
+var TotalBoardsGenerated int			// For debugging.
+
 func (self *Node) Board() *Board {
 
 	// Returns a __COPY__ of the cached board for this node, creating that if needed.
@@ -27,6 +29,7 @@ func (self *Node) Board() *Board {
 			self.board_cache = NewBoard(sz)
 		}
 		self.board_cache.update_from_node(self)
+		TotalBoardsGenerated++
 	}
 
 	return self.board_cache.Copy()

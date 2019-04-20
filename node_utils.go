@@ -30,8 +30,8 @@ func (self *Node) RemoveChild(child *Node) {
 	if self == nil { panic("Node.RemoveChild(): called on nil node") }
 	for i := len(self.children) - 1; i >= 0; i-- {
 		if self.children[i] == child {
+			child.parent = nil
 			self.children = append(self.children[:i], self.children[i+1:]...)
-			self.children[i].parent = nil
 		}
 	}
 }

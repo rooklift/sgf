@@ -1,6 +1,6 @@
 package sgf
 
-type Colour int
+type Colour int8
 
 const (
 	EMPTY = Colour(iota)

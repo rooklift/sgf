@@ -9,10 +9,11 @@ import (
 
 func main() {
 	original, _ := sgf.Load("example.sgf", true)
+	original = original.GetEnd()
 	mutated := original.MutateTree(rotate_clockwise)
-	original.GetEnd().Board().DumpBoard()				// Unharmed
+	original.Board().DumpBoard()						// Unharmed
 	fmt.Printf("\n")
-	mutated.GetEnd().Board().DumpBoard()				// We could also save with mutated.Save()
+	mutated.Board().DumpBoard()				// We could also save with mutated.Save()
 }
 
 // This function will be called for every node in the original tree, with the properties and

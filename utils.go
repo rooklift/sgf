@@ -2,6 +2,7 @@ package sgf
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 )
 
@@ -192,4 +193,21 @@ func ParsePointList(s string, size int) []string {
 	}
 
 	return ret
+}
+
+func LoadArgOrQuit() *Node {
+
+	if len(os.Args) < 2 {
+		fmt.Printf("Need filename\n")
+		os.Exit(1)
+	}
+
+	node, err := Load(os.Args[1])
+
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		os.Exit(1)
+	}
+
+	return node
 }

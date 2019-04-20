@@ -25,6 +25,8 @@ func main() {
 	fmt.Printf("\n")
 	mutated.Board().DumpBoard()
 	mutated.Save(os.Args[1] + ".rotated.sgf")
+	fmt.Printf("\n")
+	fmt.Printf("%d nodes in original, %d nodes in mutated.\n", original.NodesInTree(), mutated.NodesInTree())
 }
 
 // The mutator function is shown the original node and must return the properties

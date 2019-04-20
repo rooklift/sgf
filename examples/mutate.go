@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	original, _ := sgf.Load("example.sgf", true)
+	original, _ := sgf.Load("example.sgf")
 	original = original.GetEnd()
 	mutated := original.MutateTree(rotate_clockwise)
 	original.Board().DumpBoard()						// Unharmed

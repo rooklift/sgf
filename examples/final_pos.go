@@ -14,7 +14,7 @@ func main() {
 		fmt.Printf("Need filename\n")
 		return
 	}
-	root, err := sgf.Load(os.Args[1], true)
+	root, err := sgf.Load(os.Args[1])
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		return

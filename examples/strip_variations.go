@@ -12,7 +12,7 @@ func main() {
 		fmt.Printf("Need filename\n")
 		return
 	}
-	node, err := sgf.Load(os.Args[1], true)
+	node, err := sgf.Load(os.Args[1])
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		return

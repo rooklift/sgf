@@ -39,7 +39,7 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 
 	key := "B"; if colour == WHITE { key = "W" }
 
-	for _, child := range self.Children {
+	for _, child := range self.children {
 		mv, ok := child.GetValue(key)
 		if ok {
 			if mv == p {
@@ -78,7 +78,7 @@ func (self *Node) PassColour(colour Colour) *Node {
 
 	// Return the already-extant child if there is such a thing...
 
-	for _, child := range self.Children {
+	for _, child := range self.children {
 		mv, ok := child.GetValue(key)
 		if ok {
 			if Onboard(mv, board.Size) == false {

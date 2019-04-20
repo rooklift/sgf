@@ -37,26 +37,26 @@ func (self *Node) write_tree(outfile io.Writer) {		// Relies on values already b
 
 		fmt.Fprintf(outfile, ";")
 
-		for key, _ := range node.Props {
+		for key, _ := range node.props {
 
 			fmt.Fprintf(outfile, "%s", key)
 
-			for _, value := range node.Props[key] {
+			for _, value := range node.props[key] {
 				fmt.Fprintf(outfile, "[%s]", value)
 			}
 		}
 
-		if len(node.Children) > 1 {
+		if len(node.children) > 1 {
 
-			for _, child := range node.Children {
+			for _, child := range node.children {
 				child.write_tree(outfile)
 			}
 
 			break
 
-		} else if len(node.Children) == 1 {
+		} else if len(node.children) == 1 {
 
-			node = node.Children[0]
+			node = node.children[0]
 			continue
 
 		} else {
@@ -211,11 +211,11 @@ func new_bare_node(parent *Node) *Node {
 	// Used only for file loading.
 
 	node := new(Node)
-	node.Parent = parent
-	node.Props = make(map[string][]string)
+	node.parent = parent
+	node.props = make(map[string][]string)
 
 	if parent != nil {
-		parent.Children = append(parent.Children, node)
+		parent.children = append(parent.children, node)
 	}
 
 	return node

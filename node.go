@@ -9,16 +9,16 @@ var MUTORS = []string{"B", "W", "AB", "AW", "AE", "PL"}
 // -----------------------------------------------------------------------------
 
 type Node struct {
-	Props			map[string][]string
-	Children		[]*Node
-	Parent			*Node
+	props			map[string][]string
+	children		[]*Node
+	parent			*Node
 }
 
 func NewNode(parent *Node, props map[string][]string) *Node {
 
 	node := new(Node)
-	node.Parent = parent
-	node.Props = make(map[string][]string)
+	node.parent = parent
+	node.props = make(map[string][]string)
 
 	for key, _ := range props {
 		for _, s := range props[key] {
@@ -26,8 +26,8 @@ func NewNode(parent *Node, props map[string][]string) *Node {
 		}
 	}
 
-	if node.Parent != nil {
-		node.Parent.Children = append(node.Parent.Children, node)
+	if node.parent != nil {
+		node.parent.children = append(node.parent.children, node)
 	}
 
 	return node
@@ -39,13 +39,13 @@ func (self *Node) add_value(key, value string) {			// Handles escaping; no other
 
 	value = escape_string(value)
 
-	for i := 0; i < len(self.Props[key]); i++ {				// Ignore if the value already exists
-		if self.Props[key][i] == value {
+	for i := 0; i < len(self.props[key]); i++ {				// Ignore if the value already exists
+		if self.props[key][i] == value {
 			return
 		}
 	}
 
-	self.Props[key] = append(self.Props[key], value)
+	self.props[key] = append(self.props[key], value)
 }
 
 func (self *Node) AddValue(key, value string) {
@@ -75,7 +75,7 @@ func (self *Node) SetValue(key, value string) {
 		}
 	}
 
-	self.Props[key] = nil
+	self.props[key] = nil
 	self.add_value(key, value)
 }
 
@@ -85,7 +85,7 @@ func (self *Node) GetValue(key string) (value string, ok bool) {
 
 	if self == nil { panic("Node.GetValue(): called on nil node") }
 
-	list := self.Props[key]
+	list := self.props[key]
 
 	if len(list) == 0 {
 		return "", false
@@ -100,7 +100,7 @@ func (self *Node) AllValues(key string) []string {
 
 	if self == nil { panic("Node.AllValues(): called on nil node") }
 
-	list := self.Props[key]
+	list := self.props[key]
 
 	var ret []string		// Make a new slice to avoid aliasing.
 
@@ -119,7 +119,7 @@ func (self *Node) AllProperties() map[string][]string {
 
 	ret := make(map[string][]string)
 
-	for key, _ := range self.Props {
+	for key, _ := range self.props {
 		ret[key] = self.AllValues(key)		// Will handle the unescaping and copying (anti-aliasing).
 	}
 
@@ -140,15 +140,15 @@ func (self *Node) DeleteValue(key, value string) {
 
 	value = escape_string(value)
 
-	for i := len(self.Props[key]) - 1; i >= 0; i-- {
-		v := self.Props[key][i]
+	for i := len(self.props[key]) - 1; i >= 0; i-- {
+		v := self.props[key][i]
 		if v == value {
-			self.Props[key] = append(self.Props[key][:i], self.Props[key][i+1:]...)
+			self.props[key] = append(self.props[key][:i], self.props[key][i+1:]...)
 		}
 	}
 
-	if len(self.Props[key]) == 0 {
-		delete(self.Props, key)
+	if len(self.props[key]) == 0 {
+		delete(self.props, key)
 	}
 }
 
@@ -164,7 +164,7 @@ func (self *Node) DeleteKey(key string) {
 		}
 	}
 
-	delete(self.Props, key)
+	delete(self.props, key)
 }
 
 // -----------------------------------------------------------------------------

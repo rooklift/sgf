@@ -28,8 +28,8 @@ func (self *Node) Board() *Board {
 
 	var my_board *Board
 
-	if self.Parent != nil {
-		my_board = self.Parent.Board()
+	if self.parent != nil {
+		my_board = self.parent.Board()
 	} else {
 		// We are root.
 		sz_string, _ := self.GetValue("SZ")
@@ -46,28 +46,28 @@ func (self *Node) Board() *Board {
 
 func (self *Board) update_from_node(node *Node) {
 
-	for _, p := range node.Props["AB"] {
+	for _, p := range node.props["AB"] {
 		self.SetState(p, BLACK)
 		self.Player = WHITE
 	}
 
-	for _, p := range node.Props["AW"] {
+	for _, p := range node.props["AW"] {
 		self.SetState(p, WHITE)
 		self.Player = BLACK			// Prevails in the event of both AB and AW
 	}
 
-	for _, p := range node.Props["AE"] {
+	for _, p := range node.props["AE"] {
 		self.SetState(p, EMPTY)
 	}
 
 	// Play move: B / W. Note that "moves" which are not valid onboard points are passes.
 
-	for _, p := range node.Props["B"] {
+	for _, p := range node.props["B"] {
 		self.PlaceStone(p, BLACK)
 		self.Player = WHITE
 	}
 
-	for _, p := range node.Props["W"] {
+	for _, p := range node.props["W"] {
 		self.PlaceStone(p, WHITE)
 		self.Player = BLACK
 	}

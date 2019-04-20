@@ -11,7 +11,7 @@ func (self *Node) MutateTree(mutator func(original *Node) map[string][]string) *
 
 	ret := mutant_root
 	for _, index := range self.GetLineIndices() {
-		ret = ret.Children[index]
+		ret = ret.children[index]
 	}
 	return ret
 }
@@ -27,10 +27,10 @@ func mutate_recursive(node *Node, mutator func(original *Node) map[string][]stri
 
 	mutant := NewNode(nil, new_props)
 
-	for _, child := range(node.Children) {
+	for _, child := range(node.children) {
 		mutant_child := mutate_recursive(child, mutator)
-		mutant_child.Parent = mutant
-		mutant.Children = append(mutant.Children, mutant_child)
+		mutant_child.parent = mutant
+		mutant.children = append(mutant.children, mutant_child)
 	}
 
 	return mutant

@@ -51,8 +51,8 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 	proposed_node := NewNode(self)					// Note: already appends child to self.
 	proposed_node.SetValue(key, p)
 
-	if proposed_node.Board().GetState(p) == EMPTY {								// Because of suicide
-		self.RemoveChild(proposed_node)											// Delete child (see above)
+	if proposed_node.Board().GetState(p) == EMPTY {								// Because of suicide.
+		proposed_node.Destroy()													// Unlink the child from self.
 		return self, fmt.Errorf("Node.PlayMoveColour(): suicide forbidden")
 	}
 

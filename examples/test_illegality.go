@@ -21,8 +21,8 @@ func main() {
 	fmt.Printf("%v\n", err)
 	node, err = node.PlayMove(sgf.Point(19,19))
 	fmt.Printf("%v\n", err)
-	node, err = node.PlayMoveColour(sgf.Point(10,8), sgf.WHITE)		// This will succeed.
-	fmt.Printf("%v\n", err)
+	// node, err = node.PlayMoveColour(sgf.Point(10,8), sgf.WHITE)		// This will succeed.
+	// fmt.Printf("%v\n", err)
 
 	fmt.Printf("Node is original node? %v.\n", node == original_end)
 	fmt.Printf("Node has %v children.\n", len(node.Children()))

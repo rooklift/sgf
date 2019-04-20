@@ -24,7 +24,7 @@ func main() {
 			break
 		}
 		for _, child := range all_children[1:] {
-			node.RemoveChild(child)
+			child.Destroy()
 		}
 		node = node.MainChild()
 	}

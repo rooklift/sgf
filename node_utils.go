@@ -22,18 +22,22 @@ func (self *Node) MainChild() *Node {
 	return self.children[0]
 }
 
-func (self *Node) RemoveChild(child *Node) {
+func (self *Node) Destroy() {
 
-	// Note: the deleted child and its own descendents should not be reused.
+	// Note: the "destroyed" node and its own descendents should not be reused.
 	// They may have cached boards which are now obsolete.
 
-	if self == nil { panic("Node.RemoveChild(): called on nil node") }
-	for i := len(self.children) - 1; i >= 0; i-- {
-		if self.children[i] == child {
-			child.parent = nil
-			self.children = append(self.children[:i], self.children[i+1:]...)
+	if self == nil || self.parent == nil {
+		return
+	}
+
+	for i := len(self.parent.children) - 1; i >= 0; i-- {
+		if self.parent.children[i] == self {
+			self.parent.children = append(self.parent.children[:i], self.parent.children[i+1:]...)
 		}
 	}
+
+	self.parent = nil
 }
 
 func (self *Node) GetRoot() *Node {

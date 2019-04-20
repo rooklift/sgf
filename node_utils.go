@@ -22,11 +22,7 @@ func (self *Node) MainChild() *Node {
 	return self.children[0]
 }
 
-func (self *Node) Destroy() {
-
-	// Note: the "destroyed" node and its own descendents should not be reused.
-	// They may have cached boards which are now obsolete. The name was chosen
-	// to emphasise this point.
+func (self *Node) Detach() {
 
 	if self == nil || self.parent == nil {
 		return
@@ -39,6 +35,7 @@ func (self *Node) Destroy() {
 	}
 
 	self.parent = nil
+	self.clear_board_cache_recursive()
 }
 
 func (self *Node) GetRoot() *Node {

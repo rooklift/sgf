@@ -11,7 +11,13 @@ type Node struct {
 	children		[]*Node
 	parent			*Node
 
-	board_cache		*Board
+	// Note: generating a board_cache always involves generating all the ancestor
+	// board_caches first, so if a board_cache is nil, all the node's descendents
+	// will have nil caches as well. We actually rely on this fact in the method
+	// clear_board_cache_recursive(). Therefore, to ensure this is so, this should
+	// never be set directly except by a very few functions, hence its name.
+
+	__board_cache	*Board
 }
 
 func NewNode(parent *Node) *Node {
@@ -31,17 +37,23 @@ func NewNode(parent *Node) *Node {
 
 func (self *Node) mutor_check(key string) {
 
-	// If the key changes the board, disallow it if we have children.
-	// Otherwise, clear the board_cache.
+	// If the key changes the board, all descendent boards are also invalid.
 
 	for _, s := range MUTORS {
 		if key == s {
-			if len(self.children) > 0 {
-				panic("mutor_check(): node has children; so can't change board altering property " + key)
-			}
-			self.board_cache = nil
+			self.clear_board_cache_recursive()
 			break
 		}
+	}
+}
+
+func (self *Node) clear_board_cache_recursive() {
+	if self.__board_cache == nil {						// If nil, all descendent caches are nil also.
+		return											// See note in the Node struct about this.
+	}
+	self.__board_cache = nil
+	for _, child := range self.children {
+		child.clear_board_cache_recursive()
 	}
 }
 
@@ -49,7 +61,7 @@ func (self *Node) AddValue(key, value string) {			// Handles escaping; no other 
 
 	if self == nil { panic("Node.AddValue(): called on nil node") }
 
-	self.mutor_check(key)								// If key is a MUTOR, clear board cache or disallow entirely.
+	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
 
 	value = escape_string(value)
 	for i := 0; i < len(self.props[key]); i++ {			// Ignore if the value already exists.
@@ -126,7 +138,7 @@ func (self *Node) DeleteValue(key, value string) {
 
 	if self == nil { panic("Node.DeleteValue(): called on nil node") }
 
-	self.mutor_check(key)								// If key is a MUTOR, clear board cache or disallow entirely.
+	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
 
 	value = escape_string(value)
 
@@ -146,7 +158,7 @@ func (self *Node) DeleteKey(key string) {
 
 	if self == nil { panic("Node.DeleteKey(): called on nil node") }
 
-	self.mutor_check(key)								// If key is a MUTOR, clear board cache or disallow entirely.
+	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
 
 	delete(self.props, key)
 }

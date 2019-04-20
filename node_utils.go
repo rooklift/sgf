@@ -26,7 +26,7 @@ func (self *Node) SetParent(new_parent *Node) {
 
 	// Nothing will stop you creating a cyclic structure, which will then hang immediately.
 
-	if self == nil { panic("Node.ChangeParent(): called on nil node") }
+	if self == nil { panic("Node.SetParent(): called on nil node") }
 
 	if self.parent != nil {
 		for i := len(self.parent.children) - 1; i >= 0; i-- {

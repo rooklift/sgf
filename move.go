@@ -30,7 +30,7 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 	}
 
 	if board.HasKo() && board.Ko == p {
-		if colour == board.Player {			// i.e. we've not forced a move by the wrong colour.
+		if colour == board.Player {					// i.e. we've not forced a move by the wrong colour.
 			return self, fmt.Errorf("Node.PlayMoveColour(): ko recapture forbidden")
 		}
 	}
@@ -40,15 +40,15 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 	key := "B"; if colour == WHITE { key = "W" }
 
 	for _, child := range self.children {
-		mv, ok := child.GetValue(key)
-		if ok {
+		if child.ValueCount(key) == 1 {				// Ignore any illegal nodes with 2 or more...
+			mv, _ := child.GetValue(key)
 			if mv == p {
 				return child, nil
 			}
 		}
 	}
 
-	proposed_node := NewNode(self)					// Note: already appends child to self
+	proposed_node := NewNode(self)					// Note: already appends child to self.
 	proposed_node.SetValue(key, p)
 
 	if proposed_node.Board().GetState(p) == EMPTY {								// Because of suicide
@@ -79,8 +79,8 @@ func (self *Node) PassColour(colour Colour) *Node {
 	// Return the already-extant child if there is such a thing...
 
 	for _, child := range self.children {
-		mv, ok := child.GetValue(key)
-		if ok {
+		if child.ValueCount(key) == 1 {											// Ignore any illegal nodes with 2 or more...
+			mv, _ := child.GetValue(key)
 			if Onboard(mv, board.Size) == false {
 				return child
 			}

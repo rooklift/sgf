@@ -8,6 +8,7 @@ import (
 )
 
 var TotalBoardsGenerated int			// For debugging.
+var TotalBoardsDeleted int
 
 func (self *Node) Board() *Board {
 

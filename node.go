@@ -58,6 +58,7 @@ func (self *Node) clear_board_cache_recursive() {
 		return											// See note in the Node struct about this.
 	}
 	self.__board_cache = nil
+	TotalBoardsDeleted++
 	for _, child := range self.children {
 		child.clear_board_cache_recursive()
 	}

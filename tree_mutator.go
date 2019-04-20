@@ -31,7 +31,7 @@ func mutate_recursive(node *Node, mutator mutFunc, foo **Node) *Node {
 
 	mutant := NewNode(nil)
 
-	// foo starts off as the node whose equivalent we ultimately want to return at the top level.
+	// foo starts off as the node whose mutant we ultimately want to return at the top level.
 	// When we actually see that node, we set foo to be the mutant. See note in MutateTree().
 	// This is a slightly-too-cute way of doing it.
 

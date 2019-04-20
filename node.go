@@ -71,6 +71,10 @@ func (self *Node) SetValue(key, value string) {
 	self.AddValue(key, value)
 }
 
+func (self *Node) ValueCount(key string) int {
+	return len(self.props[key])
+}
+
 func (self *Node) GetValue(key string) (value string, ok bool) {
 
 	// Get the __UNESCAPED__ value for the key, on the assumption that there's only 1 value.

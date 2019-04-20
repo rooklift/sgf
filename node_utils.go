@@ -119,3 +119,19 @@ func (self *Node) GetLineIndices() []int {	// The child indices from the root to
 
 	return ret
 }
+
+func (self *Node) CountDescendents() int {
+
+	count := 0
+
+	for _, child := range self.children {
+		count += 1
+		count += child.CountDescendents()
+	}
+
+	return count
+}
+
+func (self *Node) NodesInTree() int {
+	return self.GetRoot().CountDescendents() + 1
+}

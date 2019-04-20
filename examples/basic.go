@@ -83,7 +83,7 @@ func main() {
 		}
 	}
 
-	node.AddValue("C", "All white stones highlighted.")
+	node.SetValue("C", "All white stones highlighted.")
 
 	// It is also possible to directly manage node creation and properties,
 	// though this is not really recommended...

@@ -52,8 +52,8 @@ func handle_file(dirname, filename string) error {
 			node.SetValue("SBKV", fmt.Sprintf("%.2f", val))
 		}
 
-		if node.Parent != nil {
-			for _, sibling := range node.Parent.Children {
+		if node.Parent() != nil {
+			for _, sibling := range node.Parent().Children() {
 				_, ok := sibling.GetValue("TE")
 				if ok {
 					b, _ := sibling.GetValue("B")
@@ -68,12 +68,12 @@ func handle_file(dirname, filename string) error {
 			}
 		}
 
-		if len(node.Children) == 0 {
+		if node.MainChild() == nil {
 			node.Save(path)
 			fmt.Printf("%s\n", path)
 			return nil
 		}
 
-		node = node.Children[0]
+		node = node.MainChild()
 	}
 }

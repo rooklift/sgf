@@ -12,23 +12,22 @@ func main() {
 		fmt.Printf("Need filename\n")
 		return
 	}
-	root, err := sgf.Load(os.Args[1], true)
+	node, err := sgf.Load(os.Args[1], true)
 	if err != nil {
 		fmt.Printf("%v\n", err)
 		return
 	}
 
-	node := root
-
 	for {
-		for len(node.Children) > 1 {
-			node.RemoveChild(node.Children[len(node.Children) - 1])
-		}
-		node = node.MainChild()
-		if node == nil {
+		all_children := node.Children()
+		if len(all_children) == 0 {
 			break
 		}
+		for _, child := range all_children[1:] {
+			node.RemoveChild(child)
+		}
+		node = node.MainChild()
 	}
 
-	root.Save(os.Args[1])
+	node.Save(os.Args[1])
 }

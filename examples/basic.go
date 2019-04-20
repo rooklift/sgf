@@ -38,7 +38,7 @@ func main() {
 
 	// We can create variations from any node.
 
-	node = node.Parent
+	node = node.Parent()
 	node.PlayMove(sgf.Point(13, 2))						// Create variation 1
 	node.PlayMove(sgf.Point(16, 5))						// Create variation 2
 
@@ -52,7 +52,7 @@ func main() {
 
 	// We can iterate through a node's children.
 
-	for i, child := range node.Children {
+	for i, child := range node.Children() {
 		child.SetValue("C", fmt.Sprintf("Comment %d", i))
 	}
 

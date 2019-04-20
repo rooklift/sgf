@@ -25,6 +25,6 @@ func main() {
 	fmt.Printf("%v\n", err)
 
 	fmt.Printf("Node is original node? %v.\n", node == original_end)
-	fmt.Printf("Node has %v children.\n", len(node.Children))
+	fmt.Printf("Node has %v children.\n", len(node.Children()))
 	node.Board().Dump()
 }

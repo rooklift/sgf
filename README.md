@@ -118,9 +118,10 @@ func main() {
 	// children. All cached boards in descendent nodes will be cleared, and
 	// remade as needed.
 
-	root.AddValue("AB", "jj")							// Editing the root
-	board = node.Board()
-	fmt.Printf("%v\n", board.GetState("jj") == sgf.BLACK)	// true
+	root.AddValue("AB", "jj")							// Editing the root...
+	board = node.Board()								// But looking at current node.
+
+	fmt.Printf("%v\n", board.GetState("jj") == sgf.BLACK)
 
 	// Calling Save() will save the entire tree, regardless of node position.
 

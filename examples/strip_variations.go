@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"os"
-
 	sgf ".."
 )
 
@@ -16,7 +14,7 @@ func main() {
 			break
 		}
 		for _, child := range node.Children()[1:] {
-			child.Detach()
+			child.SetParent(nil)
 		}
 		node = node.MainChild()
 	}

@@ -22,19 +22,26 @@ func (self *Node) MainChild() *Node {
 	return self.children[0]
 }
 
-func (self *Node) Detach() {
+func (self *Node) SetParent(new_parent *Node) {
 
-	if self == nil || self.parent == nil {
-		return
-	}
+	// Nothing will stop you creating a cyclic structure, which will then hang immediately.
 
-	for i := len(self.parent.children) - 1; i >= 0; i-- {
-		if self.parent.children[i] == self {
-			self.parent.children = append(self.parent.children[:i], self.parent.children[i+1:]...)
+	if self == nil { panic("Node.ChangeParent(): called on nil node") }
+
+	if self.parent != nil {
+		for i := len(self.parent.children) - 1; i >= 0; i-- {
+			if self.parent.children[i] == self {
+				self.parent.children = append(self.parent.children[:i], self.parent.children[i+1:]...)
+			}
 		}
 	}
 
-	self.parent = nil
+	self.parent = new_parent
+
+	if self.parent != nil {
+		self.parent.children = append(self.parent.children, self)
+	}
+
 	self.clear_board_cache_recursive()
 }
 

@@ -23,10 +23,15 @@ func (self *Node) MainChild() *Node {
 }
 
 func (self *Node) RemoveChild(child *Node) {
+
+	// Note: the deleted child and its own descendents should not be reused.
+	// They may have cached boards which are now obsolete.
+
 	if self == nil { panic("Node.RemoveChild(): called on nil node") }
 	for i := len(self.children) - 1; i >= 0; i-- {
 		if self.children[i] == child {
 			self.children = append(self.children[:i], self.children[i+1:]...)
+			self.children[i].parent = nil
 		}
 	}
 }

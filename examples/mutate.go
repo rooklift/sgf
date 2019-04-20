@@ -4,16 +4,27 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	sgf ".."
 )
 
 func main() {
-	original, _ := sgf.Load("example.sgf")
+	if len(os.Args) < 2 {
+		fmt.Printf("Need filename\n")
+		return
+	}
+	original, err := sgf.Load(os.Args[1])
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		return
+	}
 	original = original.GetEnd()
 	mutated := original.MutateTree(rotate_clockwise)
 	original.Board().DumpBoard()						// Unharmed
 	fmt.Printf("\n")
-	mutated.Board().DumpBoard()				// We could also save with mutated.Save()
+	mutated.Board().DumpBoard()
+	mutated.Save(os.Args[1] + ".rotated.sgf")
 }
 
 // The mutator function is shown the original node and must return the properties
@@ -21,7 +32,7 @@ func main() {
 
 func rotate_clockwise(original *sgf.Node) map[string][]string {
 
-	props := original.AllProperties()		// Returns a copy, which is safe to edit.
+	props := original.AllProperties()		// Fetches a copy, which is safe to edit.
 	board := original.Board()
 
 	for _, key := range []string{"AB", "AW", "AE", "B", "CR", "MA", "SL", "SQ", "TR", "W"} {

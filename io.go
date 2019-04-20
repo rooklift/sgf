@@ -95,6 +95,17 @@ func Load(filename string) (*Node, error) {
 	return root, nil
 }
 
+func load_sgf(sgf string) (*Node, error) {
+
+	sgf = strings.TrimSpace(sgf)
+	if sgf[0] == '(' {				// the load_sgf_tree() function assumes the
+		sgf = sgf[1:]				// leading "(" has already been discarded.
+	}
+
+	root, _, err := load_sgf_tree(sgf, nil)
+	return root, err
+}
+
 func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
 	// FIXME: this is not unicode aware. Potential problems exist
@@ -185,15 +196,4 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	}
 
 	return root, len(sgf), nil		// Return characters read.
-}
-
-func load_sgf(sgf string) (*Node, error) {
-
-	sgf = strings.TrimSpace(sgf)
-	if sgf[0] == '(' {				// the load_sgf_tree() function assumes the
-		sgf = sgf[1:]				// leading "(" has already been discarded.
-	}
-
-	root, _, err := load_sgf_tree(sgf, nil)
-	return root, err
 }

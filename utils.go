@@ -195,14 +195,14 @@ func ParsePointList(s string, size int) []string {
 	return ret
 }
 
-func LoadArgOrQuit() *Node {
+func LoadArgOrQuit(n int) *Node {
 
-	if len(os.Args) < 2 {
-		fmt.Printf("Need filename\n")
+	if len(os.Args) <= n {
+		fmt.Printf("LoadArgOrQuit(): no such arg\n")
 		os.Exit(1)
 	}
 
-	node, err := Load(os.Args[1])
+	node, err := Load(os.Args[n])
 
 	if err != nil {
 		fmt.Printf("%v\n", err)

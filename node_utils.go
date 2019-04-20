@@ -25,7 +25,8 @@ func (self *Node) MainChild() *Node {
 func (self *Node) Destroy() {
 
 	// Note: the "destroyed" node and its own descendents should not be reused.
-	// They may have cached boards which are now obsolete.
+	// They may have cached boards which are now obsolete. The name was chosen
+	// to emphasise this point.
 
 	if self == nil || self.parent == nil {
 		return

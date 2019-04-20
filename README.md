@@ -2,7 +2,7 @@ Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu).
 
 # Technical notes
 
-* SGF nodes are based on `map[string][]string`.
+* Nodes are based on `map[string][]string`, which is what SGF nodes really are.
 * Nodes also have a parent node, and zero or more child nodes.
 * A tree is just a bunch of nodes connected together.
 * Boards are generated only as needed, and cached.

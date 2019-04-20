@@ -1,5 +1,8 @@
 package sgf
 
+// MutateTree() takes as its argument a function which examines a node and generates
+// a new property map for the mutated version of the node in the new tree.
+
 func (self *Node) MutateTree(mutator func(original *Node) map[string][]string) *Node {
 
 	if self == nil { panic("Node.MutateTree(): called on nil node") }

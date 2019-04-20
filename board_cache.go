@@ -7,8 +7,42 @@ import (
 	"strconv"
 )
 
+var MUTORS = []string{"B", "W", "AB", "AW", "AE", "PL"}
+
 var TotalBoardsGenerated int			// For debugging.
 var TotalBoardsDeleted int
+
+// -----------------------------------------------------------------------------------------------
+// clear_board_cache_recursive() needs to be called whenever a node's board cache becomes invalid.
+// This can be due to:
+//
+//		* Changing a board-altering property.
+//		* Changing the identity of its parent.
+
+func (self *Node) clear_board_cache_recursive() {
+	if self.__board_cache == nil {						// If nil, all descendent caches are nil also.
+		return											// See note in the Node struct about this.
+	}
+	self.__board_cache = nil
+	TotalBoardsDeleted++
+	for _, child := range self.children {
+		child.clear_board_cache_recursive()
+	}
+}
+
+func (self *Node) mutor_check(key string) {
+
+	// If the key changes the board, all descendent boards are also invalid.
+
+	for _, s := range MUTORS {
+		if key == s {
+			self.clear_board_cache_recursive()
+			break
+		}
+	}
+}
+
+// -----------------------------------------------------------------------------------------------
 
 func (self *Node) Board() *Board {
 
@@ -85,83 +119,4 @@ func (self *Board) update_from_node(node *Node) {
 	if pl == "W" || pl == "w" {
 		self.Player = WHITE
 	}
-}
-
-func (self *Board) PlaceStone(p string, colour Colour) {
-
-	// Other than sanity checks, there is no legality check here.
-	// Nor should there be. This only alters a board, and if called
-	// by the user program, will have no effect whatsoever on any node.
-	//
-	// Instead of this, node.PlayMove() is the correct way to make a
-	// new node from an existing one.
-
-	if self == nil { panic("Board.PlaceStone(): called on nil board") }
-
-	if colour != BLACK && colour != WHITE {
-		panic("Board.PlaceStone(): no colour")
-	}
-
-	self.ClearKo()
-
-	if ValidPoint(p, self.Size) == false {		// Consider this a pass
-		return
-	}
-
-	self.SetState(p, colour)
-
-	opponent := colour.Opposite()
-	caps := 0
-
-	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.GetState(a) == opponent {
-			if self.HasLiberties(a) == false {
-				caps += self.DestroyGroup(a)
-			}
-		}
-	}
-
-	self.CapturesBy[colour] += caps
-
-	// Handle suicide...
-
-	if self.HasLiberties(p) == false {
-		suicide_caps := self.DestroyGroup(p)
-		self.CapturesBy[opponent] += suicide_caps
-	}
-
-	// Work out ko square...
-
-	if caps == 1 {
-		if self.Singleton(p) {
-			if self.Liberties(p) == 1 {					// Yes, the conditions are met, there is a ko
-				self.SetKo(self.ko_square_finder(p))
-			}
-		}
-	}
-
-	return
-}
-
-func (self *Board) DestroyGroup(p string) int {			// Returns stones removed.
-
-	if self == nil { panic("Board.DestroyGroup(): called on nil board") }
-
-	colour := self.GetState(p)
-
-	if colour != BLACK && colour != WHITE {				// Also happens if p is off board.
-		return 0
-	}
-
-	self.SetState(p, EMPTY)
-	count := 1
-
-	for _, a := range AdjacentPoints(p, self.Size) {
-
-		if self.GetState(a) == colour {
-			count += self.DestroyGroup(a)
-		}
-	}
-
-	return count
 }

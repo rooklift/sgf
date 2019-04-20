@@ -4,8 +4,6 @@ package sgf
 // However, when using the API, your functions will send and receive
 // unescaped strings.
 
-var MUTORS = []string{"B", "W", "AB", "AW", "AE", "PL"}
-
 type Node struct {
 	props			map[string][]string
 	children		[]*Node
@@ -31,37 +29,6 @@ func NewNode(parent *Node) *Node {
 	}
 
 	return node
-}
-
-// -----------------------------------------------------------------------------
-
-func (self *Node) mutor_check(key string) {
-
-	// If the key changes the board, all descendent boards are also invalid.
-
-	for _, s := range MUTORS {
-		if key == s {
-			self.clear_board_cache_recursive()
-			break
-		}
-	}
-}
-
-// clear_board_cache_recursive() needs to be called whenever a node's board cache becomes invalid.
-// This can be due to:
-//
-//		* Changing a board-altering property.
-//		* Changing the identity of its parent.
-
-func (self *Node) clear_board_cache_recursive() {
-	if self.__board_cache == nil {						// If nil, all descendent caches are nil also.
-		return											// See note in the Node struct about this.
-	}
-	self.__board_cache = nil
-	TotalBoardsDeleted++
-	for _, child := range self.children {
-		child.clear_board_cache_recursive()
-	}
 }
 
 // -----------------------------------------------------------------------------

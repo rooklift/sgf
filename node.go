@@ -66,7 +66,7 @@ func (self *Node) SetValue(key, value string) {
 
 	if self == nil { panic("Node.SetValue(): called on nil node") }
 
-	// self.notify_change(key)							// Not needed because AddValue() will call it.
+	// self.mutor_check(key)							// Not needed because AddValue() will call it.
 
 	self.props[key] = nil
 	self.AddValue(key, value)

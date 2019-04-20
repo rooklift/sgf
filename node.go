@@ -37,7 +37,7 @@ func (self *Node) mutor_check(key string) {
 	for _, s := range MUTORS {
 		if key == s {
 			if len(self.children) > 0 {
-				panic("notify_change(): node has children; so can't change board altering property " + key)
+				panic("mutor_check(): node has children; so can't change board altering property " + key)
 			}
 			self.board_cache = nil
 			break

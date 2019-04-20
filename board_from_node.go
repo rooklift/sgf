@@ -18,21 +18,21 @@ func (self *Node) Board() *Board {
 
 	if self == nil { panic("Node.Board(): called on nil node") }
 
-	if self.__board_cache == nil {
+	if self.board_cache == nil {
 		if self.parent != nil {
-			self.__board_cache = self.parent.Board()
+			self.board_cache = self.parent.Board()
 		} else {										// We are root
 			sz_string, _ := self.GetValue("SZ")
 			sz, _ := strconv.Atoi(sz_string)
 			if sz < 1  { sz = 19 }
 			if sz > 52 { sz = 52 }						// SGF limit
-			self.__board_cache = NewBoard(sz)
+			self.board_cache = NewBoard(sz)
 		}
-		self.__board_cache.update_from_node(self)
+		self.board_cache.update_from_node(self)
 		TotalBoardsGenerated++
 	}
 
-	return self.__board_cache.Copy()
+	return self.board_cache.Copy()
 }
 
 func (self *Board) update_from_node(node *Node) {

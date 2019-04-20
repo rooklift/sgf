@@ -9,10 +9,10 @@ func main() {
 
 	// Start a new game tree and get the root node...
 
-	root := sgf.NewTree(19)
-	node := root
+	node := sgf.NewTree(19)
 
-	// Here we create the ancient Chinese pattern...
+	// It is OK to set board-altering properties, but only if the node has
+	// zero children. Here we create the ancient Chinese pattern...
 
 	node.AddValue("AB", sgf.Point(3, 3))
 	node.AddValue("AB", sgf.Point(15, 15))
@@ -73,9 +73,7 @@ func main() {
 	// We can directly manipulate SGF properties...
 	// We can also examine the board.
 
-	node.SetValue("C", "White passed. Lets highlight all white stones for some reason...")
-
-	board := node.Board()								// Note that this is a deep copy.
+	board := node.Board()
 
 	for x := 0; x < board.Size; x++ {
 		for y := 0; y < board.Size; y++ {
@@ -85,20 +83,13 @@ func main() {
 		}
 	}
 
+	node.SetValue("C", "All white stones highlighted.")
+
 	// It is also possible to directly manage node creation and properties,
 	// though this is not really recommended...
 
 	node = sgf.NewNode(node)							// Specify the parent
-	node.AddValue("B", "dj")
-
-	// It is possible to edit board-altering properties even if a node has
-	// children. All cached boards in descendent nodes will be cleared, and
-	// remade as needed.
-
-	root.AddValue("AB", "jj")							// Editing the root...
-	board = node.Board()								// But looking at current node.
-
-	fmt.Printf("%v\n", board.GetState("jj") == sgf.BLACK)
+	node.AddValue("B", "jj")
 
 	// Calling Save() will save the entire tree, regardless of node position.
 

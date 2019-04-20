@@ -4,21 +4,11 @@ package main
 
 import (
 	"fmt"
-	"os"
-
 	sgf ".."
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Printf("Need filename\n")
-		return
-	}
-	root, err := sgf.Load(os.Args[1])
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		return
-	}
+	root := sgf.LoadArgOrQuit(1)		// Equivalent to sgf.Load(os.Args[1])
 	km, _ := root.GetValue("KM")
 	re, _ := root.GetValue("RE")
 	fmt.Printf("Komi: \"%v\", Result: \"%v\"\n\n", km, re)

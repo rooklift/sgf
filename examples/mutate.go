@@ -10,20 +10,11 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Printf("Need filename\n")
-		return
-	}
-	original, err := sgf.Load(os.Args[1])
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		return
-	}
-	original = original.GetEnd()
+	original := sgf.LoadArgOrQuit(1)					// Equivalent to sgf.Load(os.Args[1])
 	mutated := original.MutateTree(rotate_clockwise)
-	original.Board().DumpBoard()						// Unharmed
+	original.GetEnd().Board().Dump()					// Unharmed
 	fmt.Printf("\n")
-	mutated.Board().DumpBoard()
+	mutated.GetEnd().Board().Dump()
 	mutated.Save(os.Args[1] + ".rotated.sgf")
 	fmt.Printf("\n")
 	fmt.Printf("%d nodes in original, %d nodes in mutated.\n", original.NodesInTree(), mutated.NodesInTree())

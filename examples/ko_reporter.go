@@ -2,21 +2,12 @@ package main
 
 import (
 	"fmt"
-	"os"
-
 	sgf ".."
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Printf("Need filename\n")
-		return
-	}
-	node, err := sgf.Load(os.Args[1])
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		return
-	}
+
+	node := sgf.LoadArgOrQuit(1)		// Equivalent to sgf.Load(os.Args[1])
 
 	for n := 1; true; n++ {
 		node = node.MainChild()

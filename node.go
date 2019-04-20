@@ -6,8 +6,6 @@ package sgf
 
 var MUTORS = []string{"B", "W", "AB", "AW", "AE", "PL"}
 
-// -----------------------------------------------------------------------------
-
 type Node struct {
 	props			map[string][]string
 	children		[]*Node
@@ -42,6 +40,7 @@ func (self *Node) mutor_check(key string) {
 				panic("notify_change(): node has children; so can't change board altering property " + key)
 			}
 			self.board_cache = nil
+			break
 		}
 	}
 }

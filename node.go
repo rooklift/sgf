@@ -12,6 +12,8 @@ type Node struct {
 	props			map[string][]string
 	children		[]*Node
 	parent			*Node
+
+	board_cache		*Board
 }
 
 func NewNode(parent *Node, props map[string][]string) *Node {

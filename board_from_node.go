@@ -7,10 +7,6 @@ import (
 	"strconv"
 )
 
-var board_cache = make(map[*Node]*Board)
-
-func ClearBoardCache() { board_cache = make(map[*Node]*Board) }
-
 func (self *Node) Board() *Board {
 
 	// Returns a __COPY__ of the cached board for this node, creating that if needed.
@@ -20,28 +16,20 @@ func (self *Node) Board() *Board {
 
 	if self == nil { panic("Node.Board(): called on nil node") }
 
-	cached, ok := board_cache[self]
-
-	if ok {
-		return cached.Copy()
+	if self.board_cache == nil {
+		if self.parent != nil {
+			self.board_cache = self.parent.Board()
+		} else {										// We are root
+			sz_string, _ := self.GetValue("SZ")
+			sz, _ := strconv.Atoi(sz_string)
+			if sz < 1  { sz = 19 }
+			if sz > 52 { sz = 52 }						// SGF limit
+			self.board_cache = NewBoard(sz)
+		}
+		self.board_cache.update_from_node(self)
 	}
 
-	var my_board *Board
-
-	if self.parent != nil {
-		my_board = self.parent.Board()
-	} else {
-		// We are root.
-		sz_string, _ := self.GetValue("SZ")
-		sz, _ := strconv.Atoi(sz_string)
-		if sz < 1  { sz = 19 }
-		if sz > 52 { sz = 52 }		// SGF limit
-		my_board = NewBoard(sz)
-	}
-
-	my_board.update_from_node(self)
-	board_cache[self] = my_board
-	return my_board.Copy()
+	return self.board_cache.Copy()
 }
 
 func (self *Board) update_from_node(node *Node) {

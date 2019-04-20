@@ -71,14 +71,7 @@ func (self *Node) write_tree(outfile io.Writer) {		// Relies on values already b
 	return
 }
 
-func Load(filename string, clear_cache bool) (*Node, error) {
-
-	// Caller must say whether to clear the board cache or not.
-	// Any app that's gonna open a ton of files should.
-
-	if clear_cache {
-		ClearBoardCache()
-	}
+func Load(filename string) (*Node, error) {
 
 	file_bytes, err := ioutil.ReadFile(filename)
 

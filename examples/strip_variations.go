@@ -19,11 +19,10 @@ func main() {
 	}
 
 	for {
-		all_children := node.Children()
-		if len(all_children) == 0 {
+		if node.MainChild() == nil {
 			break
 		}
-		for _, child := range all_children[1:] {
+		for _, child := range node.Children()[1:] {
 			child.Destroy()
 		}
 		node = node.MainChild()

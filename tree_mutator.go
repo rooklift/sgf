@@ -1,10 +1,19 @@
 package sgf
 
 func (self *Node) MutateTree(mutator func(props map[string][]string, board *Board) map[string][]string) *Node {
+
 	if self == nil { panic("Node.MutateTree(): called on nil node") }
+
 	root := self.GetRoot()
 	mutant_root := mutate_recursive(root, mutator)
-	return mutant_root
+
+	// Return the node in the new tree which is equivalent to self...
+
+	ret := mutant_root
+	for _, index := range self.GetLineIndices() {
+		ret = ret.Children[index]
+	}
+	return ret
 }
 
 func mutate_recursive(node *Node, mutator func(props map[string][]string, board *Board) map[string][]string) *Node {

@@ -18,8 +18,6 @@ func (self *Node) MutateTree(mutator func(original *Node) map[string][]string) *
 
 func mutate_recursive(node *Node, mutator func(original *Node) map[string][]string) *Node {
 
-	// Note that the mutator function only receives copies of stuff as its arguments, so it can do whatever.
-
 	new_props := mutator(node)
 
 	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.

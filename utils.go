@@ -78,7 +78,7 @@ func ParsePoint(s string, size int) (x, y int, onboard bool) {
 	}
 }
 
-func Onboard(s string, size int) bool {
+func ValidPoint(s string, size int) bool {
 	_, _, onboard := ParsePoint(s, size)
 	return onboard
 }
@@ -154,6 +154,41 @@ func HandicapPoints19(handicap int, tygem bool) []string {
 
 	if tygem && handicap == 3 {
 		ret[2] = "dd"
+	}
+
+	return ret
+}
+
+func ParsePointList(s string, size int) []string {
+
+	if len(s) != 5 || s[2] != ':' {
+		return nil
+	}
+
+	first := s[:2]
+	second := s[3:]
+
+	x1, y1, onboard1 := ParsePoint(first, size)
+	x2, y2, onboard2 := ParsePoint(second, size)
+
+	if onboard1 == false || onboard2 == false {
+		return nil
+	}
+
+	if x1 > x2 {
+		x1, x2 = x2, x1
+	}
+
+	if y1 > y2 {
+		y1, y2 = y2, y1
+	}
+
+	var ret []string
+
+	for x := x1; x <= x2; x++ {					// <= is correct
+		for y := y1; y <= y2; y++ {				// <= is correct
+			ret = append(ret, Point(x, y))
+		}
 	}
 
 	return ret

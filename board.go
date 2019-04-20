@@ -33,6 +33,14 @@ func (self *Board) SetState(p string, c Colour) {
 	self.State[x][y] = c
 }
 
+func (self *Board) SetStateFromList(s string, c Colour) {
+	if self == nil { panic("Board.SetStateFromList(): called on nil board") }
+	points := ParsePointList(s, self.Size)
+	for _, point := range points {
+		self.SetState(point, c)
+	}
+}
+
 func NewBoard(sz int) *Board {
 
 	if sz < 1 || sz > 52 {
@@ -95,7 +103,7 @@ func (self *Board) HasKo() bool {
 
 func (self *Board) SetKo(p string) {
 	if self == nil { panic("Board.SetKo(): called on nil board") }
-	if Onboard(p, self.Size) == false {
+	if ValidPoint(p, self.Size) == false {
 		self.Ko = ""
 	} else {
 		self.Ko = p

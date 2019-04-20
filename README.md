@@ -15,7 +15,6 @@ Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu).
 
 # Limitations
 
-* Unaware of points lists, e.g. `AB[cc:fg]`
 * For weird encodings (e.g. not utf8), some potential problems if a character contains a `]` or `\` byte.
 * Assumes an SGF file has one game (the normal case) and doesn't handle collections.
 

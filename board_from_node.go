@@ -38,17 +38,29 @@ func (self *Node) Board() *Board {
 func (self *Board) update_from_node(node *Node) {
 
 	for _, p := range node.props["AB"] {
-		self.SetState(p, BLACK)
+		if len(p) == 5 && p[2] == ':' {
+			self.SetStateFromList(p, BLACK)
+		} else {
+			self.SetState(p, BLACK)
+		}
 		self.Player = WHITE
 	}
 
 	for _, p := range node.props["AW"] {
-		self.SetState(p, WHITE)
+		if len(p) == 5 && p[2] == ':' {
+			self.SetStateFromList(p, WHITE)
+		} else {
+			self.SetState(p, WHITE)
+		}
 		self.Player = BLACK			// Prevails in the event of both AB and AW
 	}
 
 	for _, p := range node.props["AE"] {
-		self.SetState(p, EMPTY)
+		if len(p) == 5 && p[2] == ':' {
+			self.SetStateFromList(p, EMPTY)
+		} else {
+			self.SetState(p, EMPTY)
+		}
 	}
 
 	// Play move: B / W. Note that "moves" which are not valid onboard points are passes.
@@ -91,7 +103,7 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 
 	self.ClearKo()
 
-	if Onboard(p, self.Size) == false {		// Consider this a pass
+	if ValidPoint(p, self.Size) == false {		// Consider this a pass
 		return
 	}
 

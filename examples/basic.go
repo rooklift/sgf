@@ -7,21 +7,19 @@ import (
 
 func main() {
 
-	// To create a plain new Tree, you can generally use:
-	//      node := sgf.NewTree(size)
-	//
-	// If you want handicap or other stones, you can use:
-	//		node := sgf.NewSetup(size, black_stones, white_stones, next_player)
-	//
-	// Here we create the ancient Chinese starting position, and specify that
-	// Black plays first...
+	// Start a new game tree and get the root node...
 
-	black_stones := []string{sgf.Point(3, 3), sgf.Point(15, 15)}
-	white_stones := []string{sgf.Point(15, 3), sgf.Point(3, 15)}
+	node := sgf.NewTree(19)
 
-	node := sgf.NewSetup(19, black_stones, white_stones, sgf.BLACK)
+	// It is OK to set board-altering properties, but only if the node has
+	// zero children. Here we create the ancient Chinese pattern...
 
-	// We can now make moves.
+	node.AddValue("AB", sgf.Point(3, 3))
+	node.AddValue("AB", sgf.Point(15, 15))
+	node.AddValue("AW", sgf.Point(15, 3))
+	node.AddValue("AW", sgf.Point(3, 15))
+
+	// The normal way to create new nodes is by playing moves.
 	// If successful, PlayMove() returns the new node.
 
 	node, err := node.PlayMove(sgf.Point(2, 5))

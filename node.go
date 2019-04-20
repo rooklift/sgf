@@ -47,6 +47,12 @@ func (self *Node) mutor_check(key string) {
 	}
 }
 
+// clear_board_cache_recursive() needs to be called whenever a node's board cache becomes invalid.
+// This can be due to:
+//
+//		* Changing a board-altering property.
+//		* Changing the identity of its parent.
+
 func (self *Node) clear_board_cache_recursive() {
 	if self.__board_cache == nil {						// If nil, all descendent caches are nil also.
 		return											// See note in the Node struct about this.

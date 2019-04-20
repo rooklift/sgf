@@ -126,6 +126,8 @@ func (self *Node) GetLineIndices() []int {	// The child indices from the root to
 
 func (self *Node) CountDescendents() int {
 
+	if self == nil { panic("Node.CountDescendents(): called on nil node") }
+
 	count := 0
 
 	for _, child := range self.children {
@@ -137,5 +139,6 @@ func (self *Node) CountDescendents() int {
 }
 
 func (self *Node) NodesInTree() int {
+	if self == nil { panic("Node.NodesInTree(): called on nil node") }
 	return self.GetRoot().CountDescendents() + 1
 }

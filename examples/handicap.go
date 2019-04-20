@@ -6,7 +6,10 @@ import (
 
 func main() {
 	for n := 2; n <= 9; n++ {
-		root := sgf.NewSetup(19, sgf.HandicapPoints19(n, false), nil, sgf.WHITE)
+		root := sgf.NewTree(19)
+		for _, stone := range sgf.HandicapPoints19(n, false) {
+			root.AddValue("AB", stone)
+		}
 		root.Board().Dump()
 	}
 }

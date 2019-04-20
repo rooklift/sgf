@@ -10,6 +10,6 @@ func main() {
 		for _, stone := range sgf.HandicapPoints19(n, false) {
 			root.AddValue("AB", stone)
 		}
-		root.Board().Dump()
+		root.Board().DumpBoard()
 	}
 }

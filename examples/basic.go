@@ -70,14 +70,26 @@ func main() {
 
 	fmt.Printf("%v, %v\n", foo == bar, bar == node)		// true, true
 
-	// We can directly manipulate SGF properties, EXCEPT board-altering properties...
+	// We can directly manipulate SGF properties...
+	// We can also examine the board.
 
-	node.AddValue("TR", sgf.Point(3, 3))				// "dd"
-	node.AddValue("TR", sgf.Point(3, 15))				// "dp"
-	node.AddValue("TR", sgf.Point(15, 3))				// "pd"
-	node.AddValue("TR", "pp")							// We can always name the point directly
+	board := node.Board()
 
-	node.DeleteValue("TR", "dp")
+	for x := 0; x < board.Size; x++ {
+		for y := 0; y < board.Size; y++ {
+			if board.State[x][y] == sgf.WHITE {
+				node.AddValue("TR", sgf.Point(x, y))
+			}
+		}
+	}
+
+	node.AddValue("C", "All white stones highlighted.")
+
+	// It is also possible to directly manage node creation and properties,
+	// though this is not really recommended...
+
+	node = sgf.NewNode(node)							// Specify the parent
+	node.AddValue("B", "jj")
 
 	// Calling Save() will save the entire tree, regardless of node position.
 

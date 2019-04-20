@@ -42,7 +42,7 @@ func (self *Node) SetParent(new_parent *Node) {
 		self.parent.children = append(self.parent.children, self)
 	}
 
-	self.clear_board_cache_recursive()
+	self.clear_board_cache_recursive()		// IMPORTANT!
 }
 
 func (self *Node) GetRoot() *Node {

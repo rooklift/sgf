@@ -12,7 +12,7 @@ func init() {
 
 func main() {
 
-	root := sgf.Load("kifu/2016-03-10a.sgf")
+	root, _ := sgf.Load("kifu/2016-03-10a.sgf")
 
 	// Choose a random node...
 

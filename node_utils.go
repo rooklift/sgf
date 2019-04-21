@@ -35,11 +35,11 @@ func (self *Node) SetParent(new_parent *Node) {
 		self.parent.children = append(self.parent.children, self)
 	}
 
-	self.cyclic_attactment_detection()
+	self.cyclic_attachment_detection()
 	self.clear_board_cache_recursive()		// IMPORTANT!
 }
 
-func (self *Node) cyclic_attactment_detection() {
+func (self *Node) cyclic_attachment_detection() {
 	node := self
 	for {
 		if node.parent == nil {

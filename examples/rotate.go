@@ -13,7 +13,7 @@ func main() {
 	original := sgf.LoadArgOrQuit(1)					// Equivalent to sgf.Load(os.Args[1])
 	mutated := original.MutateTree(rotate_clockwise)
 	mutated.Save(os.Args[1] + ".rotated.sgf")
-	fmt.Printf("Saved. %d nodes in original, %d nodes in mutated.\n", original.NodesInTree(), mutated.NodesInTree())
+	fmt.Printf("Saved. %d nodes in original, %d nodes in mutated.\n", original.TreeSize(), mutated.TreeSize())
 }
 
 // The mutator function is shown the original node and must return the properties

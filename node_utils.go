@@ -52,6 +52,9 @@ func (self *Node) GetRoot() *Node {
 }
 
 func (self *Node) GetEnd() *Node {
+
+	// The end of the line we're on only. Use GetRoot().GetEnd() for the mainline end.
+
 	node := self
 	for {
 		if len(node.children) > 0 {

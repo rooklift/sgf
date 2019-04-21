@@ -22,11 +22,11 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 	x, y, onboard := ParsePoint(p, board.Size)
 
 	if onboard == false {
-		return self, fmt.Errorf("Node.PlayMoveColour(): invalid or off-board string \"%v\"", p)
+		return self, fmt.Errorf("Node.PlayMoveColour(): invalid or off-board string %q", p)
 	}
 
 	if board.GetState(p) != EMPTY {
-		return self, fmt.Errorf("Node.PlayMoveColour(): point \"%v\" (%v,%v) was not empty", p, x, y)
+		return self, fmt.Errorf("Node.PlayMoveColour(): point %q (%v,%v) was not empty", p, x, y)
 	}
 
 	if board.HasKo() && board.Ko == p {

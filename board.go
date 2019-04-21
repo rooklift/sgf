@@ -40,7 +40,6 @@ func NewBoard(sz int) *Board {
 }
 
 func (self *Board) GetState(p string) Colour {
-	if self == nil { panic("Board.GetState(): called on nil board") }
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
 		return EMPTY
@@ -49,7 +48,6 @@ func (self *Board) GetState(p string) Colour {
 }
 
 func (self *Board) SetState(p string, c Colour) {
-	if self == nil { panic("Board.SetState(): called on nil board") }
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
 		return
@@ -58,7 +56,6 @@ func (self *Board) SetState(p string, c Colour) {
 }
 
 func (self *Board) SetStateFromList(s string, c Colour) {
-	if self == nil { panic("Board.SetStateFromList(): called on nil board") }
 	points := ParsePointList(s, self.Size)
 	for _, point := range points {
 		self.SetState(point, c)
@@ -66,8 +63,6 @@ func (self *Board) SetStateFromList(s string, c Colour) {
 }
 
 func (self *Board) Copy() *Board {
-
-	if self == nil { panic("Board.Copy(): called on nil board") }
 
 	ret := new(Board)
 
@@ -97,12 +92,10 @@ func (self *Board) Copy() *Board {
 }
 
 func (self *Board) HasKo() bool {
-	if self == nil { panic("Board.HasKo(): called on nil board") }
 	return self.Ko != ""
 }
 
 func (self *Board) SetKo(p string) {
-	if self == nil { panic("Board.SetKo(): called on nil board") }
 	if ValidPoint(p, self.Size) == false {
 		self.Ko = ""
 	} else {
@@ -111,12 +104,10 @@ func (self *Board) SetKo(p string) {
 }
 
 func (self *Board) ClearKo() {
-	if self == nil { panic("Board.ClearKo(): called on nil board") }
 	self.Ko = ""
 }
 
 func (self *Board) Dump() {
-	if self == nil { panic("Board.Dump(): called on nil board") }
 	self.DumpBoard()
 	fmt.Printf("\n")
 	fmt.Printf("Captures by Black: %d\n", self.CapturesBy[BLACK])
@@ -126,8 +117,6 @@ func (self *Board) Dump() {
 }
 
 func (self *Board) DumpBoard() {
-
-	if self == nil { panic("Board.DumpBoard(): called on nil board") }
 
 	ko_x, ko_y, _ := ParsePoint(self.Ko, self.Size)		// Usually -1, -1
 
@@ -161,8 +150,6 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 	//
 	// Instead of this, node.PlayMove() is the correct way to make a
 	// new node from an existing one.
-
-	if self == nil { panic("Board.PlaceStone(): called on nil board") }
 
 	if colour != BLACK && colour != WHITE {
 		panic("Board.PlaceStone(): no colour")
@@ -210,8 +197,6 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 }
 
 func (self *Board) DestroyGroup(p string) int {			// Returns stones removed.
-
-	if self == nil { panic("Board.DestroyGroup(): called on nil board") }
 
 	colour := self.GetState(p)
 

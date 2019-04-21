@@ -1,12 +1,10 @@
 package sgf
 
 func (self *Node) Parent() *Node {
-	if self == nil { panic("Node.Parent(): called on nil node") }
 	return self.parent
 }
 
 func (self *Node) Children() []*Node {
-	if self == nil { panic("Node.Children(): called on nil node") }
 	var ret []*Node
 	for _, child := range self.children {
 		ret = append(ret, child)
@@ -15,7 +13,6 @@ func (self *Node) Children() []*Node {
 }
 
 func (self *Node) MainChild() *Node {
-	if self == nil { panic("Node.MainChild(): called on nil node") }
 	if len(self.children) == 0 {
 		return nil
 	}
@@ -25,8 +22,6 @@ func (self *Node) MainChild() *Node {
 func (self *Node) SetParent(new_parent *Node) {
 
 	// Nothing will stop you creating a cyclic structure, which will then hang immediately.
-
-	if self == nil { panic("Node.SetParent(): called on nil node") }
 
 	if self.parent != nil {
 		for i := len(self.parent.children) - 1; i >= 0; i-- {
@@ -46,7 +41,6 @@ func (self *Node) SetParent(new_parent *Node) {
 }
 
 func (self *Node) GetRoot() *Node {
-	if self == nil { panic("Node.GetRoot(): called on nil node") }
 	node := self
 	for {
 		if node.parent != nil {
@@ -58,7 +52,6 @@ func (self *Node) GetRoot() *Node {
 }
 
 func (self *Node) GetEnd() *Node {
-	if self == nil { panic("Node.GetEnd(): called on nil node") }
 	node := self
 	for {
 		if len(node.children) > 0 {
@@ -70,8 +63,6 @@ func (self *Node) GetEnd() *Node {
 }
 
 func (self *Node) GetLine() []*Node {		// The line of nodes from root to here
-
-	if self == nil { panic("Node.GetLine(): called on nil node") }
 
 	var ret []*Node
 
@@ -96,8 +87,6 @@ func (self *Node) GetLine() []*Node {		// The line of nodes from root to here
 
 func (self *Node) CountDescendents() int {
 
-	if self == nil { panic("Node.CountDescendents(): called on nil node") }
-
 	count := 0
 
 	for _, child := range self.children {
@@ -109,6 +98,5 @@ func (self *Node) CountDescendents() int {
 }
 
 func (self *Node) NodesInTree() int {
-	if self == nil { panic("Node.NodesInTree(): called on nil node") }
 	return self.GetRoot().CountDescendents() + 1
 }

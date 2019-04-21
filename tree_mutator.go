@@ -7,8 +7,6 @@ type mutFunc func(original *Node) map[string][]string
 
 func (self *Node) MutateTree(mutator mutFunc) *Node {
 
-	if self == nil { panic("Node.MutateTree(): called on nil node") }
-
 	// We mutate the entire tree but we want to return the node that's equivalent to self.
 	// To accomplish this, mutate_recursive() gets a pointer to a pointer which it can set
 	// when it sees that it is mutating self, which is the initial value of that pointer.

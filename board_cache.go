@@ -51,8 +51,6 @@ func (self *Node) Board() *Board {
 	// The cache relies on the fact that mutating properties B, W, AB, AW, AE, PL
 	// cannot be added to a node after creation.
 
-	if self == nil { panic("Node.Board(): called on nil node") }
-
 	if self.__board_cache == nil {
 		if self.parent != nil {
 			self.__board_cache = self.parent.Board()

@@ -35,8 +35,6 @@ func NewNode(parent *Node) *Node {
 
 func (self *Node) AddValue(key, value string) {			// Handles escaping; no other function should!
 
-	if self == nil { panic("Node.AddValue(): called on nil node") }
-
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
 
 	value = escape_string(value)
@@ -50,8 +48,6 @@ func (self *Node) AddValue(key, value string) {			// Handles escaping; no other 
 }
 
 func (self *Node) SetValue(key, value string) {
-
-	if self == nil { panic("Node.SetValue(): called on nil node") }
 
 	// self.mutor_check(key)							// Not needed because AddValue() will call it.
 
@@ -67,8 +63,6 @@ func (self *Node) GetValue(key string) (value string, ok bool) {
 
 	// Get the __UNESCAPED__ value for the key, on the assumption that there's only 1 value.
 
-	if self == nil { panic("Node.GetValue(): called on nil node") }
-
 	list := self.props[key]
 
 	if len(list) == 0 {
@@ -81,8 +75,6 @@ func (self *Node) GetValue(key string) (value string, ok bool) {
 func (self *Node) AllValues(key string) []string {
 
 	// Return all __UNESCAPED__ values for the key, possibly zero
-
-	if self == nil { panic("Node.AllValues(): called on nil node") }
 
 	list := self.props[key]
 
@@ -99,8 +91,6 @@ func (self *Node) AllProperties() map[string][]string {
 
 	// Return an __UNESCAPED__ copy of the entire dictionary.
 
-	if self == nil { panic("Node.AllProperties(): called on nil node") }
-
 	ret := make(map[string][]string)
 
 	for key, _ := range self.props {
@@ -111,8 +101,6 @@ func (self *Node) AllProperties() map[string][]string {
 }
 
 func (self *Node) DeleteValue(key, value string) {
-
-	if self == nil { panic("Node.DeleteValue(): called on nil node") }
 
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
 
@@ -131,11 +119,7 @@ func (self *Node) DeleteValue(key, value string) {
 }
 
 func (self *Node) DeleteKey(key string) {
-
-	if self == nil { panic("Node.DeleteKey(): called on nil node") }
-
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
-
 	delete(self.props, key)
 }
 

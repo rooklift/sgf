@@ -85,18 +85,26 @@ func (self *Node) GetLine() []*Node {		// The line of nodes from root to here
 	return ret
 }
 
-func (self *Node) CountDescendents() int {
-
-	count := 0
-
+func (self *Node) SubtreeSize() int {
+	count := 1
 	for _, child := range self.children {
-		count += 1
-		count += child.CountDescendents()
+		count += child.SubtreeSize()
 	}
-
 	return count
 }
 
-func (self *Node) NodesInTree() int {
-	return self.GetRoot().CountDescendents() + 1
+func (self *Node) TreeSize() int {
+	return self.GetRoot().SubtreeSize()
+}
+
+func (self *Node) SubtreeNodes() []*Node {
+	ret := []*Node{self}
+	for _, child := range self.children {
+		ret = append(ret, child.SubtreeNodes()...)
+	}
+	return ret
+}
+
+func (self *Node) TreeNodes() []*Node {
+	return self.GetRoot().SubtreeNodes()
 }

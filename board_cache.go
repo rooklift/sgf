@@ -47,9 +47,6 @@ func (self *Node) mutor_check(key string) {
 func (self *Node) Board() *Board {
 
 	// Returns a __COPY__ of the cached board for this node, creating that if needed.
-	//
-	// The cache relies on the fact that mutating properties B, W, AB, AW, AE, PL
-	// cannot be added to a node after creation.
 
 	if self.__board_cache == nil {
 		if self.parent != nil {

@@ -21,8 +21,6 @@ func (self *Node) MainChild() *Node {
 
 func (self *Node) SetParent(new_parent *Node) {
 
-	// Nothing will stop you creating a cyclic structure, which will then hang immediately.
-
 	if self.parent != nil {
 		for i := len(self.parent.children) - 1; i >= 0; i-- {
 			if self.parent.children[i] == self {
@@ -37,7 +35,21 @@ func (self *Node) SetParent(new_parent *Node) {
 		self.parent.children = append(self.parent.children, self)
 	}
 
+	self.cyclic_attactment_detection()
 	self.clear_board_cache_recursive()		// IMPORTANT!
+}
+
+func (self *Node) cyclic_attactment_detection() {
+	node := self
+	for {
+		if node.parent == nil {
+			return
+		}
+		if node.parent == self {
+			panic("Cyclic structure created.")
+		}
+		node = node.parent
+	}
 }
 
 func (self *Node) GetRoot() *Node {

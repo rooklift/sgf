@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-// Parent retuns the parent of a node. This will be nil if the node is the root
+// Parent returns the parent of a node. This will be nil if the node is the root
 // of the tree.
 func (self *Node) Parent() *Node {
 	return self.parent

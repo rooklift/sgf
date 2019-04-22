@@ -48,7 +48,7 @@ func main() {
 	node, err := node.PlayMove("cf")					// "cf" is SGF-speak
 	fmt.Printf("%v\n", err)								// Prints nil (no error)
 
-	// One can get an SGF coordinate (e.g. "cf") by calling Point().
+	// We can get an SGF coordinate (e.g. "cf") by calling Point().
 	// Note that the coordinate system is zeroth-based, from the top left.
 
 	node, err = node.PlayMove(sgf.Point(2, 5))

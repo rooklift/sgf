@@ -33,7 +33,7 @@ func (self *Node) Save(filename string) error {
 	return nil
 }
 
-func (self *Node) write_tree(outfile io.Writer) {		// Relies on values already being correctly backslash-escaped
+func (self *Node) write_tree(outfile io.Writer) {
 
 	node := self
 
@@ -48,7 +48,7 @@ func (self *Node) write_tree(outfile io.Writer) {		// Relies on values already b
 			fmt.Fprintf(outfile, "%s", key)
 
 			for _, value := range node.props[key] {
-				fmt.Fprintf(outfile, "[%s]", value)
+				fmt.Fprintf(outfile, "[%s]", escape_string(value))
 			}
 		}
 
@@ -75,6 +75,22 @@ func (self *Node) write_tree(outfile io.Writer) {		// Relies on values already b
 
 	fmt.Fprintf(outfile, ")\n")
 	return
+}
+
+func escape_string(s string) string {
+
+	// Treating the input as a byte sequence, not a sequence of code points. Meh.
+
+	var new_s []byte
+
+	for n := 0; n < len(s); n++ {
+		if s[n] == '\\' || s[n] == ']' {
+			new_s = append(new_s, '\\')
+		}
+		new_s = append(new_s, s[n])
+	}
+
+	return string(new_s)
 }
 
 // Load reads an SGF file (or GIB file, if the extension .gib is present)
@@ -161,7 +177,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): node == nil after: else if c == ']'")
 				}
-				node.AddValue(key, value)		// This handles escaping.
+				node.AddValue(key, value)
 			} else {
 				value += string(c)
 			}

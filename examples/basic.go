@@ -22,17 +22,21 @@ func main() {
 	// The normal way to create new nodes is by playing moves.
 	// If successful, PlayMove() returns the new node.
 
-	node, err := node.PlayMove(sgf.Point(2, 5))
-	fmt.Printf("%v\n", err)								// Prints nil
+	node, err := node.PlayMove("cf")					// "cf" is SGF-speak
+	fmt.Printf("%v\n", err)								// Prints nil (no error)
+
+	// One can get an SGF coordinate (e.g. "cf") by calling Point().
+	// Note that the coordinate system is zeroth-based, from the top left.
+
+	node, err = node.PlayMove(sgf.Point(2, 5))
+	fmt.Printf("%v\n", err)								// Already filled
 
 	// Illegal moves (including suicide and basic ko) will return an error.
 	// As a convenience, PlayMove() returns the original node in this case.
 	// You may still wish to check for errors...
 
-	node, err = node.PlayMove(sgf.Point(2, 5))
-	fmt.Printf("%v\n", err)
 	node, err = node.PlayMove(sgf.Point(19, 19))
-	fmt.Printf("%v\n", err)
+	fmt.Printf("%v\n", err)								// Off-board
 
 	// We can create variations from any node.
 
@@ -43,10 +47,6 @@ func main() {
 	// Colours are determined intelligently, but we can always force a colour.
 
 	node.PlayMoveColour(sgf.Point(2, 5), sgf.WHITE)		// Create variation 3
-
-	// By the way, what are these mysterious sgf.Points, anyway?
-
-	fmt.Printf("%v\n", sgf.Point(0, 0))					// Prints "aa"
 
 	// We can iterate through a node's children.
 
@@ -65,8 +65,8 @@ func main() {
 	// Doing the same action on the same node many times just returns the first-created child each time.
 
 	foo := node.Pass()
-	bar := node.Pass()									// Does not create a new node.
-	node = node.Pass()									// Does not create a new node.
+	bar := node.Pass()									// Does not create a new node
+	node = node.Pass()									// Does not create a new node
 
 	fmt.Printf("%v, %v\n", foo == bar, bar == node)		// true, true
 
@@ -75,7 +75,7 @@ func main() {
 
 	node.SetValue("C", "White passed. Lets highlight all white stones for some reason...")
 
-	board := node.Board()								// Note that this is a deep copy.
+	board := node.Board()								// Note that this is a deep copy
 
 	for x := 0; x < board.Size; x++ {
 		for y := 0; y < board.Size; y++ {
@@ -96,7 +96,7 @@ func main() {
 	// remade as needed.
 
 	root.AddValue("AB", "jj")							// Editing the root...
-	board = node.Board()								// But looking at current node.
+	board = node.Board()								// but looking at current node
 
 	fmt.Printf("%v\n", board.GetState("jj") == sgf.BLACK)
 

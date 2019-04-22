@@ -8,6 +8,8 @@ import (
 
 const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+// NewTree returns a root node for the given size, with various sensible
+// properties.
 func NewTree(size int) *Node {
 
 	// Creates a new root node with standard properties.
@@ -25,6 +27,8 @@ func NewTree(size int) *Node {
 	return node
 }
 
+// AdjacentPoints returns a slice of all points (formatted as SGF coordinates, e.g. "dd")
+// that are adjacent to the given point, on the given board size.
 func AdjacentPoints(s string, size int) []string {
 
 	x, y, onboard := ParsePoint(s, size)
@@ -51,6 +55,10 @@ func AdjacentPoints(s string, size int) []string {
 	return ret
 }
 
+// ParsePoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
+// the x and y values (zeroth-indexed) of that point, as well as a boolean value
+// indicating whether the coordinates were on the board. If they were not, the
+// coordinates returned are always -1, -1.
 func ParsePoint(s string, size int) (x, y int, onboard bool) {
 
 	// e.g. "cd" --> 2,3
@@ -79,11 +87,15 @@ func ParsePoint(s string, size int) (x, y int, onboard bool) {
 	}
 }
 
+// ValidPoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
+// a boolean indicating whether the coordinate was on the board.
 func ValidPoint(s string, size int) bool {
 	_, _, onboard := ParsePoint(s, size)
 	return onboard
 }
 
+// Point generates an SGF coordinate (e.g. "dd") from x and y values. The
+// arguments are considered zeroth-indexed.
 func Point(x, y int) string {
 	if x < 0 || x >= 52 || y < 0 || y >= 52 {
 		return ""
@@ -91,6 +103,8 @@ func Point(x, y int) string {
 	return string(alpha[x]) + string(alpha[y])
 }
 
+// IsStarPoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
+// true if it would be considered a star (hoshi) point.
 func IsStarPoint(p string, size int) bool {
 
 	if size < 9 {
@@ -133,6 +147,10 @@ func IsStarPoint(p string, size int) bool {
 	return good_x && good_y
 }
 
+// HandicapPoints19 returns a slice of SGF coordinates (e.g. "dd") that
+// are Black's handicap stones in a 19x19 game of go, for the specified
+// handicap. The tygem argument indicates whether the 3rd stone in an
+// H3 game should be in the top left.
 func HandicapPoints19(handicap int, tygem bool) []string {
 
 	if handicap > 9 {
@@ -160,6 +178,8 @@ func HandicapPoints19(handicap int, tygem bool) []string {
 	return ret
 }
 
+// ParsePointList takes an SGF list of points (e.g. "dd:fg") and
+// returns a slice containing all points indicated.
 func ParsePointList(s string, size int) []string {
 
 	if len(s) != 5 || s[2] != ':' {
@@ -195,6 +215,8 @@ func ParsePointList(s string, size int) []string {
 	return ret
 }
 
+// LoadArgOrQuit loads the filename given in os.Args[n] and returns the root
+// node. If this is not possible, the program exits.
 func LoadArgOrQuit(n int) *Node {
 
 	if len(os.Args) <= n {

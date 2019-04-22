@@ -20,6 +20,8 @@ var ColourLongNames = map[Colour]string {
 	WHITE: "White",
 }
 
+// Opposite returns the opposite colour (if called on BLACK or WHITE) otherwise
+// it returns EMPTY.
 func (c Colour) Opposite() Colour {
 	if c == WHITE { return BLACK }
 	if c == BLACK { return WHITE }

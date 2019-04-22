@@ -4,10 +4,19 @@ import (
 	"fmt"
 )
 
+// PlayMove attempts to play the specified move at the node. The argument should
+// be an SGF-formatted coordinate, e.g. "dd". The colour is determined
+// intelligently. If successful, a new node is created, and attached as a child.
+// That child is then returned and the error is nil. However, if the specified
+// move already existed in a child, that child is returned instead and no new
+// node is created; the error is still nil. On failure, the original node is
+// returned, along with an error. Failure indicates the move was illegal.
 func (self *Node) PlayMove(p string) (*Node, error) {							// Uses board info to determine colour.
 	return self.PlayMoveColour(p, self.Board().Player)
 }
 
+// PlayMoveColour is like PlayMove, except the colour is specified rather than
+// being automatically determined.
 func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// Returns new node on success; self on failure.
 
 	if colour != BLACK && colour != WHITE {
@@ -56,10 +65,16 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 	return proposed_node, nil
 }
 
+// Pass passes. The colour is determined intelligently. Normally, a new node is
+// created, and attached as a child. However, if the specified pass already
+// existed in a child, that child is returned instead and no new node is
+// created.
 func (self *Node) Pass() *Node {												// Uses board info to determine colour.
 	return self.PassColour(self.Board().Player)
 }
 
+// PassColour is like Pass, except the colour is specified rather than being
+// automatically determined.
 func (self *Node) PassColour(colour Colour) *Node {
 
 	if colour != BLACK && colour != WHITE {

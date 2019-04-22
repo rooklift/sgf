@@ -9,6 +9,9 @@ import (
 	"strings"
 )
 
+// Save saves the entire game tree to the specified location. It does not need
+// to be called from the root node, but can be called from any node in an SGF
+// tree.
 func (self *Node) Save(filename string) error {
 
 	// Keep this check so we never overwrite files with nothing:
@@ -75,6 +78,9 @@ func (self *Node) write_tree(outfile io.Writer) {		// Relies on values already b
 	return
 }
 
+// Load reads an SGF file (or GIB file, if the extension .gib is present)
+// creating an tree of SGF nodes, and returning the root. The input file is
+// closed automatically.
 func Load(filename string) (*Node, error) {
 
 	file_bytes, err := ioutil.ReadFile(filename)

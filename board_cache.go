@@ -7,10 +7,10 @@ import (
 	"strconv"
 )
 
-var MUTORS = []string{"B", "W", "AB", "AW", "AE", "PL", "SZ"}
+var mutors = []string{"B", "W", "AB", "AW", "AE", "PL", "SZ"}
 
 var TotalBoardsGenerated int			// For debugging.
-var TotalBoardsDeleted int
+var TotalBoardsDeleted int				// For debugging.
 
 // -----------------------------------------------------------------------------------------------
 // clear_board_cache_recursive() needs to be called whenever a node's board cache becomes invalid.
@@ -34,7 +34,7 @@ func (self *Node) mutor_check(key string) {
 
 	// If the key changes the board, all descendent boards are also invalid.
 
-	for _, s := range MUTORS {
+	for _, s := range mutors {
 		if key == s {
 			self.clear_board_cache_recursive()
 			break
@@ -44,9 +44,12 @@ func (self *Node) mutor_check(key string) {
 
 // -----------------------------------------------------------------------------------------------
 
+// Board returns a COPY of the cached board for this SGF node, creating the
+// cached version if needed. Note that various actions can invalidate the cache,
+// in which case it will be destroyed automagically. Examples of such actions
+// are changing a board-altering property in a node or its ancestors, or
+// changing a node's position in the tree. These actions are safe to do.
 func (self *Node) Board() *Board {
-
-	// Returns a __COPY__ of the cached board for this node, creating that if needed.
 
 	if self.__board_cache == nil {
 		if self.parent != nil {

@@ -1,10 +1,11 @@
 package sgf
 
-// MutateTree() takes as its argument a function which examines a node and generates
-// a new property map for the mutated version of the node in the new tree.
-
 type mutFunc func(original *Node, boardsize int) map[string][]string
 
+// MutateTree creates a new tree that is isomorphic to the original tree. The only argument
+// is a function which examines each node and returns a map of the keys and values which
+// should exist in the isomorphic node. The node returned by MutateTree is the one in the
+// new tree which is equivalent to the node on which MutateTree was called.
 func (self *Node) MutateTree(mutator mutFunc) *Node {
 
 	root := self.GetRoot()

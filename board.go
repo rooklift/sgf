@@ -6,7 +6,10 @@ import (
 
 var HoshiString = "."
 
-type Board struct {					// Contains everything about a go position, except superko stuff
+// A Board contains information about a Go position. It is possible to generate
+// boards from nodes in an SGF tree, but modifying boards created in this way
+// has no effect on the SGF nodes themselves.
+type Board struct {
 	Size				int
 	Player				Colour
 	Ko					string
@@ -15,6 +18,7 @@ type Board struct {					// Contains everything about a go position, except super
 	CapturesBy			map[Colour]int
 }
 
+// NewBoard returns an empty board of specified size.
 func NewBoard(sz int) *Board {
 
 	if sz < 1 || sz > 52 {
@@ -39,6 +43,8 @@ func NewBoard(sz int) *Board {
 	return board
 }
 
+// GetState returns the colour at the specified location. The argument should be
+// an SGF-formatted coordinate, e.g. "dd".
 func (self *Board) GetState(p string) Colour {
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
@@ -47,6 +53,8 @@ func (self *Board) GetState(p string) Colour {
 	return self.State[x][y]
 }
 
+// SetState sets the colour at the specified location. The argument should be an
+// SGF-formatted coordinate, e.g. "dd".
 func (self *Board) SetState(p string, c Colour) {
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
@@ -55,6 +63,8 @@ func (self *Board) SetState(p string, c Colour) {
 	self.State[x][y] = c
 }
 
+// SetStateFromList sets the colour at the specified locations. The argument
+// should be an SGF-formatted rectangle, e.g. "dd:fg".
 func (self *Board) SetStateFromList(s string, c Colour) {
 	points := ParsePointList(s, self.Size)
 	for _, point := range points {
@@ -62,6 +72,7 @@ func (self *Board) SetStateFromList(s string, c Colour) {
 	}
 }
 
+// Copy returns a deep copy of the board.
 func (self *Board) Copy() *Board {
 
 	ret := new(Board)
@@ -91,10 +102,14 @@ func (self *Board) Copy() *Board {
 	return ret
 }
 
+// HasKo returns true if the board has a ko square, on which capture by the
+// current player to move is prohibited.
 func (self *Board) HasKo() bool {
 	return self.Ko != ""
 }
 
+// SetKo sets the ko square. The argument should be an SGF-formatted coordinate,
+// e.g. "dd".
 func (self *Board) SetKo(p string) {
 	if ValidPoint(p, self.Size) == false {
 		self.Ko = ""
@@ -103,10 +118,12 @@ func (self *Board) SetKo(p string) {
 	}
 }
 
+// ClearKo removes the ko square, if any.
 func (self *Board) ClearKo() {
 	self.Ko = ""
 }
 
+// Dump prints the board, and some information about captures and next player.
 func (self *Board) Dump() {
 	self.DumpBoard()
 	fmt.Printf("\n")
@@ -116,6 +133,7 @@ func (self *Board) Dump() {
 	fmt.Printf("Next to play: %v\n", ColourLongNames[self.Player])
 }
 
+// DumpBoard prints the board.
 func (self *Board) DumpBoard() {
 
 	ko_x, ko_y, _ := ParsePoint(self.Ko, self.Size)		// Usually -1, -1
@@ -142,14 +160,12 @@ func (self *Board) DumpBoard() {
 	}
 }
 
+// PlaceStone places a stone of the specified colour at the given location. The
+// argument should be an SGF-formatted coordinate, e.g. "dd". Aside from the
+// obvious sanity checks, there are no legality checks. As a reminder, editing a
+// board has no effect on the node in an SGF tree from which it was created (if
+// any).
 func (self *Board) PlaceStone(p string, colour Colour) {
-
-	// Other than sanity checks, there is no legality check here.
-	// Nor should there be. This only alters a board, and if called
-	// by the user program, will have no effect whatsoever on any node.
-	//
-	// Instead of this, node.PlayMove() is the correct way to make a
-	// new node from an existing one.
 
 	if colour != BLACK && colour != WHITE {
 		panic("Board.PlaceStone(): no colour")
@@ -196,7 +212,10 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 	return
 }
 
-func (self *Board) DestroyGroup(p string) int {			// Returns stones removed.
+// DestroyGroup deletes the group at the specified location. The argument should
+// be an SGF-formatted coordinate, e.g. "dd", referring to any stone in the
+// group to be destroyed. The number of stones removed is returned.
+func (self *Board) DestroyGroup(p string) int {
 
 	colour := self.GetState(p)
 

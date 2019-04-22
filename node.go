@@ -1,9 +1,12 @@
 package sgf
 
-// Note: internally, strings are kept in an escaped state e.g. \] and \\
-// However, when using the API, your functions will send and receive
-// unescaped strings.
-
+// A Node is the fundamental unit in an SGF tree. Nodes are implemented as maps
+// of type map[string][]string. In other words, a key can have multiple values,
+// all of which are held as strings. Internally, these strings are kept in an
+// escaped state, -- \] and \\ -- however callers must send and receive
+// unescaped strings; any required escaping and unescaping is handled
+// automatically. A Node also contains information about the node's parent (if
+// not root) and a list of all child nodes.
 type Node struct {
 	props			map[string][]string
 	children		[]*Node
@@ -18,6 +21,7 @@ type Node struct {
 	__board_cache	*Board
 }
 
+// NewNode creates a new node with the specified parent.
 func NewNode(parent *Node) *Node {
 
 	node := new(Node)
@@ -33,6 +37,9 @@ func NewNode(parent *Node) *Node {
 
 // -----------------------------------------------------------------------------
 
+// AddValue adds the specified string as a value for the given key. Escaping is
+// handled automatically. If the value already exists for the key, nothing
+// happens.
 func (self *Node) AddValue(key, value string) {			// Handles escaping; no other function should!
 
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
@@ -47,6 +54,8 @@ func (self *Node) AddValue(key, value string) {			// Handles escaping; no other 
 	self.props[key] = append(self.props[key], value)
 }
 
+// SetValue sets the specified string as the first and only value for the given
+// key. Escaping is handled automatically.
 func (self *Node) SetValue(key, value string) {
 
 	// self.mutor_check(key)							// Not needed because AddValue() will call it.
@@ -55,13 +64,15 @@ func (self *Node) SetValue(key, value string) {
 	self.AddValue(key, value)
 }
 
+// ValueCount returns the number of values a key has.
 func (self *Node) ValueCount(key string) int {
 	return len(self.props[key])
 }
 
+// GetValue returns the first value for the given key, if present, in which case
+// ok will be true. Otherwise it returns "" and false. Any string returned will
+// have been automatically unescaped.
 func (self *Node) GetValue(key string) (value string, ok bool) {
-
-	// Get the __UNESCAPED__ value for the key, on the assumption that there's only 1 value.
 
 	list := self.props[key]
 
@@ -72,13 +83,13 @@ func (self *Node) GetValue(key string) (value string, ok bool) {
 	return unescape_string(list[0]), true
 }
 
+// AllValues returns a new slice of strings, containing all the values
+// that a given key has. These strings are automatically unescaped.
 func (self *Node) AllValues(key string) []string {
-
-	// Return all __UNESCAPED__ values for the key, possibly zero
 
 	list := self.props[key]
 
-	var ret []string									// Make a new slice to avoid aliasing.
+	var ret []string									// Make a new slice so that it's safe to modify.
 
 	for _, s := range list {
 		ret = append(ret, unescape_string(s))
@@ -87,19 +98,21 @@ func (self *Node) AllValues(key string) []string {
 	return ret
 }
 
+// AllProperties returns a copy of the entire dictionary in a node.
+// All values contained are automatically unescaped.
 func (self *Node) AllProperties() map[string][]string {
-
-	// Return an __UNESCAPED__ copy of the entire dictionary.
 
 	ret := make(map[string][]string)
 
 	for key, _ := range self.props {
-		ret[key] = self.AllValues(key)					// Will handle the unescaping and copying (anti-aliasing).
+		ret[key] = self.AllValues(key)					// Will handle the unescaping and copying.
 	}
 
 	return ret
 }
 
+// DeleteValue checks if the given key has the given value, and removes
+// that value, if present.
 func (self *Node) DeleteValue(key, value string) {
 
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
@@ -118,6 +131,7 @@ func (self *Node) DeleteValue(key, value string) {
 	}
 }
 
+// DeleteKey deletes the given key and all of its values.
 func (self *Node) DeleteKey(key string) {
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
 	delete(self.props, key)

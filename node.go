@@ -83,8 +83,21 @@ func (self *Node) GetValue(key string) (value string, ok bool) {
 	return unescape_string(list[0]), true
 }
 
-// AllValues returns a new slice of strings, containing all the values
-// that a given key has. These strings are automatically unescaped.
+// AllKeys returns a new slice of strings, containing all the keys that the node
+// has.
+func (self *Node) AllKeys() []string {
+
+	var ret []string
+
+	for key, _ := range self.props {
+		ret = append(ret, key)
+	}
+
+	return ret
+}
+
+// AllValues returns a new slice of strings, containing all the values that a
+// given key has in this node. These strings are automatically unescaped.
 func (self *Node) AllValues(key string) []string {
 
 	list := self.props[key]
@@ -98,8 +111,8 @@ func (self *Node) AllValues(key string) []string {
 	return ret
 }
 
-// AllProperties returns a copy of the entire dictionary in a node.
-// All values contained are automatically unescaped.
+// AllProperties returns a copy of the entire dictionary in a node. All values
+// contained are automatically unescaped.
 func (self *Node) AllProperties() map[string][]string {
 
 	ret := make(map[string][]string)
@@ -111,8 +124,8 @@ func (self *Node) AllProperties() map[string][]string {
 	return ret
 }
 
-// DeleteValue checks if the given key has the given value, and removes
-// that value, if present.
+// DeleteValue checks if the given key in this node has the given value, and
+// removes that value, if it does.
 func (self *Node) DeleteValue(key, value string) {
 
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.

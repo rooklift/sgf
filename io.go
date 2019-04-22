@@ -9,9 +9,8 @@ import (
 	"strings"
 )
 
-// Save saves the entire game tree to the specified location. It does not need
-// to be called from the root node, but can be called from any node in an SGF
-// tree.
+// Save saves the entire game tree to the specified file. It does not need to be
+// called from the root node, but can be called from any node in an SGF tree.
 func (self *Node) Save(filename string) error {
 
 	// Keep this check so we never overwrite files with nothing:

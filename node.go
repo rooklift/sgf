@@ -76,7 +76,7 @@ func (self *Node) GetValue(key string) (value string, ok bool) {
 		return "", false
 	}
 
-	return (list[0]), true
+	return list[0], true
 }
 
 // AllKeys returns a new slice of strings, containing all the keys that the node

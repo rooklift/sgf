@@ -23,12 +23,17 @@ func (self *Node) Save(filename string) error {
 	if err != nil {
 		return err
 	}
-	defer outfile.Close()
 
 	w := bufio.NewWriter(outfile)						// bufio for speedier output if file is huge.
-	defer w.Flush()
-
 	self.GetRoot().write_tree(w)
+	w.Flush()											// Is this needed? I forget.
+
+	// We don't defer outfile.Close() like normal people so we can check its error here, just in case...
+
+	err = outfile.Close()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

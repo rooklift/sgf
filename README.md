@@ -1,4 +1,4 @@
-Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu). An auto-generated [list of methods etc](https://godoc.org/github.com/fohristiwhirl/sgf) is available at GoDoc.
+Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu). Some auto-generated documentation is available for the various methods, etc, [at GoDoc](https://godoc.org/github.com/fohristiwhirl/sgf).
 
 # Technical notes
 

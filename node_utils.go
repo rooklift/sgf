@@ -11,7 +11,7 @@ func (self *Node) Parent() *Node {
 	return self.parent
 }
 
-// Children returns a new slice of all a node's child nodes.
+// Children returns a new slice of pointers to all the node's children.
 func (self *Node) Children() []*Node {
 	var ret []*Node
 	for _, child := range self.children {
@@ -138,7 +138,7 @@ func (self *Node) TreeSize() int {
 	return self.GetRoot().SubtreeSize()
 }
 
-// SubtreeNodes returns a new slice of every node in a node's subtree, including
+// SubtreeNodes returns a slice of every node in a node's subtree, including
 // itself.
 func (self *Node) SubtreeNodes() []*Node {
 	ret := []*Node{self}
@@ -148,7 +148,7 @@ func (self *Node) SubtreeNodes() []*Node {
 	return ret
 }
 
-// TreeNodes returns a new slice of every node in the whole tree.
+// TreeNodes returns a slice of every node in the whole tree.
 func (self *Node) TreeNodes() []*Node {
 	return self.GetRoot().SubtreeNodes()
 }

@@ -44,7 +44,7 @@ func NewBoard(sz int) *Board {
 }
 
 // GetState returns the colour at the specified location. The argument should be
-// an SGF-formatted coordinate, e.g. "dd".
+// an SGF coordinate, e.g. "dd".
 func (self *Board) GetState(p string) Colour {
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
@@ -54,7 +54,7 @@ func (self *Board) GetState(p string) Colour {
 }
 
 // SetState sets the colour at the specified location. The argument should be an
-// SGF-formatted coordinate, e.g. "dd".
+// SGF coordinate, e.g. "dd".
 func (self *Board) SetState(p string, c Colour) {
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
@@ -64,7 +64,7 @@ func (self *Board) SetState(p string, c Colour) {
 }
 
 // SetStateFromList sets the colour at the specified locations. The argument
-// should be an SGF-formatted rectangle, e.g. "dd:fg".
+// should be an SGF rectangle, e.g. "dd:fg".
 func (self *Board) SetStateFromList(s string, c Colour) {
 	points := ParsePointList(s, self.Size)
 	for _, point := range points {
@@ -108,8 +108,8 @@ func (self *Board) HasKo() bool {
 	return self.Ko != ""
 }
 
-// SetKo sets the ko square. The argument should be an SGF-formatted coordinate,
-// e.g. "dd".
+// SetKo sets the ko square. The argument should be an SGF coordinate, e.g.
+// "dd".
 func (self *Board) SetKo(p string) {
 	if ValidPoint(p, self.Size) == false {
 		self.Ko = ""
@@ -161,10 +161,9 @@ func (self *Board) DumpBoard() {
 }
 
 // PlaceStone places a stone of the specified colour at the given location. The
-// argument should be an SGF-formatted coordinate, e.g. "dd". Aside from the
-// obvious sanity checks, there are no legality checks. As a reminder, editing a
-// board has no effect on the node in an SGF tree from which it was created (if
-// any).
+// argument should be an SGF coordinate, e.g. "dd". Aside from the obvious
+// sanity checks, there are no legality checks. As a reminder, editing a board
+// has no effect on the node in an SGF tree from which it was created (if any).
 func (self *Board) PlaceStone(p string, colour Colour) {
 
 	if colour != BLACK && colour != WHITE {
@@ -213,8 +212,8 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 }
 
 // DestroyGroup deletes the group at the specified location. The argument should
-// be an SGF-formatted coordinate, e.g. "dd", referring to any stone in the
-// group to be destroyed. The number of stones removed is returned.
+// be an SGF coordinate, e.g. "dd", referring to any stone in the group to be
+// destroyed. The number of stones removed is returned.
 func (self *Board) DestroyGroup(p string) int {
 
 	colour := self.GetState(p)

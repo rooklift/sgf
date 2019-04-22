@@ -5,7 +5,7 @@ import (
 )
 
 // GroupSize counts the size of the group at the given location. The argument
-// should be an SGF-formatted coordinate, e.g. "dd".
+// should be an SGF coordinate, e.g. "dd".
 func (self *Board) GroupSize(p string) int {
 
 	// If the point is empty, should this return 0, or the size of the empty "string"? Hmm.
@@ -37,9 +37,9 @@ func (self *Board) group_size_recurse(p string, touched map[string]bool) int {
 }
 
 // HasLiberties checks whether the group at the given location has any
-// liberties. The argument should be an SGF-formatted coordinate, e.g. "dd".
-// Unless the calling program is directly manipulating the board, this condition
-// will always be true, since normally zero-liberty groups are never present.
+// liberties. The argument should be an SGF coordinate, e.g. "dd". Unless the
+// calling program is directly manipulating the board, this condition will
+// always be true, since normally zero-liberty groups are never present.
 func (self *Board) HasLiberties(p string) bool {
 	touched := make(map[string]bool)
 	return self.has_liberties_recurse(p, touched)
@@ -66,7 +66,7 @@ func (self *Board) has_liberties_recurse(p string, touched map[string]bool) bool
 }
 
 // GroupSize counts the liberties of the group at the given location. The
-// argument should be an SGF-formatted coordinate, e.g. "dd".
+// argument should be an SGF coordinate, e.g. "dd".
 func (self *Board) Liberties(p string) int {
 
 	// What on earth is the correct answer to how many liberties an empty square has?
@@ -104,7 +104,7 @@ func (self *Board) liberties_recurse(p string, touched map[string]bool) int {
 }
 
 // Singleton returns true if the specified stone is a group of size 1. The
-// argument should be an SGF-formatted coordinate, e.g. "dd".
+// argument should be an SGF coordinate, e.g. "dd".
 func (self *Board) Singleton(p string) bool {
 
 	colour := self.GetState(p)

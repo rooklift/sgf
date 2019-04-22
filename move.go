@@ -5,12 +5,12 @@ import (
 )
 
 // PlayMove attempts to play the specified move at the node. The argument should
-// be an SGF-formatted coordinate, e.g. "dd". The colour is determined
-// intelligently. If successful, a new node is created, and attached as a child.
-// That child is then returned and the error is nil. However, if the specified
-// move already existed in a child, that child is returned instead and no new
-// node is created; the error is still nil. On failure, the original node is
-// returned, along with an error. Failure indicates the move was illegal.
+// be an SGF coordinate, e.g. "dd". The colour is determined intelligently. If
+// successful, a new node is created, and attached as a child. That child is
+// then returned and the error is nil. However, if the specified move already
+// existed in a child, that child is returned instead and no new node is
+// created; the error is still nil. On failure, the original node is returned,
+// along with an error. Failure indicates the move was illegal.
 func (self *Node) PlayMove(p string) (*Node, error) {							// Uses board info to determine colour.
 	return self.PlayMoveColour(p, self.Board().Player)
 }

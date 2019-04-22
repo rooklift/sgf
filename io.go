@@ -112,9 +112,9 @@ func load_sgf(sgf string) (*Node, error) {
 
 func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
-	// FIXME: this is not unicode aware. Potential problems exist
-	// if a unicode code point contains a meaningful character,
-	// especially the bytes ] and \
+	// FIXME: this is not unicode aware. Potential problems exist if
+	// a unicode code point contains a meaningful character, especially
+	// the bytes ] and \ although this is impossible for utf-8.
 
 	var root *Node
 	var node *Node

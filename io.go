@@ -83,11 +83,17 @@ func Load(filename string) (*Node, error) {
 		return nil, err
 	}
 
-	root, err := load_sgf(string(file_bytes))
+	data := string(file_bytes)
+
+	// If RAM wastage was ever an issue, one can do the super-spooky:
+	// data := *(*string)(unsafe.Pointer(&file_bytes))
+	// See https://github.com/golang/go/issues/25484 for details.
+
+	root, err := load_sgf(data)
 
 	if err != nil {
 		if strings.HasSuffix(filename, ".gib") {
-			root, err = load_gib(string(file_bytes))
+			root, err = load_gib(data)
 			if err != nil {
 				return nil, err
 			}

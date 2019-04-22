@@ -26,6 +26,8 @@ func (self *Node) MainChild() *Node {
 
 func (self *Node) SetParent(new_parent *Node) {
 
+	// Delete from parent's list of children...
+
 	if self.parent != nil {
 		for i := len(self.parent.children) - 1; i >= 0; i-- {
 			if self.parent.children[i] == self {
@@ -34,27 +36,30 @@ func (self *Node) SetParent(new_parent *Node) {
 		}
 	}
 
+	// Attach to parent (at both ends)...
+
 	self.parent = new_parent
 
 	if self.parent != nil {
 		self.parent.children = append(self.parent.children, self)
 	}
 
-	self.cyclic_attachment_detection()
-	self.clear_board_cache_recursive()		// IMPORTANT!
-}
+	// Check no cyclic structure was created...
 
-func (self *Node) cyclic_attachment_detection() {
 	node := self
 	for {
 		if node.parent == nil {
-			return
+			break
 		}
 		if node.parent == self {
 			panic("Cyclic structure created.")
 		}
 		node = node.parent
 	}
+
+	// Clear the board cache (and that of all descendents) because it's invalid now.
+
+	self.clear_board_cache_recursive()
 }
 
 func (self *Node) GetRoot() *Node {

@@ -24,9 +24,9 @@ func (self *Node) Save(filename string) error {
 		return err
 	}
 
-	w := bufio.NewWriter(outfile)						// bufio for speedier output if file is huge.
+	w := bufio.NewWriter(outfile)		// bufio for speedier output if file is huge.
 	self.GetRoot().write_tree(w)
-	w.Flush()											// Is this needed? I forget.
+	w.Flush()							// "After all data has been written, the client should call the Flush method"
 
 	// We didn't defer outfile.Close() like normal people so we can check its error here, just in case...
 

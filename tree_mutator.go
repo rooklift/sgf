@@ -7,13 +7,16 @@ type mutFunc func(original *Node, boardsize int) map[string][]string
 
 func (self *Node) MutateTree(mutator mutFunc) *Node {
 
+	root := self.GetRoot()
+	boardsize := root.RootBoardSize()
+
 	// We mutate the entire tree but we want to return the node that's equivalent to self.
 	// To accomplish this, mutate_recursive() gets a pointer to a pointer which it can set
 	// when it sees that it is mutating self, which is the initial value of that pointer.
 
 	foo := self
 
-	mutate_recursive(self.GetRoot(), 0, mutator, &foo)
+	mutate_recursive(root, boardsize, mutator, &foo)
 
 	if foo == self {
 		panic("Node.MutateTree(): failed to set equivalent node, this is normally impossible")
@@ -23,10 +26,6 @@ func (self *Node) MutateTree(mutator mutFunc) *Node {
 }
 
 func mutate_recursive(node *Node, boardsize int, mutator mutFunc, foo **Node) *Node {
-
-	if boardsize == 0 {
-		boardsize = node.RootBoardSize()
-	}
 
 	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
 	// Although not essential, the code is clearer this way.

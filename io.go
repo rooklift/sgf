@@ -94,7 +94,8 @@ func escape_string(s string) string {
 }
 
 // Load reads an SGF file (or GIB file, if the extension .gib is present)
-// creating a tree of SGF nodes, and returning the root. The input file is
+// creating a tree of SGF nodes, and returning the root. If the file has more
+// than one SGF tree (a rarity) only the first is loaded. The input file is
 // closed automatically.
 func Load(filename string) (*Node, error) {
 
@@ -227,4 +228,9 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	}
 
 	return root, len(sgf), nil		// Return characters read.
+}
+
+// TODO
+func LoadCollection(filename string) ([]*Node, error) {
+	return nil, nil
 }

@@ -5,7 +5,7 @@ package sgf
 // all of which are held as strings. Internally, these strings are kept in an
 // escaped state, -- \] and \\ -- however callers must send and receive
 // unescaped strings; any required escaping and unescaping is handled
-// automatically. A Node also contains information about the node's parent (if
+// automatically. A node also contains information about the node's parent (if
 // not root) and a list of all child nodes.
 type Node struct {
 	props			map[string][]string

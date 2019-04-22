@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-var HoshiString = "."
+var HoshiString = "."	// Can be changed. Used when printing the board.
 
 // A Board contains information about a Go position. It is possible to generate
 // boards from nodes in an SGF tree, but modifying boards created in this way

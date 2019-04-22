@@ -3,18 +3,14 @@ package main
 // Read one or more directories of files (non-recursive).
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"time"
 
 	sgf ".."
 )
 
 func main() {
-
-	start_time := time.Now()
 
 	dirs := os.Args[1:]
 
@@ -30,8 +26,6 @@ func main() {
 			handle_file(d, f.Name())
 		}
 	}
-
-	fmt.Printf("Elapsed: %v\n", time.Now().Sub(start_time))
 }
 
 func handle_file(dirname, filename string) error {

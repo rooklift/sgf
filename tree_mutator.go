@@ -1,9 +1,9 @@
 package sgf
 
-type mutFunc func(original *Node) map[string][]string
-
 // MutateTree() takes as its argument a function which examines a node and generates
 // a new property map for the mutated version of the node in the new tree.
+
+type mutFunc func(original *Node, boardsize int) map[string][]string
 
 func (self *Node) MutateTree(mutator mutFunc) *Node {
 
@@ -13,7 +13,7 @@ func (self *Node) MutateTree(mutator mutFunc) *Node {
 
 	foo := self
 
-	mutate_recursive(self.GetRoot(), mutator, &foo)
+	mutate_recursive(self.GetRoot(), 0, mutator, &foo)
 
 	if foo == self {
 		panic("Node.MutateTree(): failed to set equivalent node, this is normally impossible")
@@ -22,7 +22,11 @@ func (self *Node) MutateTree(mutator mutFunc) *Node {
 	return foo
 }
 
-func mutate_recursive(node *Node, mutator mutFunc, foo **Node) *Node {
+func mutate_recursive(node *Node, boardsize int, mutator mutFunc, foo **Node) *Node {
+
+	if boardsize == 0 {
+		boardsize = node.RootBoardSize()
+	}
 
 	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
 	// Although not essential, the code is clearer this way.
@@ -37,7 +41,7 @@ func mutate_recursive(node *Node, mutator mutFunc, foo **Node) *Node {
 		*foo = mutant
 	}
 
-	new_props := mutator(node)
+	new_props := mutator(node, boardsize)
 
 	for key, list := range new_props {
 		for _, val := range list {
@@ -46,7 +50,7 @@ func mutate_recursive(node *Node, mutator mutFunc, foo **Node) *Node {
 	}
 
 	for _, child := range(node.children) {
-		mutant_child := mutate_recursive(child, mutator, foo)
+		mutant_child := mutate_recursive(child, boardsize, mutator, foo)
 		mutant_child.parent = mutant
 		mutant.children = append(mutant.children, mutant_child)
 	}

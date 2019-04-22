@@ -79,7 +79,7 @@ func (self *Node) write_tree(outfile io.Writer) {		// Relies on values already b
 }
 
 // Load reads an SGF file (or GIB file, if the extension .gib is present)
-// creating an tree of SGF nodes, and returning the root. The input file is
+// creating a tree of SGF nodes, and returning the root. The input file is
 // closed automatically.
 func Load(filename string) (*Node, error) {
 

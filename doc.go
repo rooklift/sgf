@@ -11,4 +11,6 @@
 // Nodes can be used to generate boards via node.Board(), but editing a board
 // has no effect on the node that created it. Creating boards is relatively
 // expensive, but often unnecessary for simple tasks.
+//
+// New nodes are generally best created with node.PlayMove().
 package sgf

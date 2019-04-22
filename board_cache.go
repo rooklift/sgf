@@ -44,11 +44,11 @@ func (self *Node) mutor_check(key string) {
 
 // -----------------------------------------------------------------------------------------------
 
-// Board returns a COPY of the cached board for this SGF node, creating the
-// cached version if needed. Note that various actions can invalidate the cache,
-// in which case it will be destroyed automagically. Examples of such actions
-// are changing a board-altering property in a node or its ancestors, or
-// changing a node's position in the tree. These actions are safe to do.
+// Board uses the entire history of the tree up to this point to return a board.
+// The result is cached intelligently. The cached board is purged automatically
+// if it becomes invalid (e.g. because an earlier board-altering property
+// changed). Note that modifying a board has no effect on the SGF node which
+// created it.
 func (self *Node) Board() *Board {
 
 	if self.__board_cache == nil {

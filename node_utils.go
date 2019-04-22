@@ -154,7 +154,7 @@ func (self *Node) TreeNodes() []*Node {
 }
 
 // RootBoardSize travels up the tree to the root, and then finds the board size,
-// which it returns. If no SZ property is present, it returns 19.
+// which it returns as an integer. If no SZ property is present, it returns 19.
 func (self *Node) RootBoardSize() int {
 	root := self.GetRoot()
 	sz_string, _ := root.GetValue("SZ")

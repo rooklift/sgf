@@ -36,7 +36,7 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 	}
 
 	if board.HasKo() && board.Ko == p {
-		if colour == board.Player {					// i.e. we've not forced a move by the wrong colour.
+		if colour == board.Player {												// i.e. we've not forced a move by the wrong colour.
 			return self, fmt.Errorf("Node.PlayMoveColour(): ko recapture forbidden")
 		}
 	}
@@ -46,7 +46,7 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 	key := "B"; if colour == WHITE { key = "W" }
 
 	for _, child := range self.children {
-		if child.ValueCount(key) == 1 {				// Ignore any illegal nodes with 2 or more...
+		if child.ValueCount(key) == 1 {											// Ignore any illegal nodes with 2 or more...
 			mv, _ := child.GetValue(key)
 			if mv == p {
 				return child, nil
@@ -54,7 +54,7 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 		}
 	}
 
-	proposed_node := NewNode(self)					// Note: already appends child to self.
+	proposed_node := NewNode(self)												// Note: already appends child to self.
 	proposed_node.SetValue(key, p)
 
 	if proposed_node.Board().GetState(p) == EMPTY {								// Because of suicide.
@@ -66,8 +66,8 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 }
 
 // Pass passes. The colour is determined intelligently. Normally, a new node is
-// created, and attached as a child. However, if the specified pass already
-// existed in a child, that child is returned instead and no new node is
+// created, attached as a child, and returned. However, if the specified pass
+// already existed in a child, that child is returned instead and no new node is
 // created.
 func (self *Node) Pass() *Node {												// Uses board info to determine colour.
 	return self.PassColour(self.Board().Player)

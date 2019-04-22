@@ -45,10 +45,10 @@ func (self *Node) mutor_check(key string) {
 // -----------------------------------------------------------------------------------------------
 
 // Board uses the entire history of the tree up to this point to return a board.
-// The result is cached intelligently. The cached board is purged automatically
-// if it becomes invalid (e.g. because an earlier board-altering property
-// changed). Note that modifying a board has no effect on the SGF node which
-// created it.
+// A copy of the result is cached intelligently; the cached board is also purged
+// automatically if it becomes invalid (e.g. because a board-altering property
+// changed in a relevant part of the SGF tree). Note that modifying a board has
+// no effect on the SGF node which created it.
 func (self *Node) Board() *Board {
 
 	if self.__board_cache == nil {

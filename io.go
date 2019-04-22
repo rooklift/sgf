@@ -28,7 +28,7 @@ func (self *Node) Save(filename string) error {
 	self.GetRoot().write_tree(w)
 	w.Flush()											// Is this needed? I forget.
 
-	// We don't defer outfile.Close() like normal people so we can check its error here, just in case...
+	// We didn't defer outfile.Close() like normal people so we can check its error here, just in case...
 
 	err = outfile.Close()
 	if err != nil {

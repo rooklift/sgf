@@ -88,7 +88,8 @@ func ParsePoint(s string, size int) (x, y int, onboard bool) {
 }
 
 // ValidPoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
-// a boolean indicating whether the coordinate is on the board.
+// a boolean indicating whether the coordinate is on the board. Internally, the
+// library considers all moves that fail this test to be passes.
 func ValidPoint(s string, size int) bool {
 	_, _, onboard := ParsePoint(s, size)
 	return onboard

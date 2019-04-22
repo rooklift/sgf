@@ -1,5 +1,10 @@
 package sgf
 
+import (
+	"fmt"
+	"strconv"
+)
+
 func (self *Node) Parent() *Node {
 	return self.parent
 }
@@ -122,4 +127,52 @@ func (self *Node) SubtreeNodes() []*Node {
 
 func (self *Node) TreeNodes() []*Node {
 	return self.GetRoot().SubtreeNodes()
+}
+
+func (self *Node) RootBoardSize() int {			// Fairly expensive, callers should save the result if needed again.
+	root := self.GetRoot()
+	sz_string, _ := root.GetValue("SZ")
+	sz, _ := strconv.Atoi(sz_string)
+	if sz < 1  { return 19 }
+	if sz > 52 { return 52 }					// SGF limit
+	return sz
+}
+
+func (self *Node) Dyer() string {
+
+	vals := map[int]string{20: "??", 40: "??", 60: "??", 31: "??", 51: "??", 71: "??"}
+
+	move_count := 0
+
+	node := self.GetRoot()
+	size := node.RootBoardSize()
+
+	for {
+
+		for _, key := range []string{"B", "W"} {
+
+			mv, ok := node.GetValue(key)		// Assuming just 1, as per SGF specs.
+
+			if ok {
+
+				move_count++
+
+				if move_count == 20 || move_count == 40 || move_count == 60 ||
+				   move_count == 31 || move_count == 51 || move_count == 71 {
+
+					if ValidPoint(mv, size) {
+						vals[move_count] = mv
+					}
+				}
+			}
+		}
+
+		node = node.MainChild()
+
+		if node == nil || move_count > 71 {
+			break
+		}
+	}
+
+	return fmt.Sprintf("%s%s%s%s%s%s", vals[20], vals[40], vals[60], vals[31], vals[51], vals[71])
 }

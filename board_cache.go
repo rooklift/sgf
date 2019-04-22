@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-var MUTORS = []string{"B", "W", "AB", "AW", "AE", "PL"}
+var MUTORS = []string{"B", "W", "AB", "AW", "AE", "PL", "SZ"}
 
 var TotalBoardsGenerated int			// For debugging.
 var TotalBoardsDeleted int

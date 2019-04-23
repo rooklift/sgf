@@ -128,10 +128,7 @@ func (self *Board) ClearKo() {
 // Dump prints the board, and some information about captures and next player.
 func (self *Board) Dump() {
 	self.DumpBoard()
-	fmt.Printf("\n")
-	fmt.Printf("Captures by Black: %d\n", self.CapturesBy[BLACK])
-	fmt.Printf("Captures by White: %d\n", self.CapturesBy[WHITE])
-	fmt.Printf("\n")
+	fmt.Printf("Captures: %d by Black || %d by White\n", self.CapturesBy[BLACK], self.CapturesBy[WHITE])
 	fmt.Printf("Next to play: %v\n", ColourLongNames[self.Player])
 }
 

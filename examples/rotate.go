@@ -20,29 +20,18 @@ func main() {
 // no parent or children.
 
 func rotate_clockwise(original *sgf.Node, boardsize int) *sgf.Node {
-
 	node := original.Copy()
-
 	for _, key := range []string{"AB", "AW", "AE", "B", "CR", "MA", "SL", "SQ", "TR", "W"} {
-
 		all_values := node.AllValues(key)
-
-		if len(all_values) > 0 {
-
-			node.DeleteKey(key)
-
-			for _, val := range all_values {
-				x, y, onboard := sgf.ParsePoint(val, boardsize)
-				if onboard {
-					new_x := boardsize - 1 - y
-					new_y := x
-					node.AddValue(key, sgf.Point(new_x, new_y))
-				} else {
-					node.AddValue(key, val)
-				}
+		for i, val := range all_values {
+			x, y, onboard := sgf.ParsePoint(val, boardsize)
+			if onboard {
+				new_x := boardsize - 1 - y
+				new_y := x
+				all_values[i] = sgf.Point(new_x, new_y)
 			}
 		}
+		node.SetValues(key, all_values)
 	}
-
 	return node
 }

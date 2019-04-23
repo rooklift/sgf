@@ -201,7 +201,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 			} else if c == ']' {
 				inside = false
 				if node == nil {
-					return nil, 0, fmt.Errorf("load_sgf_tree(): node == nil after: else if c == ']'")
+					return nil, 0, fmt.Errorf("load_sgf_tree(): value ended by ] but node was nil")
 				}
 				node.AddValue(key, value)
 			} else {
@@ -216,7 +216,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				keycomplete = true
 			} else if c == '(' {
 				if node == nil {
-					return nil, 0, fmt.Errorf("load_sgf_tree(): node == nil after: else if c == '('")
+					return nil, 0, fmt.Errorf("load_sgf_tree(): new subtree started but node was nil")
 				}
 				_, chars_to_skip, err = load_sgf_tree(sgf[i + 1:], node)		// substrings are memory efficient in Golang
 				if err != nil {
@@ -224,7 +224,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				}
 			} else if c == ')' {
 				if root == nil {
-					return nil, 0, fmt.Errorf("load_sgf_tree(): root == nil after: else if c == ')'")
+					return nil, 0, fmt.Errorf("load_sgf_tree(): subtree ended but local root was nil")
 				}
 				return root, i + 1, nil		// Return characters read.
 			} else if c == ';' {

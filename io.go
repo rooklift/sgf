@@ -211,6 +211,9 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 		} else {
 
 			if c == '[' {
+				if node == nil {
+					return nil, 0, fmt.Errorf("load_sgf_tree(): value started by [ but node was nil")
+				}
 				value = ""
 				inside = true
 				keycomplete = true
@@ -252,7 +255,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	// reading a final ')' character. Still, we can return what we have.
 
 	if root == nil {
-		return nil, 0, fmt.Errorf("load_sgf_tree(): root == nil at function end")
+		return nil, 0, fmt.Errorf("load_sgf_tree(): local root was nil at function end")
 	}
 
 	return root, len(sgf), nil		// Return characters read.

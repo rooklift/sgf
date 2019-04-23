@@ -133,7 +133,7 @@ func Load(filename string) (*Node, error) {
 	// data := *(*string)(unsafe.Pointer(&file_bytes))
 	// See https://github.com/golang/go/issues/25484 for details.
 
-	root, err := load_sgf(data)
+	root, _, err := load_sgf_tree(data, nil)
 
 	if err != nil {
 		if strings.HasSuffix(filename, ".gib") {
@@ -149,29 +149,17 @@ func Load(filename string) (*Node, error) {
 	return root, nil
 }
 
-func load_sgf(sgf string) (*Node, error) {
-
-	sgf = strings.TrimSpace(sgf)
-
-	if sgf[0] == '(' {				// the load_sgf_tree() function assumes the
-		sgf = sgf[1:]				// leading "(" has already been discarded.
-	} else {
-		return nil, fmt.Errorf("load_sgf(): Unexpected character before SGF tree")
-	}
-
-	root, _, err := load_sgf_tree(sgf, nil)
-	return root, err
-}
-
 func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
+	// A tree is whatever is between ( and ).
+	//
 	// FIXME: this is not unicode aware. Potential problems exist if
 	// a unicode code point contains a meaningful character, especially
 	// the bytes ] and \ although this is impossible for utf-8.
 
 	var root *Node
 	var node *Node
-
+	var tree_started bool
 	var inside bool
 	var value string
 	var key string
@@ -187,6 +175,17 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 		if chars_to_skip > 0 {
 			chars_to_skip--
 			continue
+		}
+
+		if tree_started == false {
+			if c <= ' ' {				// Reasonable definition of whitespace, where ' ' is byte 32.
+				continue
+			} else if c == '(' {
+				tree_started = true
+				continue
+			} else {
+				return nil, 0, fmt.Errorf("load_sgf_tree(): unexpected byte Ox%x before (", c)
+			}
 		}
 
 		if inside {
@@ -221,7 +220,8 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): new subtree started but node was nil")
 				}
-				_, chars_to_skip, err = load_sgf_tree(sgf[i + 1:], node)		// substrings are memory efficient in Golang
+				_, chars_to_skip, err = load_sgf_tree(sgf[i:], node)	// Substrings are memory efficient in Golang
+				chars_to_skip -= 1										// We already read the ( character once, as did the recurse.
 				if err != nil {
 					return nil, 0, err
 				}
@@ -278,16 +278,8 @@ func LoadCollection(filename string) ([]*Node, error) {
 	data := string(file_bytes)
 
 	for {
-		data = strings.TrimSpace(data)
-
 		if len(data) == 0 {
 			return ret, nil
-		}
-
-		if data[0] == '(' {				// the load_sgf_tree() function assumes the
-			data = data[1:]				// leading "(" has already been discarded.
-		} else {
-			return ret, fmt.Errorf("LoadCollection(): Unexpected character outside of SGF trees")
 		}
 
 		root, chars_read, err := load_sgf_tree(data, nil)

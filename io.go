@@ -160,7 +160,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	var root *Node
 	var node *Node
 	var tree_started bool
-	var inside bool
+	var inside_value bool
 	var value string
 	var key string
 	var keycomplete bool
@@ -180,7 +180,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 			}
 		}
 
-		if inside {
+		if inside_value {
 
 			if c == '\\' {
 				if len(sgf) <= i + 1 {
@@ -190,7 +190,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				value += string(sgf[i + 1])
 				i++								// Skip 1 character.
 			} else if c == ']' {
-				inside = false
+				inside_value = false
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): value ended by ] but node was nil")
 				}
@@ -206,7 +206,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): value started by [ but node was nil")
 				}
 				value = ""
-				inside = true
+				inside_value = true
 				keycomplete = true
 			} else if c == '(' {
 				if node == nil {

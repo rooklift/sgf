@@ -3,9 +3,10 @@ package sgf
 // MutFunc is the type of function accepted by MutateTree.
 type MutFunc func(original *Node, boardsize int) *Node
 
-// MutateTree creates a new tree that is isomorphic to the original tree. The only argument
-// is a function which examines each node and returns a map of the keys and values which
-// should exist in the isomorphic node. The node returned by MutateTree is the one in the
+// MutateTree creates a new tree that is isomorphic to the original tree. The
+// only argument is a function which examines each node and returns a new node
+// to place in the new tree. The node returned by the mutator function must have
+// no parent and no children. The node returned by MutateTree is the one in the
 // new tree which is equivalent to the node on which MutateTree was called.
 func (self *Node) MutateTree(mutator MutFunc) *Node {
 
@@ -31,7 +32,7 @@ func mutate_recursive(node *Node, boardsize int, mutator MutFunc, foo **Node) *N
 
 	mutant := mutator(node, boardsize)
 
-	if mutant == node || mutant.parent != nil || len(mutant.children) > 0 {
+	if mutant == nil || mutant == node || mutant.parent != nil || len(mutant.children) > 0 {
 		panic("mutate_recursive(): the mutator function returned an improper node")
 	}
 

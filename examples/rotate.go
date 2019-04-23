@@ -26,9 +26,7 @@ func rotate_clockwise(original *sgf.Node, boardsize int) *sgf.Node {
 		for i, val := range all_values {
 			x, y, onboard := sgf.ParsePoint(val, boardsize)
 			if onboard {
-				new_x := boardsize - 1 - y
-				new_y := x
-				all_values[i] = sgf.Point(new_x, new_y)
+				all_values[i] = sgf.Point(boardsize - 1 - y, x)
 			}
 		}
 		node.SetValues(key, all_values)

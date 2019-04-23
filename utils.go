@@ -8,8 +8,8 @@ import (
 
 const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-// NewTree returns a root node for the given size, with various sensible
-// properties.
+// NewTree returns a root node for a game of the given board size, with various
+// sensible properties.
 func NewTree(size int) *Node {
 
 	// Creates a new root node with standard properties.

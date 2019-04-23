@@ -180,7 +180,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				tree_started = true
 				continue
 			} else {
-				return nil, 0, fmt.Errorf("load_sgf_tree(): unexpected byte Ox%x before (", c)
+				return nil, 0, fmt.Errorf("load_sgf_tree(): unexpected byte 0x%x before (", c)
 			}
 		}
 

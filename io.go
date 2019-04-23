@@ -9,16 +9,10 @@ import (
 	"strings"
 )
 
-// Save saves the entire game tree to the specified file. It does not need to be
-// called from the root node, but can be called from any node in an SGF tree.
-func (self *Node) Save(filename string) error {
-	return SaveCollection([]*Node{self}, filename)
-}
-
-// SaveCollection creates a new file, and saves each tree given to it into that
-// file. It is useful for saving the rarely-used SGF collection format. Note
-// that the location of the nodes in their trees is irrelevant: in each case,
-// the whole tree is always saved.
+// SaveCollection creates a new file, and saves each tree given into that file.
+// It is useful for saving the rarely-used SGF collection format. Note that the
+// location of the nodes in their trees is irrelevant: in each case, the whole
+// tree is always saved.
 func SaveCollection(nodes []*Node, filename string) error {
 
 	var roots []*Node
@@ -52,6 +46,13 @@ func SaveCollection(nodes []*Node, filename string) error {
 	}
 
 	return nil
+}
+
+// Save saves the entire game tree to the specified file. It does not need to be
+// called from the root node, but can be called from any node in an SGF tree -
+// the whole tree is always saved.
+func (self *Node) Save(filename string) error {
+	return SaveCollection([]*Node{self}, filename)
 }
 
 func (self *Node) write_tree(outfile io.Writer) {

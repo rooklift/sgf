@@ -290,7 +290,7 @@ func LoadCollection(filename string) ([]*Node, error) {
 		root, chars_read, err := load_sgf_tree(data, nil)
 
 		if err != nil {
-			return ret, nil
+			return ret, err
 		}
 
 		ret = append(ret, root)

@@ -49,17 +49,17 @@ func (self *Node) Copy() *Node {
 
 // AddValue adds the specified string as a value for the given key. If the value
 // already exists for the key, nothing happens.
-func (self *Node) AddValue(key, value string) {
+func (self *Node) AddValue(key, val string) {
 
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
 
 	for i := 0; i < len(self.props[key]); i++ {			// Ignore if the value already exists.
-		if self.props[key][i] == value {
+		if self.props[key][i] == val {
 			return
 		}
 	}
 
-	self.props[key] = append(self.props[key], value)
+	self.props[key] = append(self.props[key], val)
 }
 
 // DeleteKey deletes the given key and all of its values.
@@ -70,13 +70,13 @@ func (self *Node) DeleteKey(key string) {
 
 // DeleteValue checks if the given key in this node has the given value, and
 // removes that value, if it does.
-func (self *Node) DeleteValue(key, value string) {
+func (self *Node) DeleteValue(key, val string) {
 
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
 
 	for i := len(self.props[key]) - 1; i >= 0; i-- {
 		v := self.props[key][i]
-		if v == value {
+		if v == val {
 			self.props[key] = append(self.props[key][:i], self.props[key][i+1:]...)
 		}
 	}
@@ -94,17 +94,17 @@ func (self *Node) DeleteValue(key, value string) {
 
 // SetValue sets the specified string as the first and only value for the given
 // key.
-func (self *Node) SetValue(key, value string) {
+func (self *Node) SetValue(key, val string) {
 	self.DeleteKey(key)
-	self.AddValue(key, value)
+	self.AddValue(key, val)
 }
 
 // SetValues sets the values of the key to the values provided. The original
 // slice remains safe to modify.
 func (self *Node) SetValues(key string, values []string) {
 	self.DeleteKey(key)
-	for _, value := range values {
-		self.AddValue(key, value)
+	for _, val := range values {
+		self.AddValue(key, val)
 	}
 }
 
@@ -115,7 +115,7 @@ func (self *Node) ValueCount(key string) int {
 
 // GetValue returns the first value for the given key, if present, in which case
 // ok will be true. Otherwise it returns "" and false.
-func (self *Node) GetValue(key string) (value string, ok bool) {
+func (self *Node) GetValue(key string) (val string, ok bool) {
 
 	list := self.props[key]
 
@@ -143,12 +143,10 @@ func (self *Node) AllKeys() []string {
 // given key has in this node.
 func (self *Node) AllValues(key string) []string {
 
-	list := self.props[key]
-
 	var ret []string									// Make a new slice so that it's safe to modify.
 
-	for _, s := range list {
-		ret = append(ret, s)
+	for _, val := range self.props[key] {
+		ret = append(ret, val)
 	}
 
 	return ret

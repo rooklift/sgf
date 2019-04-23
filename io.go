@@ -95,7 +95,11 @@ func (self *Node) write_tree(outfile io.Writer) {
 
 	}
 
-	fmt.Fprintf(outfile, ")\n")
+	fmt.Fprintf(outfile, ")")
+
+	// We could print a newline...
+	// fmt.Fprintf(outfile, "\n")
+
 	return
 }
 

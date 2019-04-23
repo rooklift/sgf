@@ -1,12 +1,13 @@
 package sgf
 
-type mutFunc func(original *Node, boardsize int) map[string][]string
+// MutFunc is the type of function accepted by MutateTree.
+type MutFunc func(original *Node, boardsize int) map[string][]string
 
 // MutateTree creates a new tree that is isomorphic to the original tree. The only argument
 // is a function which examines each node and returns a map of the keys and values which
 // should exist in the isomorphic node. The node returned by MutateTree is the one in the
 // new tree which is equivalent to the node on which MutateTree was called.
-func (self *Node) MutateTree(mutator mutFunc) *Node {
+func (self *Node) MutateTree(mutator MutFunc) *Node {
 
 	root := self.GetRoot()
 	boardsize := root.RootBoardSize()
@@ -26,7 +27,7 @@ func (self *Node) MutateTree(mutator mutFunc) *Node {
 	return foo
 }
 
-func mutate_recursive(node *Node, boardsize int, mutator mutFunc, foo **Node) *Node {
+func mutate_recursive(node *Node, boardsize int, mutator MutFunc, foo **Node) *Node {
 
 	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
 	// Although not essential, the code is clearer this way.

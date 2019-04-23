@@ -25,7 +25,7 @@ func SaveCollection(nodes []*Node, filename string) error {
 
 	for _, node := range nodes {
 		if node != nil {
-			roots = append(roots, node.GetRoot())
+			roots = append(roots, node.GetRoot())		// Note that node.Save() relies on GetRoot() here.
 		}
 	}
 

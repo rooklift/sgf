@@ -12,11 +12,25 @@ import (
 // Save saves the entire game tree to the specified file. It does not need to be
 // called from the root node, but can be called from any node in an SGF tree.
 func (self *Node) Save(filename string) error {
+	return SaveCollection([]*Node{self}, filename)
+}
 
-	// Keep this check so we never overwrite files with nothing:
+// SaveCollection creates a new file, and saves each tree given to it into that
+// file. It is useful for saving the rarely-used SGF collection format. Note
+// that the location of the nodes in their trees is irrelevant: in each case,
+// the whole tree is always saved.
+func SaveCollection(nodes []*Node, filename string) error {
 
-	if self == nil {
-		return fmt.Errorf("Node.Save() called on nil node")
+	var roots []*Node
+
+	for _, node := range nodes {
+		if node != nil {
+			roots = append(roots, node.GetRoot())
+		}
+	}
+
+	if len(roots) == 0 {
+		return fmt.Errorf("SaveCollection(): No non-nil roots supplied")
 	}
 
 	outfile, err := os.Create(filename)
@@ -25,7 +39,9 @@ func (self *Node) Save(filename string) error {
 	}
 
 	w := bufio.NewWriter(outfile)		// bufio for speedier output if file is huge.
-	self.GetRoot().write_tree(w)
+	for _, root := range roots {
+		root.write_tree(w)
+	}
 	w.Flush()							// "After all data has been written, the client should call the Flush method"
 
 	// We didn't defer outfile.Close() like normal people so we can check its error here, just in case...

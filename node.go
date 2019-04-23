@@ -34,7 +34,18 @@ func NewNode(parent *Node) *Node {
 	return node
 }
 
-// -----------------------------------------------------------------------------
+// Copy provides a deep copy of the node with no attached parent or children.
+func (self *Node) Copy() *Node {
+	ret := new(Node)
+	ret.props = self.AllProperties()					// This is a deep copy of the map, so safe to use.
+	return ret
+}
+
+// ------------------------------------------------------------------------------------------------------------------
+// IMPORTANT...
+// AddValue(), DeleteKey(), and DeleteValue() adjust the properties directly and
+// so need to call mutor_check() to see if they are affecting any cached boards.
+// ------------------------------------------------------------------------------------------------------------------
 
 // AddValue adds the specified string as a value for the given key. If the value
 // already exists for the key, nothing happens.
@@ -51,14 +62,50 @@ func (self *Node) AddValue(key, value string) {
 	self.props[key] = append(self.props[key], value)
 }
 
+// DeleteKey deletes the given key and all of its values.
+func (self *Node) DeleteKey(key string) {
+	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
+	delete(self.props, key)
+}
+
+// DeleteValue checks if the given key in this node has the given value, and
+// removes that value, if it does.
+func (self *Node) DeleteValue(key, value string) {
+
+	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
+
+	for i := len(self.props[key]) - 1; i >= 0; i-- {
+		v := self.props[key][i]
+		if v == value {
+			self.props[key] = append(self.props[key][:i], self.props[key][i+1:]...)
+		}
+	}
+
+	if len(self.props[key]) == 0 {
+		delete(self.props, key)
+	}
+}
+
+// ------------------------------------------------------------------------------------------------------------------
+// IMPORTANT...
+// The rest of the functions are either read-only, or built up from the safe
+// functions above. None of these must adjust the properties directly.
+// ------------------------------------------------------------------------------------------------------------------
+
 // SetValue sets the specified string as the first and only value for the given
 // key.
 func (self *Node) SetValue(key, value string) {
-
-	// self.mutor_check(key)							// Not needed because AddValue() will call it.
-
-	self.props[key] = nil
+	self.DeleteKey(key)
 	self.AddValue(key, value)
+}
+
+// SetValues sets the values of the key to the values provided. The original
+// slice remains safe to modify.
+func (self *Node) SetValues(key string, values []string) {
+	self.DeleteKey(key)
+	for _, value := range values {
+		self.AddValue(key, value)
+	}
 }
 
 // ValueCount returns the number of values a key has.
@@ -116,36 +163,5 @@ func (self *Node) AllProperties() map[string][]string {
 		ret[key] = self.AllValues(key)					// Will handle the copying.
 	}
 
-	return ret
-}
-
-// DeleteValue checks if the given key in this node has the given value, and
-// removes that value, if it does.
-func (self *Node) DeleteValue(key, value string) {
-
-	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
-
-	for i := len(self.props[key]) - 1; i >= 0; i-- {
-		v := self.props[key][i]
-		if v == value {
-			self.props[key] = append(self.props[key][:i], self.props[key][i+1:]...)
-		}
-	}
-
-	if len(self.props[key]) == 0 {
-		delete(self.props, key)
-	}
-}
-
-// DeleteKey deletes the given key and all of its values.
-func (self *Node) DeleteKey(key string) {
-	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
-	delete(self.props, key)
-}
-
-// Copy provides a deep copy of the node with no attached parent or children.
-func (self *Node) Copy() *Node {
-	ret := new(Node)
-	ret.props = self.AllProperties()					// This is a deep copy of the map, so safe to use.
 	return ret
 }

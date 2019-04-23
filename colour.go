@@ -8,13 +8,13 @@ const (
 	WHITE
 )
 
-var ColourShortNames = map[Colour]string{
+var colour_short_names = map[Colour]string{
 	EMPTY: "?",
 	BLACK: "B",
 	WHITE: "W",
 }
 
-var ColourLongNames = map[Colour]string {
+var colour_long_names = map[Colour]string {
 	EMPTY: "??",
 	BLACK: "Black",
 	WHITE: "White",

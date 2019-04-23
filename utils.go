@@ -179,8 +179,8 @@ func HandicapPoints19(handicap int, tygem bool) []string {
 	return ret
 }
 
-// ParsePointList takes an SGF rectangle (e.g. "dd:fg") and returns a slice
-// containing all points indicated.
+// ParsePointList takes an SGF rectangle (e.g. "dd:fg") and a board size, and
+// returns a slice containing all points indicated.
 func ParsePointList(s string, size int) []string {
 
 	if len(s) != 5 || s[2] != ':' {

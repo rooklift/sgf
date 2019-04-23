@@ -272,6 +272,7 @@ func LoadCollection(filename string) ([]*Node, error) {
 	}
 
 	data := string(file_bytes)
+	data = strings.TrimSpace(data)		// Otherwise any trailing characters will trigger an extra attempt to read a tree.
 
 	for {
 		if len(data) == 0 {

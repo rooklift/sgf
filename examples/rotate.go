@@ -16,23 +16,33 @@ func main() {
 	fmt.Printf("Saved. %d nodes in original, %d nodes in mutated.\n", original.TreeSize(), mutated.TreeSize())
 }
 
-// The mutator function is shown the original node and must return the properties
-// that it wants the mutated node to have...
+// The mutator function is shown the original node and must return a new node with
+// no parent or children.
 
-func rotate_clockwise(original *sgf.Node, boardsize int) map[string][]string {
+func rotate_clockwise(original *sgf.Node, boardsize int) *sgf.Node {
 
-	props := original.AllProperties()		// Fetches a copy, which is safe to edit.
+	node := original.Copy()
 
 	for _, key := range []string{"AB", "AW", "AE", "B", "CR", "MA", "SL", "SQ", "TR", "W"} {
-		for i, s := range props[key] {
-			x, y, onboard := sgf.ParsePoint(s, boardsize)
-			if onboard {
-				new_x := boardsize - 1 - y
-				new_y := x
-				props[key][i] = sgf.Point(new_x, new_y)
+
+		all_values := node.AllValues(key)
+
+		if len(all_values) > 0 {
+
+			node.DeleteKey(key)
+
+			for _, val := range all_values {
+				x, y, onboard := sgf.ParsePoint(val, boardsize)
+				if onboard {
+					new_x := boardsize - 1 - y
+					new_y := x
+					node.AddValue(key, sgf.Point(new_x, new_y))
+				} else {
+					node.AddValue(key, val)
+				}
 			}
 		}
 	}
 
-	return props
+	return node
 }

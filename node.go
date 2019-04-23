@@ -107,7 +107,7 @@ func (self *Node) AllValues(key string) []string {
 	return ret
 }
 
-// AllProperties returns a copy of the entire dictionary in a node.
+// AllProperties returns a deep copy of the entire dictionary in a node.
 func (self *Node) AllProperties() map[string][]string {
 
 	ret := make(map[string][]string)
@@ -141,4 +141,11 @@ func (self *Node) DeleteValue(key, value string) {
 func (self *Node) DeleteKey(key string) {
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
 	delete(self.props, key)
+}
+
+// Copy provides a deep copy of the node with no attached parent or children.
+func (self *Node) Copy() *Node {
+	ret := NewNode(nil)
+	ret.props = self.AllProperties()					// This is a deep copy of the map, so safe to use.
+	return ret
 }

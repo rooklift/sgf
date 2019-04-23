@@ -1,7 +1,7 @@
 package sgf
 
 // MutFunc is the type of function accepted by MutateTree.
-type MutFunc func(original *Node, boardsize int) map[string][]string
+type MutFunc func(original *Node, boardsize int) *Node
 
 // MutateTree creates a new tree that is isomorphic to the original tree. The only argument
 // is a function which examines each node and returns a map of the keys and values which
@@ -29,10 +29,11 @@ func (self *Node) MutateTree(mutator MutFunc) *Node {
 
 func mutate_recursive(node *Node, boardsize int, mutator MutFunc, foo **Node) *Node {
 
-	// We call NewNode() with a nil parent so that we can handle parent/child relationships manually.
-	// Although not essential, the code is clearer this way.
+	mutant := mutator(node, boardsize)
 
-	mutant := NewNode(nil)
+	if mutant == node || mutant.parent != nil || len(mutant.children) > 0 {
+		panic("mutate_recursive(): the mutator function returned an improper node")
+	}
 
 	// foo starts off as the node whose mutant we ultimately want to return at the top level.
 	// When we actually see that node, we set foo to be the mutant. See note in MutateTree().
@@ -40,14 +41,6 @@ func mutate_recursive(node *Node, boardsize int, mutator MutFunc, foo **Node) *N
 
 	if node == *foo {
 		*foo = mutant
-	}
-
-	new_props := mutator(node, boardsize)
-
-	for key, list := range new_props {
-		for _, val := range list {
-			mutant.AddValue(key, val)
-		}
 	}
 
 	for _, child := range(node.children) {

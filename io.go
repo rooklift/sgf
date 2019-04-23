@@ -135,8 +135,11 @@ func Load(filename string) (*Node, error) {
 func load_sgf(sgf string) (*Node, error) {
 
 	sgf = strings.TrimSpace(sgf)
+
 	if sgf[0] == '(' {				// the load_sgf_tree() function assumes the
 		sgf = sgf[1:]				// leading "(" has already been discarded.
+	} else {
+		return nil, fmt.Errorf("load_sgf(): Unexpected character before SGF tree")
 	}
 
 	root, _, err := load_sgf_tree(sgf, nil)
@@ -228,6 +231,9 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 		}
 	}
 
+	// Just being here must mean we reached the actual end of the file without
+	// reading a final ')' character. Still, we can return what we have.
+
 	if root == nil {
 		return nil, 0, fmt.Errorf("load_sgf_tree(): root == nil at function end")
 	}
@@ -235,7 +241,41 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	return root, len(sgf), nil		// Return characters read.
 }
 
-// TODO
+// LoadCollection loads an SGF file and returns a slice of all root nodes found
+// in it. It is useful for reading the rare SGF files that are in such a format.
+// The input file is closed automatically.
 func LoadCollection(filename string) ([]*Node, error) {
-	return nil, nil
+
+	var ret []*Node
+
+	file_bytes, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return ret, err
+	}
+
+	data := string(file_bytes)
+
+	for {
+		data = strings.TrimSpace(data)
+
+		if len(data) == 0 {
+			return ret, nil
+		}
+
+		if data[0] == '(' {				// the load_sgf_tree() function assumes the
+			data = data[1:]				// leading "(" has already been discarded.
+		} else {
+			return ret, fmt.Errorf("LoadCollection(): Unexpected character outside of SGF trees")
+		}
+
+		root, chars_read, err := load_sgf_tree(data, nil)
+
+		if err != nil {
+			return ret, nil
+		}
+
+		ret = append(ret, root)
+
+		data = data[chars_read:]
+	}
 }

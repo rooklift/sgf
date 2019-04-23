@@ -145,7 +145,7 @@ func (self *Node) DeleteKey(key string) {
 
 // Copy provides a deep copy of the node with no attached parent or children.
 func (self *Node) Copy() *Node {
-	ret := NewNode(nil)
+	ret := new(Node)
 	ret.props = self.AllProperties()					// This is a deep copy of the map, so safe to use.
 	return ret
 }

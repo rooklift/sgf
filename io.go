@@ -212,11 +212,11 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): new subtree started but node was nil")
 				}
-				_, chars_to_skip, err := load_sgf_tree(sgf[i:], node)	// Substrings are memory efficient in Golang
-				i += chars_to_skip - 1									// We already read the ( character once, as did the recurse.
+				_, chars_to_skip, err := load_sgf_tree(sgf[i:], node)	// Substrings are memory efficient in Golang.
 				if err != nil {
 					return nil, 0, err
 				}
+				i += chars_to_skip - 1		// Subtract 1: the ( character we have read is also counted by the recurse.
 			} else if c == ')' {
 				if root == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): subtree ended but local root was nil")

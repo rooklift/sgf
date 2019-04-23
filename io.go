@@ -259,8 +259,10 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 }
 
 // LoadCollection loads an SGF file and returns a slice of all root nodes found
-// in it. It is useful for reading the rare SGF files that are in such a format.
-// The input file is closed automatically.
+// in it. It is useful for reading the rare SGF files that are in the
+// "collection" format. The input file is closed automatically. Note that it is
+// OK to use this function on normal, single-tree SGF files, in which case a
+// slice of length 1 will be returned.
 func LoadCollection(filename string) ([]*Node, error) {
 
 	var ret []*Node

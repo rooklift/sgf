@@ -164,18 +164,10 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	var value string
 	var key string
 	var keycomplete bool
-	var chars_to_skip int
-
-	var err error
 
 	for i := 0; i < len(sgf); i++ {
 
 		c := sgf[i]
-
-		if chars_to_skip > 0 {
-			chars_to_skip--
-			continue
-		}
 
 		if tree_started == false {
 			if c <= ' ' {				// Reasonable definition of whitespace, where ' ' is byte 32.
@@ -196,7 +188,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				}
 				// value += string('\\')		// Do not do this. Discard the escape slash.
 				value += string(sgf[i + 1])
-				chars_to_skip = 1
+				i++								// Skip 1 character.
 			} else if c == ']' {
 				inside = false
 				if node == nil {
@@ -220,8 +212,8 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): new subtree started but node was nil")
 				}
-				_, chars_to_skip, err = load_sgf_tree(sgf[i:], node)	// Substrings are memory efficient in Golang
-				chars_to_skip -= 1										// We already read the ( character once, as did the recurse.
+				_, chars_to_skip, err := load_sgf_tree(sgf[i:], node)	// Substrings are memory efficient in Golang
+				i += chars_to_skip - 1									// We already read the ( character once, as did the recurse.
 				if err != nil {
 					return nil, 0, err
 				}

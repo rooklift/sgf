@@ -92,6 +92,19 @@ func (self *Node) DeleteValue(key, val string) {
 // functions above. None of these must adjust the properties directly.
 // ------------------------------------------------------------------------------------------------------------------
 
+// GetValue returns the first value for the given key, if present, in which case
+// ok will be true. Otherwise it returns "" and false.
+func (self *Node) GetValue(key string) (val string, ok bool) {
+
+	list := self.props[key]
+
+	if len(list) == 0 {
+		return "", false
+	}
+
+	return list[0], true
+}
+
 // SetValue sets the specified string as the first and only value for the given
 // key.
 func (self *Node) SetValue(key, val string) {
@@ -108,22 +121,14 @@ func (self *Node) SetValues(key string, values []string) {
 	}
 }
 
+// KeyCount returns the number of keys a node has.
+func (self *Node) KeyCount() int {
+	return len(self.props)
+}
+
 // ValueCount returns the number of values a key has.
 func (self *Node) ValueCount(key string) int {
 	return len(self.props[key])
-}
-
-// GetValue returns the first value for the given key, if present, in which case
-// ok will be true. Otherwise it returns "" and false.
-func (self *Node) GetValue(key string) (val string, ok bool) {
-
-	list := self.props[key]
-
-	if len(list) == 0 {
-		return "", false
-	}
-
-	return list[0], true
 }
 
 // AllKeys returns a new slice of strings, containing all the keys that the node

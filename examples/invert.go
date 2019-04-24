@@ -12,7 +12,7 @@ var	reverse_map = map[string]string{
 	"B": "W", "W": "B", "AB": "AW", "AW": "AB", "PB": "PW", "PW": "PB"}
 
 func main() {
-	root := sgf.LoadArgOrQuit(1)					// Equivalent to sgf.Load(os.Args[1])
+	root := sgf.LoadArgOrQuit(1)							// Equivalent to sgf.Load(os.Args[1])
 	nodes := root.TreeNodes()
 
 	key_count1, val_count1 := root.TreeKeyValueCount()		// Proving all properties survived.

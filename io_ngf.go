@@ -143,9 +143,8 @@ func load_ngf(ngf string) (*Node, error) {
 				y := int(line[6]) - 66
 
 				if x >= 0 && x < boardsize && y >= 0 && y < boardsize {
-					p := Point(x, y)
 					node = NewNode(node)
-					node.SetValue(key, p)
+					node.SetValue(key, Point(x, y))
 				}
 			}
 		}

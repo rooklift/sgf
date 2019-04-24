@@ -65,9 +65,8 @@ func load_gib(gib string) (*Node, error) {
 			y, err2 := strconv.Atoi(fields[5])
 			if err1 == nil && err2 == nil {
 				key := "B"; if fields[3] == "2" { key = "W" }
-				val := Point(x, y)
 				node = NewNode(node)
-				node.SetValue(key, val)
+				node.SetValue(key, Point(x, y))
 			}
 		}
 	}

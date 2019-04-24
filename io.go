@@ -119,10 +119,11 @@ func escape_string(s string) string {
 	return string(new_s)
 }
 
-// Load reads an SGF file (or GIB file, if the extension .gib is present)
-// creating a tree of SGF nodes, and returning the root. The input file is
-// closed automatically. If the file has more than one SGF tree (a rarity) only
-// the first is loaded - use LoadCollection() for such files instead.
+// Load reads an SGF file (or GIB or NGF file, if the filename has that
+// extension) creating a tree of SGF nodes, and returning the root. The input
+// file is closed automatically. If the file has more than one SGF tree (a
+// rarity) only the first is loaded - use LoadCollection() for such files
+// instead.
 func Load(filename string) (*Node, error) {
 
 	file_bytes, err := ioutil.ReadFile(filename)

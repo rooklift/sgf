@@ -18,45 +18,77 @@ func load_ngf(ngf string) (*Node, error) {
 	var pw, pb, rawdate, re string
 	var komi float64
 
-	if len(lines) >= 9 {
-
-		boardsize, _ = strconv.Atoi(strings.TrimSpace(lines[1]))
-
-		pw_fields := strings.Fields(lines[2])
-		pb_fields := strings.Fields(lines[3])
-
-		if len(pw_fields) > 0 {
-			pw = pw_fields[0]
-		}
-
-		if len(pb_fields) > 0 {
-			pb = pb_fields[0]
-		}
-
-		handicap, _ = strconv.Atoi(strings.TrimSpace(lines[5]))
-
-		komi, _ = strconv.ParseFloat(strings.TrimSpace(lines[7]), 64)
-
-		if len(lines[8]) >= 8 {
-			rawdate = lines[8][0:8]
-		}
+	if len(lines) < 12 {
+		return nil, fmt.Errorf("load_ngf(): file too short")
 	}
 
-	if len(lines) >= 11 {
-		if strings.Contains(lines[10], "hite win") {
-			re = "W+"
-		} else if strings.Contains(lines[10], "lack win") {
-			re = "B+"
-		}
+	// ------------------------------------
+
+	boardsize, _ = strconv.Atoi(strings.TrimSpace(lines[1]))
+
+	if boardsize != 19 {
+		return nil, fmt.Errorf("load_ngf(): boardsize was not 19")
 	}
+
+	// ------------------------------------
+
+	pw_fields := strings.Fields(lines[2])
+	pb_fields := strings.Fields(lines[3])
+
+	if len(pw_fields) > 0 {
+		pw = pw_fields[0]
+	}
+
+	if len(pb_fields) > 0 {
+		pb = pb_fields[0]
+	}
+
+	// ------------------------------------
+
+	handicap, _ = strconv.Atoi(strings.TrimSpace(lines[5]))
 
 	if handicap < 0 || handicap > 9 {
 		return nil, fmt.Errorf("load_ngf(): got bad handicap")
 	}
 
-	if boardsize != 19 {
-		return nil, fmt.Errorf("load_ngf(): boardsize was not 19")
+	// ------------------------------------
+
+	komi, err := strconv.ParseFloat(strings.TrimSpace(lines[7]), 64)
+	if err == nil {
+		if float64(int(komi)) == komi {
+			komi += 0.5
+		}
 	}
+
+	// ------------------------------------
+
+	if len(lines[8]) >= 8 {
+		rawdate = lines[8][0:8]
+	}
+
+	// ------------------------------------
+
+	if strings.Contains(strings.ToLower(lines[10]), "white win") || strings.Contains(strings.ToLower(lines[10]), "black lose") {
+		re = "W+"
+	}
+	if strings.Contains(strings.ToLower(lines[10]), "black win") || strings.Contains(strings.ToLower(lines[10]), "white lose") {
+		re = "B+"
+	}
+
+	margin := ""
+
+	if strings.Contains(strings.ToLower(lines[10]), "resign") {
+		margin = "R"
+	}
+	if strings.Contains(strings.ToLower(lines[10]), "time") {
+		margin = "T"
+	}
+
+	// Finding a numeric margin in the file is... tricky. Not trying.
+
+	re += margin
+
+	// ------------------------------------
 
 	root := NewTree(boardsize)
 	node := root

@@ -14,7 +14,7 @@ func main() {
 			break
 		}
 		for _, child := range node.Children()[1:] {
-			child.SetParent(nil)
+			child.Detach()
 		}
 		node = node.MainChild()
 	}

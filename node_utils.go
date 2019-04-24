@@ -64,3 +64,9 @@ func (self *Node) SetParent(new_parent *Node) {
 
 	self.clear_board_cache_recursive()
 }
+
+// Detach sets a node's parent to nil, turning the node into a root. The node is
+// also removed from the parent's list of children.
+func (self *Node) Detach() {
+	self.SetParent(nil)
+}

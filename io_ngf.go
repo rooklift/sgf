@@ -86,7 +86,9 @@ func load_ngf(ngf string) (*Node, error) {
 
 	// Finding a numeric margin in the file is... tricky. Not trying.
 
-	re += margin
+	if re != "" {
+		re += margin
+	}
 
 	// ------------------------------------
 

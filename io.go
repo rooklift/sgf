@@ -141,12 +141,12 @@ func Load(filename string) (*Node, error) {
 	root, _, err := load_sgf_tree(data, nil)
 
 	if err != nil {
-		if strings.HasSuffix(filename, ".gib") || strings.HasSuffix(filename, ".GIB") {
+		if strings.HasSuffix(strings.ToLower(filename), ".gib") {
 			root, err = load_gib(data)
 			if err != nil {
 				return nil, err
 			}
-		} else if strings.HasSuffix(filename, ".ngf") || strings.HasSuffix(filename, ".NGF"){
+		} else if strings.HasSuffix(strings.ToLower(filename), ".ngf") {
 			root, err = load_ngf(data)
 			if err != nil {
 				return nil, err

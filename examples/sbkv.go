@@ -45,8 +45,8 @@ func handle_file(dirname, filename string) error {
 	for {
 
 		comment, _ := node.GetValue("C")
-		lines := strings.Split(comment, "\n")	// Always returns at least one string
-		val, err := strconv.ParseFloat(lines[0], 64)
+		lines := strings.Split(comment, "\n")			// Always returns at least one string
+		val, err := strconv.ParseFloat(strings.TrimSpace(lines[0]), 64)
 		if err == nil {
 			val *= 100
 			node.SetValue("SBKV", fmt.Sprintf("%.2f", val))

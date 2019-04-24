@@ -1,5 +1,7 @@
 package main
 
+// Reverses the colours in a game. Also adjusts komi, winner, and player names.
+
 import (
 	"fmt"
 	"os"

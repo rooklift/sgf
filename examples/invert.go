@@ -11,7 +11,7 @@ import (
 )
 
 var	reverse_map = map[string]string{
-	"B": "W", "W": "B", "AB": "AW", "AW": "AB", "PB": "PW", "PW": "PB"}
+	"B": "W", "W": "B", "AB": "AW", "AW": "AB", "PB": "PW", "PW": "PB", "BR": "WR", "WR": "BR"}
 
 func main() {
 	root := sgf.LoadArgOrQuit(1)							// Equivalent to sgf.Load(os.Args[1])

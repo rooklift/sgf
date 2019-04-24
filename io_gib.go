@@ -52,15 +52,9 @@ func load_gib(gib string) (*Node, error) {
 
 			handicap, _ := strconv.Atoi(fields[3])
 
-			var stones []string
-
 			if handicap > 1 {
-				stones = HandicapPoints19(handicap, true)
 				root.SetValue("HA", strconv.Itoa(handicap))
-			}
-
-			for _, stone := range stones {
-				root.AddValue("AB", stone)
+				root.SetValues("AB", HandicapPoints19(handicap, true))
 			}
 		}
 

@@ -24,7 +24,7 @@ func main() {
 
 	key_count2, val_count2 := root.TreeKeyValueCount()		// Proving all properties survived.
 
-	err := root.Save(os.Args[1] + ".rotated.sgf")
+	err := root.Save(os.Args[1] + ".inverted.sgf")
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	} else {

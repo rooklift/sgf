@@ -19,5 +19,5 @@ func main() {
 		node = node.MainChild()
 	}
 
-	node.Save(os.Args[1])
+	node.Save(os.Args[1] + ".stripped.sgf")
 }

@@ -29,9 +29,9 @@ func NewTree(size int) *Node {
 
 // AdjacentPoints returns a slice of all points (formatted as SGF coordinates, e.g. "dd")
 // that are adjacent to the given point, on the given board size.
-func AdjacentPoints(s string, size int) []string {
+func AdjacentPoints(p string, size int) []string {
 
-	x, y, onboard := ParsePoint(s, size)
+	x, y, onboard := ParsePoint(p, size)
 
 	if onboard == false {
 		return nil
@@ -40,16 +40,16 @@ func AdjacentPoints(s string, size int) []string {
 	var ret []string
 
 	if x > 0 {
-		ret = append(ret, string(alpha[x - 1]) + string(s[1]))		// Left
+		ret = append(ret, string(alpha[x - 1]) + string(p[1]))		// Left
 	}
 	if x < size - 1 {
-		ret = append(ret, string(alpha[x + 1]) + string(s[1]))		// Right
+		ret = append(ret, string(alpha[x + 1]) + string(p[1]))		// Right
 	}
 	if y > 0 {
-		ret = append(ret, string(s[0]) + string(alpha[y - 1]))		// Up
+		ret = append(ret, string(p[0]) + string(alpha[y - 1]))		// Up
 	}
 	if y < size - 1 {
-		ret = append(ret, string(s[0]) + string(alpha[y + 1]))		// Down
+		ret = append(ret, string(p[0]) + string(alpha[y + 1]))		// Down
 	}
 
 	return ret
@@ -59,24 +59,24 @@ func AdjacentPoints(s string, size int) []string {
 // the x and y values (zeroth-indexed) of that point, as well as a boolean value
 // indicating whether the coordinates were on the board. If they were not, the
 // coordinates returned are always -1, -1.
-func ParsePoint(s string, size int) (x, y int, onboard bool) {
+func ParsePoint(p string, size int) (x, y int, onboard bool) {
 
 	// e.g. "cd" --> 2,3
 
 	// Any string that does not yield an onboard coordinate
 	// is considered a pass.
 
-	if len(s) != 2 {
+	if len(p) != 2 {
 		return -1, -1, false
 	}
 
 	x = -1
 	y = -1
 
-	if s[0] >= 'a' && s[0] <= 'z' { x = int(s[0]) - 97 }
-	if s[1] >= 'a' && s[1] <= 'z' { y = int(s[1]) - 97 }
-	if s[0] >= 'A' && s[0] <= 'Z' { x = int(s[0]) - 39 }
-	if s[1] >= 'A' && s[1] <= 'Z' { y = int(s[1]) - 39 }
+	if p[0] >= 'a' && p[0] <= 'z' { x = int(p[0]) - 97 }
+	if p[1] >= 'a' && p[1] <= 'z' { y = int(p[1]) - 97 }
+	if p[0] >= 'A' && p[0] <= 'Z' { x = int(p[0]) - 39 }
+	if p[1] >= 'A' && p[1] <= 'Z' { y = int(p[1]) - 39 }
 
 	onboard = x >= 0 && x < size && y >= 0 && y < size
 
@@ -90,8 +90,8 @@ func ParsePoint(s string, size int) (x, y int, onboard bool) {
 // ValidPoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
 // a boolean indicating whether the coordinate is on the board. Internally, the
 // library considers all moves that fail this test to be passes.
-func ValidPoint(s string, size int) bool {
-	_, _, onboard := ParsePoint(s, size)
+func ValidPoint(p string, size int) bool {
+	_, _, onboard := ParsePoint(p, size)
 	return onboard
 }
 

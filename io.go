@@ -143,17 +143,13 @@ func Load(filename string) (*Node, error) {
 	if err != nil {
 		if strings.HasSuffix(strings.ToLower(filename), ".gib") {
 			root, err = load_gib(data)
-			if err != nil {
-				return nil, err
-			}
 		} else if strings.HasSuffix(strings.ToLower(filename), ".ngf") {
 			root, err = load_ngf(data)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			return nil, err
 		}
+	}
+
+	if err != nil {
+		return nil, err
 	}
 
 	return root, nil

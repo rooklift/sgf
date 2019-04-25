@@ -52,7 +52,7 @@ func SaveCollection(nodes []*Node, filename string) error {
 // called from the root node, but can be called from any node in an SGF tree -
 // the whole tree is always saved.
 func (self *Node) Save(filename string) error {
-	return SaveCollection([]*Node{self}, filename)
+	return SaveCollection([]*Node{self}, filename)		// Not using self.GetRoot() since SaveCollection does.
 }
 
 func (self *Node) write_tree(outfile io.Writer) {

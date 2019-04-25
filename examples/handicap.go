@@ -6,12 +6,15 @@ import (
 )
 
 func main() {
-	for n := 2; n <= 9; n++ {
-		root := sgf.NewTree(19)
-		for _, stone := range sgf.HandicapPoints19(n, false) {
-			root.AddValue("AB", stone)
+
+	for sz := 4; sz <= 19; sz++ {
+		for n := 2; n <= 9; n++ {
+			root := sgf.NewTree(sz)
+			for _, stone := range sgf.HandicapPoints(sz, n, true) {
+				root.AddValue("AB", stone)
+			}
+			root.Board().DumpBoard()
+			fmt.Printf("\n")
 		}
-		root.Board().DumpBoard()
-		fmt.Printf("\n")
 	}
 }

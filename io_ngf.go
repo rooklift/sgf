@@ -26,10 +26,6 @@ func load_ngf(ngf string) (*Node, error) {
 
 	boardsize, _ = strconv.Atoi(strings.TrimSpace(lines[1]))
 
-	if boardsize != 19 {
-		return nil, fmt.Errorf("load_ngf(): boardsize was not 19")
-	}
-
 	// ------------------------------------
 
 	pw_fields := strings.Fields(lines[2])
@@ -97,7 +93,7 @@ func load_ngf(ngf string) (*Node, error) {
 
 	if handicap > 1 {
 		root.SetValue("HA", strconv.Itoa(handicap))
-		root.SetValues("AB", HandicapPoints19(handicap, true))			// Uses Tygem layout
+		root.SetValues("AB", HandicapPoints(boardsize, handicap, true))			// Uses Tygem layout
 	}
 
 	if komi != 0 {

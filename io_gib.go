@@ -54,7 +54,7 @@ func load_gib(gib string) (*Node, error) {
 
 			if handicap > 1 {
 				root.SetValue("HA", strconv.Itoa(handicap))
-				root.SetValues("AB", HandicapPoints19(handicap, true))
+				root.SetValues("AB", HandicapPoints(19, handicap, true))
 			}
 		}
 

@@ -148,32 +148,67 @@ func IsStarPoint(p string, size int) bool {
 	return good_x && good_y
 }
 
-// HandicapPoints19 returns a slice of SGF coordinates (e.g. "dd") that
-// are Black's handicap stones in a 19x19 game of go, for the specified
-// handicap. The tygem argument indicates whether the 3rd stone in an
-// H3 game should be in the top left.
-func HandicapPoints19(handicap int, tygem bool) []string {
+// HandicapPoints returns a slice of SGF coordinates (e.g. "dd") that are
+// Black's handicap stones, for the specified boardsize and handicap (max
+// handicap: 9). The tygem argument indicates whether the 3rd stone in an H3
+// game should be in the top left. Works poorly for very small board sizes.
+func HandicapPoints(boardsize, handicap int, tygem bool) []string {
+
+	if boardsize < 4 || handicap < 2 {
+		return nil
+	}
 
 	if handicap > 9 {
 		handicap = 9
 	}
 
+	d := 2
+
+	if boardsize >= 13 {
+		d = 3
+	}
+
+	z := boardsize
+
 	var ret []string
 
-	if handicap >= 1 { ret = append(ret, "pd") }
-	if handicap >= 2 { ret = append(ret, "dp") }
-	if handicap >= 3 { ret = append(ret, "pp") }
-	if handicap >= 4 { ret = append(ret, "dd") }
+	if handicap >= 2 {
+		ret = append(ret, Point(z - d - 1, d))
+		ret = append(ret, Point(d, z - d - 1))
+	}
 
-	if handicap >= 6 { ret = append(ret, "dj", "pj") }
-	if handicap >= 8 { ret = append(ret, "jd", "jp") }
+	if handicap >= 3 {
+		if tygem {
+			ret = append(ret, Point(d, d))
+		} else {
+			ret = append(ret, Point(z - d - 1, z - d - 1))
+		}
+	}
 
-	if handicap >= 5 && handicap % 2 == 1 { ret = append(ret, "jj") }
+	if handicap >= 4 {
+		if tygem {
+			ret = append(ret, Point(z - d - 1, z - d - 1))
+		} else {
+			ret = append(ret, Point(d, d))
+		}
+	}
 
-	// Tygem seems to put its 3rd handicap stone in the top left...
+	if boardsize % 2 == 0 {
+		return ret
+	}
 
-	if tygem && handicap == 3 {
-		ret[2] = "dd"
+	if handicap == 5 || handicap == 7 || handicap == 9 {
+		ret = append(ret, Point(z / 2, z / 2))
+	}
+
+	if handicap >= 6 {
+		ret = append(ret, Point(d, z / 2))
+		ret = append(ret, Point(z - d - 1, z / 2))
+	}
+
+	if handicap >= 8 {
+		ret = append(ret, Point(z / 2, d))
+		ret = append(ret, Point(z / 2, z - d - 1))
 	}
 
 	return ret

@@ -7,6 +7,8 @@ import (
 
 func main() {
 
+	sgf.HoshiString = ","
+
 	for sz := 4; sz <= 19; sz++ {
 		for n := 2; n <= 9; n++ {
 			root := sgf.NewTree(sz)

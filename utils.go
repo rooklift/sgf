@@ -104,50 +104,6 @@ func Point(x, y int) string {
 	return string(alpha[x]) + string(alpha[y])
 }
 
-// IsStarPoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
-// true if it would be considered a star (hoshi) point.
-func IsStarPoint(p string, size int) bool {
-
-	if size < 9 {
-		return false
-	}
-
-	x, y, onboard := ParsePoint(p, size)
-
-	if onboard == false {
-		return false
-	}
-
-	var good_x, good_y bool
-
-	if size >= 15 || x == y {
-		if x * 2 + 1 == size {
-			good_x = true
-		}
-		if y * 2 + 1 == size {
-			good_y = true
-		}
-	}
-
-	if size >= 12 {
-		if x == 3 || x + 4 == size {
-			good_x = true
-		}
-		if y == 3 || y + 4 == size {
-			good_y = true
-		}
-	} else {
-		if x == 2 || x + 3 == size {
-			good_x = true
-		}
-		if y == 2 || y + 3 == size {
-			good_y = true
-		}
-	}
-
-	return good_x && good_y
-}
-
 // HandicapPoints returns a slice of SGF coordinates (e.g. "dd") that are
 // Black's handicap stones, for the specified boardsize and handicap (max
 // handicap: 9). The tygem argument indicates whether the 3rd stone in an H3
@@ -208,6 +164,21 @@ func HandicapPoints(boardsize, handicap int, tygem bool) []string {
 	}
 
 	return ret
+}
+
+// IsStarPoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
+// true if it would be considered a star (hoshi) point.
+func IsStarPoint(p string, size int) bool {
+
+	starpoints := HandicapPoints(size, 9, false)
+
+	for _, hoshi := range starpoints {
+		if p == hoshi {
+			return true
+		}
+	}
+
+	return false
 }
 
 // ParsePointList takes an SGF rectangle (e.g. "dd:fg") and a board size, and

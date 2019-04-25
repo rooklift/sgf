@@ -121,23 +121,3 @@ func (self *Board) Singleton(p string) bool {
 
 	return true
 }
-
-func (self *Board) ko_square_finder(p string) string {
-
-	// Only called when we know there is indeed a ko.
-	// Argument is the location of the capturing stone that caused it.
-
-	var hits []string
-
-	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.GetState(a) == EMPTY {
-			hits = append(hits, a)
-		}
-	}
-
-	if len(hits) != 1 {
-		panic(fmt.Sprintf("ko_square_finder(): got %d hits", hits))
-	}
-
-	return hits[0]
-}

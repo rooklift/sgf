@@ -146,7 +146,7 @@ func load_ngf(ngf string) (*Node, error) {
 		}
 	}
 
-	if len(root.Children()) == 0 {		// We'll assume we failed in this case
+	if root.MainChild() == nil {		// We'll assume we failed in this case
 		return nil, fmt.Errorf("load_ngf(): root ended up with zero children")
 	}
 

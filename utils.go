@@ -162,11 +162,7 @@ func HandicapPoints(boardsize, handicap int, tygem bool) []string {
 		handicap = 9
 	}
 
-	d := 2
-
-	if boardsize >= 13 {
-		d = 3
-	}
+	d := 1; if boardsize >= 7 { d = 2 }; if boardsize >= 13 { d = 3 }
 
 	z := boardsize
 

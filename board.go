@@ -224,7 +224,7 @@ func (self *Board) ko_square_finder(p string) string {
 	}
 
 	if len(hits) != 1 {
-		panic(fmt.Sprintf("ko_square_finder(): got %d hits", hits))
+		panic(fmt.Sprintf("ko_square_finder(): got %d hits", len(hits)))
 	}
 
 	return hits[0]

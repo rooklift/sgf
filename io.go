@@ -167,8 +167,8 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	var node *Node
 	var tree_started bool
 	var inside_value bool
-	var value []byte		// []byte rather than string, because adding individual unicode
-							// bytes to strings ( using += ) gives bad results, for some reason.
+	var value []byte		// []byte rather than string, because adding individual unicode bytes
+							// to strings using += string(c) gives bad results, for some reason.
 	var key string
 	var keycomplete bool
 

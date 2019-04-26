@@ -8,6 +8,7 @@ import (
 )
 
 func init() {
+	rand.Seed(time.Now().UTC().UnixNano())
 	fmt.Printf("\n")
 }
 
@@ -76,8 +77,6 @@ func TestCollection(t *testing.T) {
 
 func TestCyclicAttachment(t *testing.T) {
 	fmt.Printf("TestCyclicAttachment\n")
-
-	rand.Seed(time.Now().UTC().UnixNano())
 
 	root, err := Load("test_kifu/2016-03-10a.sgf")
 	if err != nil {

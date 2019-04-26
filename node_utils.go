@@ -1,5 +1,10 @@
 package sgf
 
+import (
+	"fmt"
+	"sort"
+)
+
 // Parent returns the parent of a node. This will be nil if the node is the root
 // of the tree.
 func (self *Node) Parent() *Node {
@@ -69,4 +74,19 @@ func (self *Node) SetParent(new_parent *Node) {
 // also removed from the parent's list of children.
 func (self *Node) Detach() {
 	self.SetParent(nil)
+}
+
+// String returns some human-readable info about the node.
+func (self *Node) String() string {
+	if self == nil {
+		return "<nil>"
+	}
+
+	noun := "children" ; if len(self.children) == 1 { noun = "child" }
+
+	keys := self.AllKeys()
+	sort.Strings(keys)
+
+	return fmt.Sprintf("Node %p: depth %d, %d %s, subtree size %d, keys %v",
+				self, len(self.GetLine()) - 1, len(self.children), noun, self.SubtreeSize(), keys)
 }

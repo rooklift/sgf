@@ -318,7 +318,7 @@ func LoadSGFMainLine(filename string) (*Node, error) {
 	// Also relies on the fact that the first ) character (outside of a
 	// value) is the end of the main line, which I'm almost sure is true.
 
-	inside_val := false
+	inside_value := false
 	escape_flag := false
 
 	for {
@@ -329,9 +329,9 @@ func LoadSGFMainLine(filename string) (*Node, error) {
 		}
 		data = append(data, c)
 
-		if inside_val == false {
+		if inside_value == false {
 			if c == '[' {
-				inside_val = true
+				inside_value = true
 				continue
 			}
 			if c == ')' {
@@ -340,7 +340,7 @@ func LoadSGFMainLine(filename string) (*Node, error) {
 			}
 		}
 
-		if inside_val {
+		if inside_value {
 			if escape_flag {
 				escape_flag = false
 				continue
@@ -352,7 +352,7 @@ func LoadSGFMainLine(filename string) (*Node, error) {
 			}
 
 			if c == ']' {
-				inside_val = false
+				inside_value = false
 				continue
 			}
 		}

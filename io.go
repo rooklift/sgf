@@ -168,7 +168,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	var node *Node
 	var tree_started bool
 	var inside_value bool
-	var value []byte		// Use a byte slice to avoid this issue: https://play.golang.org/p/435YV7klTuI
+	var value []byte		// Byte slice since it's getting built up. Also avoiding this issue: https://play.golang.org/p/435YV7klTuI
 	var key string
 	var keycomplete bool
 
@@ -244,7 +244,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 						key = ""
 						keycomplete = false
 					}
-					key += string(c)
+					key += string([]byte{c})		// The correct way to get a string from a byte; see https://play.golang.org/p/435YV7klTuI
 				}
 			}
 		}

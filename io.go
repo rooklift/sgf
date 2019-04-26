@@ -176,7 +176,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 		c := sgf[i]
 
 		if tree_started == false {
-			if c <= ' ' {				// Reasonable definition of whitespace, where ' ' is byte 32.
+			if c <= ' ' {						// Reasonable definition of whitespace, where ' ' is byte 32.
 				continue
 			} else if c == '(' {
 				tree_started = true
@@ -209,7 +209,10 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
 			if c == '[' {
 				if node == nil {
-					return nil, 0, fmt.Errorf("load_sgf_tree(): value started by [ but node was nil")
+					// The tree has ( but no ; before its first property. We could return an error.
+					// Alternatively, we can tolerate this...
+					node = NewNode(parent_of_local_root)
+					root = node											// First node we saw in the tree.
 				}
 				value = ""
 				inside_value = true
@@ -227,15 +230,13 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if root == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): subtree ended but local root was nil")
 				}
-				return root, i + 1, nil		// Return characters read.
+				return root, i + 1, nil									// Return characters read.
 			} else if c == ';' {
 				if node == nil {
-					newnode := NewNode(parent_of_local_root)
-					root = newnode
-					node = newnode
+					node = NewNode(parent_of_local_root)
+					root = node											// First node we saw in the tree.
 				} else {
-					newnode := NewNode(node)
-					node = newnode
+					node = NewNode(node)
 				}
 			} else {
 				if c >= 'A' && c <= 'Z' {

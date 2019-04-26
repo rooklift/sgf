@@ -310,6 +310,9 @@ func LoadSGFMainLine(filename string) (*Node, error) {
 
 	// Pull out the bare minimum bytes necessary to parse the main line.
 	// This relies on the parser being OK with sudden end of input.
+	//
+	// Also relies on the fact that the first ) character (outside of a
+	// value) is the end of the main line, which I'm almost sure is true.
 
 	inside_val := false
 	escape_flag := false

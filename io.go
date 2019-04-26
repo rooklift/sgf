@@ -249,12 +249,13 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 		}
 	}
 
-	// Just being here must mean we reached the actual end of the file without
-	// reading a final ')' character. Still, we can return what we have.
-
 	if root == nil {
 		return nil, 0, fmt.Errorf("load_sgf_tree(): local root was nil at function end")
 	}
+
+	// Just being here must mean we reached the actual end of the file without
+	// reading a final ')' character. Still, we can return what we have.
+	// Note that LoadSGFMainLine() relies on this.
 
 	return root, len(sgf), nil		// Return characters read.
 }
@@ -290,5 +291,63 @@ func LoadCollection(filename string) ([]*Node, error) {
 		ret = append(ret, root)
 
 		data = data[chars_read:]
+	}
+}
+
+// LoadSGFMainLine loads the main line of an SGF file. Unlike Load, the whole
+// file is never read into memory, making this efficient for batch statistics
+// collection.
+func LoadSGFMainLine(filename string) (*Node, error) {
+
+	infile, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer infile.Close()
+
+	reader := bufio.NewReader(infile)
+	data := make([]byte, 0, 4096)
+
+	// Pull out the bare minimum bytes necessary to parse the main line.
+	// This relies on the parser being OK with sudden end of input.
+
+	inside_val := false
+	escape_flag := false
+
+	for {
+		c, err := reader.ReadByte()
+		if err != nil {
+			root, _, err := load_sgf_tree(string(data), nil)
+			return root, err
+		}
+		data = append(data, c)
+
+		if inside_val == false {
+			if c == '[' {
+				inside_val = true
+				continue
+			}
+			if c == ')' {
+				root, _, err := load_sgf_tree(string(data), nil)
+				return root, err
+			}
+		}
+
+		if inside_val {
+			if escape_flag {
+				escape_flag = false
+				continue
+			}
+
+			if c == '\\' {
+				escape_flag = true
+				continue
+			}
+
+			if c == ']' {
+				inside_val = false
+				continue
+			}
+		}
 	}
 }

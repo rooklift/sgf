@@ -197,6 +197,25 @@ func TestNgfLoader(t *testing.T) {
 	}
 }
 
+func TestHandicap(t *testing.T) {
+	fmt.Printf("TestHandicap\n")
+
+	root, err := Load("test_kifu/9handicap.sgf")
+	if err != nil {
+		t.Errorf("Failed to load")
+	}
+
+	ha, _ := root.GetValue("HA")
+	if ha != "9" {
+		t.Errorf("Wrong handicap")
+	}
+
+	stones := root.AllValues("AB")
+	if len(stones) != 9 {
+		t.Errorf("Wrong AB property")
+	}
+}
+
 func TestKeyValues(t *testing.T) {
 	fmt.Printf("TestKeyValues\n")
 

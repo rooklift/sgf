@@ -106,7 +106,7 @@ func (self *Node) write_tree(outfile io.Writer) {
 func escape_string(s string) string {
 
 	// Note that new_s must be a byte slice. Instead, building up a string byte-by-byte
-	// causes issues with unicode: https://play.golang.org/p/jyRhbRdvgrS
+	// causes issues with unicode: https://play.golang.org/p/435YV7klTuI
 
 	var new_s []byte
 
@@ -168,7 +168,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	var node *Node
 	var tree_started bool
 	var inside_value bool
-	var value []byte		// Use a byte slice to avoid this issue: https://play.golang.org/p/jyRhbRdvgrS
+	var value []byte		// Use a byte slice to avoid this issue: https://play.golang.org/p/435YV7klTuI
 	var key string
 	var keycomplete bool
 

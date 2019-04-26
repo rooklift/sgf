@@ -130,7 +130,7 @@ func load_ngf(ngf string) (*Node, error) {
 
 			if line[4] == 'B' || line[4] == 'W' {
 
-				key := string(line[4])
+				key := byte_to_string(line[4])
 
 				// Coordinates are from 1-19, but with "B" representing
 				// the digit 1. (Presumably "A" would represent 0.)

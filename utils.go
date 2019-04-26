@@ -40,19 +40,23 @@ func AdjacentPoints(p string, size int) []string {
 	var ret []string
 
 	if x > 0 {
-		ret = append(ret, string(alpha[x - 1]) + string(p[1]))		// Left
+		ret = append(ret, byte_to_string(alpha[x - 1]) + byte_to_string(p[1]))		// Left
 	}
 	if x < size - 1 {
-		ret = append(ret, string(alpha[x + 1]) + string(p[1]))		// Right
+		ret = append(ret, byte_to_string(alpha[x + 1]) + byte_to_string(p[1]))		// Right
 	}
 	if y > 0 {
-		ret = append(ret, string(p[0]) + string(alpha[y - 1]))		// Up
+		ret = append(ret, byte_to_string(p[0]) + byte_to_string(alpha[y - 1]))		// Up
 	}
 	if y < size - 1 {
-		ret = append(ret, string(p[0]) + string(alpha[y + 1]))		// Down
+		ret = append(ret, byte_to_string(p[0]) + byte_to_string(alpha[y + 1]))		// Down
 	}
 
 	return ret
+}
+
+func byte_to_string(b byte) string {	// One cannot do string(b) because string() turns integers into utf-8 strings,
+	return string([]byte{b})			// therefore if b > 127 it will necessarily return a string of length >= 2
 }
 
 // ParsePoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
@@ -101,7 +105,7 @@ func Point(x, y int) string {
 	if x < 0 || x >= 52 || y < 0 || y >= 52 {
 		return ""
 	}
-	return string(alpha[x]) + string(alpha[y])
+	return byte_to_string(alpha[x]) + byte_to_string(alpha[y])
 }
 
 // HandicapPoints returns a slice of SGF coordinates (e.g. "dd") that are

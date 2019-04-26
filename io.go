@@ -2,6 +2,7 @@ package sgf
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -105,19 +106,18 @@ func (self *Node) write_tree(outfile io.Writer) {
 
 func escape_string(s string) string {
 
-	// Note that new_s must be a byte slice. Instead, building up a string byte-by-byte
-	// causes issues with unicode: https://play.golang.org/p/435YV7klTuI
+	// Note the danger of building up strings with += string(c): https://play.golang.org/p/435YV7klTuI
 
-	var new_s []byte
+	var buf bytes.Buffer
 
 	for n := 0; n < len(s); n++ {
 		if s[n] == '\\' || s[n] == ']' {
-			new_s = append(new_s, '\\')
+			buf.WriteByte('\\')
 		}
-		new_s = append(new_s, s[n])
+		buf.WriteByte(s[n])
 	}
 
-	return string(new_s)
+	return buf.String()
 }
 
 // Load reads an SGF file (or GIB or NGF file, if the filename has that
@@ -168,8 +168,8 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	var node *Node
 	var tree_started bool
 	var inside_value bool
-	var value []byte		// Byte slice since it's getting built up. Also avoiding this issue: https://play.golang.org/p/435YV7klTuI
-	var key string
+	var value bytes.Buffer						// I used to use string and += string(c), but
+	var key bytes.Buffer						// ran into https://play.golang.org/p/435YV7klTuI
 	var keycomplete bool
 
 	for i := 0; i < len(sgf); i++ {
@@ -193,16 +193,16 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if len(sgf) <= i + 1 {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): escape character at end of input")
 				}
-				value = append(value, sgf[i + 1])
+				value.WriteByte(sgf[i + 1])
 				i++								// Skip 1 character.
 			} else if c == ']' {
 				inside_value = false
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): value ended by ] but node was nil")
 				}
-				node.AddValue(key, string(value))
+				node.AddValue(key.String(), value.String())
 			} else {
-				value = append(value, c)
+				value.WriteByte(c)
 			}
 
 		} else {
@@ -214,7 +214,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 					node = NewNode(parent_of_local_root)
 					root = node											// First node we saw in the tree.
 				}
-				value = []byte{}
+				value.Reset()
 				inside_value = true
 				keycomplete = true
 			} else if c == '(' {
@@ -241,10 +241,10 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 			} else {
 				if c >= 'A' && c <= 'Z' {
 					if keycomplete {
-						key = ""
+						key.Reset()
 						keycomplete = false
 					}
-					key += string([]byte{c})		// The correct way to get a string from a byte; see https://play.golang.org/p/435YV7klTuI
+					key.WriteByte(c)
 				}
 			}
 		}

@@ -167,7 +167,8 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	var node *Node
 	var tree_started bool
 	var inside_value bool
-	var value string
+	var value []byte		// []byte rather than string, because adding individual unicode
+							// bytes to strings ( using += ) gives bad results, for some reason.
 	var key string
 	var keycomplete bool
 
@@ -192,17 +193,16 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				if len(sgf) <= i + 1 {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): escape character at end of input")
 				}
-				// value += string('\\')		// Do not do this. Discard the escape slash.
-				value += string(sgf[i + 1])
+				value = append(value, sgf[i + 1])
 				i++								// Skip 1 character.
 			} else if c == ']' {
 				inside_value = false
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): value ended by ] but node was nil")
 				}
-				node.AddValue(key, value)
+				node.AddValue(key, string(value))
 			} else {
-				value += string(c)
+				value = append(value, c)
 			}
 
 		} else {
@@ -214,7 +214,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 					node = NewNode(parent_of_local_root)
 					root = node											// First node we saw in the tree.
 				}
-				value = ""
+				value = []byte{}
 				inside_value = true
 				keycomplete = true
 			} else if c == '(' {

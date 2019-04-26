@@ -16,7 +16,8 @@ func TestIllegality(t *testing.T) {
 
 	root, err := Load("test_kifu/illegality.sgf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	node := root.GetEnd()
@@ -56,7 +57,8 @@ func TestCollection(t *testing.T) {
 
 	collection, err := LoadCollection("test_kifu/collection.sgf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	if len(collection) != 3 {
@@ -79,7 +81,8 @@ func TestCyclicAttachment(t *testing.T) {
 
 	root, err := Load("test_kifu/2016-03-10a.sgf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	// Choose a random node...
@@ -109,7 +112,8 @@ func TestDyer(t *testing.T) {
 
 	root, err := Load("test_kifu/2016-03-10a.sgf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	if root.Dyer() != "comhcledemrd" {
@@ -122,7 +126,8 @@ func TestUnescaping(t *testing.T) {
 
 	root, err := Load("test_kifu/escaped.sgf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	node := root.GetEnd()
@@ -143,7 +148,8 @@ func TestMainLineLoader(t *testing.T) {
 
 	root, err := LoadSGFMainLine("test_kifu/2016-03-10a.sgf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	if root.TreeSize() != 212 {
@@ -156,7 +162,8 @@ func TestGibLoader(t *testing.T) {
 
 	root, err := Load("test_kifu/3handicap.gib")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	if root.TreeSize() != 253 {
@@ -179,7 +186,8 @@ func TestNgfLoader(t *testing.T) {
 
 	root, err := Load("test_kifu/3handicap.ngf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	if root.TreeSize() != 284 {
@@ -202,7 +210,8 @@ func TestHandicap(t *testing.T) {
 
 	root, err := Load("test_kifu/9handicap.sgf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	ha, _ := root.GetValue("HA")
@@ -221,7 +230,8 @@ func TestKeyValues(t *testing.T) {
 
 	root, err := Load("test_kifu/2016-03-10a.sgf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	key_count, value_count := root.TreeKeyValueCount()
@@ -236,7 +246,8 @@ func TestUnicode(t *testing.T) {
 
 	root, err := Load("test_kifu/unicode.sgf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	pb, _ := root.GetValue("PB")
@@ -252,7 +263,8 @@ func TestCache(t *testing.T) {
 
 	root, err := Load("test_kifu/2016-03-10a.sgf")
 	if err != nil {
-		t.Errorf("Failed to load")
+		t.Errorf(err.Error())
+		return
 	}
 
 	nodes := root.SubtreeNodes()

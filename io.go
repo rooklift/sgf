@@ -217,6 +217,9 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				value.Reset()
 				inside_value = true
 				keycomplete = true
+				if key.String() == "" {
+					return nil, 0, fmt.Errorf("load_sgf_tree(): value started with [ but key was \"\"")
+				}
 			} else if c == '(' {
 				if node == nil {
 					return nil, 0, fmt.Errorf("load_sgf_tree(): new subtree started but node was nil")

@@ -246,3 +246,56 @@ func TestUnicode(t *testing.T) {
 		t.Errorf("Got unexpected string when reading unicode")
 	}
 }
+
+func TestCache(t *testing.T) {
+	fmt.Printf("TestCache\n")
+
+	root, err := Load("test_kifu/2016-03-10a.sgf")
+	if err != nil {
+		t.Errorf("Failed to load")
+	}
+
+	nodes := root.SubtreeNodes()
+
+	for _, node := range nodes {
+		node.Board()
+	}
+
+	for _, node := range nodes {
+		if node.__board_cache == nil {
+			t.Errorf("Board cache was not made (1)")
+		}
+	}
+
+	root.AddValue("AB", "aa")
+
+	for _, node := range nodes {
+		if node.__board_cache != nil {
+			t.Errorf("Board cache was not purged (1)")
+		}
+	}
+
+	for _, node := range nodes {
+		node.Board()
+	}
+
+	for _, node := range nodes {
+		if node.__board_cache == nil {
+			t.Errorf("Board cache was not made (2)")
+		}
+	}
+
+	root.MainChild().Detach()
+
+	for _, node := range nodes {
+		if node != root {
+			if node.__board_cache != nil {
+				t.Errorf("Board cache was not purged (2)")
+			}
+		} else {
+			if node.__board_cache == nil {
+				t.Errorf("Board cache of root was purged for no reason")
+			}
+		}
+	}
+}

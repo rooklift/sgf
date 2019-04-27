@@ -68,10 +68,10 @@ func (self *Node) write_tree(outfile io.Writer) {
 
 		for _, slice := range node.props {
 
-			fmt.Fprintf(outfile, "%s", slice[0])
+			fmt.Fprintf(outfile, "%s", slice[0])					// The key
 
 			for _, value := range slice[1:] {
-				fmt.Fprintf(outfile, "[%s]", escape_string(value))
+				fmt.Fprintf(outfile, "[%s]", escape_string(value))	// Values
 			}
 		}
 

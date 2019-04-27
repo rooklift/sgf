@@ -407,6 +407,7 @@ func LoadRoot(filename string) (*Node, error) {
 					root, _, err := load_sgf_tree(data.String(), nil)
 					return root, err
 				}
+				continue
 			}
 		}
 	}

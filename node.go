@@ -11,7 +11,10 @@ import (
 // and saving of files. A node also contains information about the node's parent
 // (if not root) and a list of all child nodes.
 type Node struct {
-	props			[][]string		// e.g. ["B" "dd"]["C" "good move!"]["TE" "1"]
+
+	// Slice of slices of strings, where the first item in a slice is the key, and what follows are values...
+
+	props			[][]string		// e.g. ["B" "dd"]["C" "good move!"]["TR", "dd", "fj", "np"]
 	children		[]*Node
 	parent			*Node
 
@@ -65,18 +68,11 @@ func (self *Node) WriteTo(w io.Writer) {
 }
 
 func (self *Node) key_index(key string) int {
-
 	for i, slice := range self.props {
-
-		if len(slice) < 2 {
-			panic(fmt.Sprintf("key_index(): self.props had a slice with length %d", len(slice)))
-		}
-
 		if slice[0] == key {
 			return i
 		}
 	}
-
 	return -1
 }
 

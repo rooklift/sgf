@@ -56,50 +56,31 @@ func (self *Node) Save(filename string) error {
 	return SaveCollection([]*Node{self}, filename)		// Not using self.GetRoot() since SaveCollection does.
 }
 
-func (self *Node) write_tree(outfile io.Writer) {
+func (self *Node) write_tree(w io.Writer) {
 
 	node := self
 
-	fmt.Fprintf(outfile, "(")
+	fmt.Fprintf(w, "(")
 
 	for {
-
-		fmt.Fprintf(outfile, ";")
-
-		for _, slice := range node.props {
-
-			fmt.Fprintf(outfile, "%s", slice[0])					// The key
-
-			for _, value := range slice[1:] {
-				fmt.Fprintf(outfile, "[%s]", escape_string(value))	// Values
-			}
-		}
-
+		node.WriteTo(w)
 		if len(node.children) > 1 {
-
 			for _, child := range node.children {
-				child.write_tree(outfile)
+				child.write_tree(w)
 			}
-
 			break
-
 		} else if len(node.children) == 1 {
-
 			node = node.children[0]
 			continue
-
 		} else {
-
 			break
-
 		}
-
 	}
 
-	fmt.Fprintf(outfile, ")")
+	fmt.Fprintf(w, ")")
 
 	// We could print a newline...
-	// fmt.Fprintf(outfile, "\n")
+	// fmt.Fprintf(w, "\n")
 
 	return
 }

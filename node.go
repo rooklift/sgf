@@ -52,6 +52,17 @@ func (self *Node) Copy() *Node {
 	return ret
 }
 
+// WriteTo writes the node in SGF format to an io.Writer.
+func (self *Node) WriteTo(w io.Writer) {
+	fmt.Fprintf(w, ";")
+	for _, slice := range self.props {
+		fmt.Fprintf(w, "%s", slice[0])						// The key
+		for _, value := range slice[1:] {
+			fmt.Fprintf(w, "[%s]", escape_string(value))	// Values
+		}
+	}
+}
+
 func (self *Node) key_index(key string) int {
 
 	for i, slice := range self.props {

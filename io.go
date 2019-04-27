@@ -283,63 +283,17 @@ func LoadCollection(filename string) ([]*Node, error) {
 // is never read into memory, making this efficient for batch statistics
 // collection.
 func LoadMainLine(filename string) (*Node, error) {
-
-	infile, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer infile.Close()
-
-	var data bytes.Buffer
-	reader := bufio.NewReader(infile)
-
-	// Pull out the bare minimum bytes necessary to parse the main line.
-	// This relies on the parser being OK with sudden end of input.
-	//
-	// Also relies on the fact that the first ) character (outside of a
-	// value) is the end of the main line, which I'm almost sure is true.
-
-	inside_value := false
-	escape_flag := false
-
-	for {
-		c, err := reader.ReadByte()
-		if err != nil {
-			root, _, err := load_sgf_tree(data.String(), nil)
-			return root, err
-		}
-		data.WriteByte(c)
-
-		if inside_value {
-			if escape_flag {
-				escape_flag = false
-				continue
-			}
-			if c == '\\' {
-				escape_flag = true
-				continue
-			}
-			if c == ']' {
-				inside_value = false
-				continue
-			}
-		} else {
-			if c == '[' {
-				inside_value = true
-				continue
-			}
-			if c == ')' {
-				root, _, err := load_sgf_tree(data.String(), nil)
-				return root, err
-			}
-		}
-	}
+	return load_special(filename, false)
 }
 
 // LoadRoot loads the root node of an SGF file. Unlike Load, the whole file is
 // never read into memory, making this efficient for batch statistics
 // collection.
 func LoadRoot(filename string) (*Node, error) {
+	return load_special(filename, true)
+}
+
+func load_special(filename string, root_only bool) (*Node, error) {
 
 	infile, err := os.Open(filename)
 	if err != nil {
@@ -350,7 +304,7 @@ func LoadRoot(filename string) (*Node, error) {
 	var data bytes.Buffer
 	reader := bufio.NewReader(infile)
 
-	// Pull out the bare minimum bytes necessary to parse the root.
+	// Pull out the bare minimum bytes necessary to parse the root / mainline.
 	// This relies on the parser being OK with sudden end of input.
 
 	inside_value := false
@@ -388,12 +342,9 @@ func LoadRoot(filename string) (*Node, error) {
 				root, _, err := load_sgf_tree(data.String(), nil)
 				return root, err
 			}
-
-			// Two ways a return can be triggered: second ; or second (
-
 			if c == ';' {
 				semicolons++
-				if semicolons >= 2 {
+				if semicolons >= 2 && root_only {
 					data.Truncate(data.Len() - 1)		// Delete the second ; from the data.
 					root, _, err := load_sgf_tree(data.String(), nil)
 					return root, err
@@ -402,7 +353,7 @@ func LoadRoot(filename string) (*Node, error) {
 			}
 			if c == '(' {
 				brackets++
-				if brackets >= 2 {
+				if brackets >= 2 && root_only {
 					data.Truncate(data.Len() - 1)		// Delete the second ( from the data.
 					root, _, err := load_sgf_tree(data.String(), nil)
 					return root, err

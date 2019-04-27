@@ -304,7 +304,7 @@ func load_special(filename string, root_only bool) (*Node, error) {
 	}
 	defer infile.Close()
 
-	var data bytes.Buffer
+	data := bytes.NewBuffer(make([]byte, 0, 256))		// Start buffer with len 0 cap 256
 	reader := bufio.NewReader(infile)
 
 	inside_value := false

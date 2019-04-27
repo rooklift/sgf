@@ -363,6 +363,16 @@ func TestNodeUpdates(t *testing.T) {
 	expect_keys(node, 1)
 	expect_vals(node, "AB", 1)
 
+	node.AddValue("AW", "dd")
+	expect_keys(node, 2)
+	expect_vals(node, "AB", 1)
+	expect_vals(node, "AW", 1)
+
+	node.DeleteKey("AW")
+	expect_keys(node, 1)
+	expect_vals(node, "AB", 1)
+	expect_vals(node, "AW", 0)
+
 	node.AddValue("AB", "dd")			// Duplicate value, shouldn't add.
 	expect_keys(node, 1)
 	expect_vals(node, "AB", 1)

@@ -344,7 +344,7 @@ func load_special(filename string, root_only bool) (*Node, error) {
 			}
 			if c == ';' {
 				semicolons++
-				if semicolons >= 2 && root_only {
+				if root_only && semicolons >= 2 {
 					data.Truncate(data.Len() - 1)		// Delete the second ; from the data.
 					root, _, err := load_sgf_tree(data.String(), nil)
 					return root, err
@@ -353,7 +353,7 @@ func load_special(filename string, root_only bool) (*Node, error) {
 			}
 			if c == '(' {
 				brackets++
-				if brackets >= 2 && root_only {
+				if root_only && brackets >= 2 {
 					data.Truncate(data.Len() - 1)		// Delete the second ( from the data.
 					root, _, err := load_sgf_tree(data.String(), nil)
 					return root, err

@@ -24,7 +24,10 @@ func main() {
 	}
 
 	for _, f := range files {
-		handle_file(os.Args[1], f.Name(), os.Args[2])
+		err := handle_file(os.Args[1], f.Name(), os.Args[2])
+		if err != nil {
+			fmt.Printf("%v\n", err)
+		}
 	}
 }
 

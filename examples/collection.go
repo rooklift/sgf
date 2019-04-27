@@ -1,7 +1,7 @@
 package main
 
 // Load every file in a directory, and save them to a new collection.
-// The RAM usage can be a lot, though, if the files are e.g. analysis files with variations.
+// Also serves as a test case - shouldn't generate any boards.
 
 import (
 	"bufio"
@@ -42,6 +42,7 @@ func main() {
 	}
 
 	fmt.Printf("%d files will be included.\n", len(roots))
+	fmt.Printf("%d boards were generated.\n", sgf.TotalBoardsGenerated)
 	fmt.Printf("Name the file: ")
 
 	scanner := bufio.NewScanner(os.Stdin)

@@ -29,6 +29,7 @@ func main() {
 		for _, f := range files {
 			root, err := sgf.Load(filepath.Join(d, f.Name()))
 			if err != nil {
+				fmt.Printf("  %v --- %v\n", f.Name(), err)
 				continue
 			}
 			roots = append(roots, root)

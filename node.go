@@ -12,9 +12,10 @@ import (
 // (if not root) and a list of all child nodes.
 type Node struct {
 
-	// Slice of slices of strings, where the first item in a slice is the key, and what follows are values...
+	// Properties are stored in a slice of slices of strings, where the
+	// first item in a slice is the key, and what follows are values...
 
-	props			[][]string		// e.g. ["B" "dd"]["C" "good move!"]["TR", "dd", "fj", "np"]
+	props			[][]string		// e.g. ["B" "dd"] ["TR", "dd", "fj", "np"]		- e.g. 1 and 3 values for these keys.
 	children		[]*Node
 	parent			*Node
 

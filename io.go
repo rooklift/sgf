@@ -66,11 +66,11 @@ func (self *Node) write_tree(outfile io.Writer) {
 
 		fmt.Fprintf(outfile, ";")
 
-		for key, _ := range node.props {
+		for _, slice := range node.props {
 
-			fmt.Fprintf(outfile, "%s", key)
+			fmt.Fprintf(outfile, "%s", slice[0])
 
-			for _, value := range node.props[key] {
+			for _, value := range slice[1:] {
 				fmt.Fprintf(outfile, "[%s]", escape_string(value))
 			}
 		}

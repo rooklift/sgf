@@ -240,7 +240,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
 	// Just being here must mean we reached the actual end of the file without
 	// reading a final ')' character. Still, we can return what we have.
-	// Note that LoadSGFMainLine() relies on this.
+	// Note that LoadMainLine() relies on this.
 
 	return root, len(sgf), nil		// Return characters read.
 }
@@ -279,10 +279,10 @@ func LoadCollection(filename string) ([]*Node, error) {
 	}
 }
 
-// LoadSGFMainLine loads the main line of an SGF file. Unlike Load, the whole
-// file is never read into memory, making this efficient for batch statistics
+// LoadMainLine loads the main line of an SGF file. Unlike Load, the whole file
+// is never read into memory, making this efficient for batch statistics
 // collection.
-func LoadSGFMainLine(filename string) (*Node, error) {
+func LoadMainLine(filename string) (*Node, error) {
 
 	infile, err := os.Open(filename)
 	if err != nil {
@@ -310,7 +310,20 @@ func LoadSGFMainLine(filename string) (*Node, error) {
 		}
 		data.WriteByte(c)
 
-		if inside_value == false {
+		if inside_value {
+			if escape_flag {
+				escape_flag = false
+				continue
+			}
+			if c == '\\' {
+				escape_flag = true
+				continue
+			}
+			if c == ']' {
+				inside_value = false
+				continue
+			}
+		} else {
 			if c == '[' {
 				inside_value = true
 				continue
@@ -320,21 +333,77 @@ func LoadSGFMainLine(filename string) (*Node, error) {
 				return root, err
 			}
 		}
+	}
+}
+
+func LoadRoot(filename string) (*Node, error) {
+
+	infile, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer infile.Close()
+
+	var data bytes.Buffer
+	reader := bufio.NewReader(infile)
+
+	// Pull out the bare minimum bytes necessary to parse the root.
+	// This relies on the parser being OK with sudden end of input.
+
+	inside_value := false
+	escape_flag := false
+	semicolons := 0
+	brackets := 0
+
+	for {
+		c, err := reader.ReadByte()
+		if err != nil {
+			root, _, err := load_sgf_tree(data.String(), nil)
+			return root, err
+		}
+		data.WriteByte(c)
 
 		if inside_value {
 			if escape_flag {
 				escape_flag = false
 				continue
 			}
-
 			if c == '\\' {
 				escape_flag = true
 				continue
 			}
-
 			if c == ']' {
 				inside_value = false
 				continue
+			}
+		} else {
+			if c == '[' {
+				inside_value = true
+				continue
+			}
+			if c == ')' {
+				root, _, err := load_sgf_tree(data.String(), nil)
+				return root, err
+			}
+
+			// Two ways a return can be triggered: second ; or second (
+
+			if c == ';' {
+				semicolons++
+				if semicolons >= 2 {
+					data.Truncate(data.Len() - 1)		// Delete the second ; from the data.
+					root, _, err := load_sgf_tree(data.String(), nil)
+					return root, err
+				}
+				continue
+			}
+			if c == '(' {
+				brackets++
+				if brackets >= 2 {
+					data.Truncate(data.Len() - 1)		// Delete the second ( from the data.
+					root, _, err := load_sgf_tree(data.String(), nil)
+					return root, err
+				}
 			}
 		}
 	}

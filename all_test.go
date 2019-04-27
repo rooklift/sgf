@@ -145,7 +145,7 @@ func TestUnescaping(t *testing.T) {
 func TestMainLineLoader(t *testing.T) {
 	fmt.Printf("TestMainLineLoader\n")
 
-	root, err := LoadSGFMainLine("test_kifu/2016-03-10a.sgf")
+	root, err := LoadMainLine("test_kifu/2016-03-10a.sgf")
 	if err != nil {
 		t.Errorf(err.Error())
 		return
@@ -400,4 +400,18 @@ func TestNodeUpdates(t *testing.T) {
 	node.DeleteValue("AB", "jj")
 	expect_keys(node, 0)
 	expect_vals(node, "AB", 0)
+}
+
+func TestRootLoader(t *testing.T) {
+	fmt.Printf("TestRootLoader\n")
+
+	root, err := LoadRoot("test_kifu/instabranch.sgf")
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	if root.MainChild() != nil {
+		t.Errorf("root had a child")
+	}
 }

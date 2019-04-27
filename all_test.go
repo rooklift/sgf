@@ -363,7 +363,7 @@ func TestNodeUpdates(t *testing.T) {
 	expect_keys(node, 1)
 	expect_vals(node, "AB", 1)
 
-	node.AddValue("AB", "dd")
+	node.AddValue("AB", "dd")			// Duplicate value, shouldn't add.
 	expect_keys(node, 1)
 	expect_vals(node, "AB", 1)
 
@@ -375,15 +375,15 @@ func TestNodeUpdates(t *testing.T) {
 	expect_keys(node, 1)
 	expect_vals(node, "AB", 3)
 
-	node.SetValue("AB", "jj")
+	node.SetValue("AB", "jj")			// SetValue should delete all others.
 	expect_keys(node, 1)
 	expect_vals(node, "AB", 1)
 
-	node.DeleteValue("AB", "dd")
+	node.DeleteValue("AB", "dd")		// Deleting a non-existant value does nothing.
 	expect_keys(node, 1)
 	expect_vals(node, "AB", 1)
 
-	node.DeleteValue("AB", "AB")		// Check this doesn't delete the key...
+	node.DeleteValue("AB", "AB")		// Check this doesn't delete the key.
 	expect_keys(node, 1)
 	expect_vals(node, "AB", 1)
 

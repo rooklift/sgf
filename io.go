@@ -290,8 +290,8 @@ func LoadSGFMainLine(filename string) (*Node, error) {
 	}
 	defer infile.Close()
 
+	var data bytes.Buffer
 	reader := bufio.NewReader(infile)
-	data := make([]byte, 0, 4096)
 
 	// Pull out the bare minimum bytes necessary to parse the main line.
 	// This relies on the parser being OK with sudden end of input.
@@ -305,10 +305,10 @@ func LoadSGFMainLine(filename string) (*Node, error) {
 	for {
 		c, err := reader.ReadByte()
 		if err != nil {
-			root, _, err := load_sgf_tree(string(data), nil)
+			root, _, err := load_sgf_tree(data.String(), nil)
 			return root, err
 		}
-		data = append(data, c)
+		data.WriteByte(c)
 
 		if inside_value == false {
 			if c == '[' {
@@ -316,7 +316,7 @@ func LoadSGFMainLine(filename string) (*Node, error) {
 				continue
 			}
 			if c == ')' {
-				root, _, err := load_sgf_tree(string(data), nil)
+				root, _, err := load_sgf_tree(data.String(), nil)
 				return root, err
 			}
 		}

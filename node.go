@@ -57,15 +57,35 @@ func (self *Node) Copy() *Node {
 	return ret
 }
 
-// WriteTo writes the node in SGF format to an io.Writer.
-func (self *Node) WriteTo(w io.Writer) {
-	fmt.Fprintf(w, ";")
+// WriteTo writes the node in SGF format to an io.Writer. This method
+// instantiates io.WriterTo for no particularly good reason.
+func (self *Node) WriteTo(w io.Writer) (n int64, err error) {
+
+	count, err := fmt.Fprintf(w, ";")
+	n += int64(count)
+	if err != nil {
+		return n, err
+	}
+
 	for _, slice := range self.props {
-		fmt.Fprintf(w, "%s", slice[0])						// The key
+
+		count, err := fmt.Fprintf(w, "%s", slice[0])
+		n += int64(count)
+		if err != nil {
+			return n, err
+		}
+
 		for _, value := range slice[1:] {
-			fmt.Fprintf(w, "[%s]", escape_string(value))	// Values
+
+			count, err := fmt.Fprintf(w, "[%s]", escape_string(value))	// Values
+			n += int64(count)
+			if err != nil {
+				return n, err
+			}
 		}
 	}
+
+	return n, nil
 }
 
 func (self *Node) key_index(key string) int {

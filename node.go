@@ -1,6 +1,7 @@
 package sgf
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 )
@@ -61,31 +62,23 @@ func (self *Node) Copy() *Node {
 // instantiates io.WriterTo for no particularly good reason.
 func (self *Node) WriteTo(w io.Writer) (n int64, err error) {
 
-	count, err := fmt.Fprintf(w, ";")
-	n += int64(count)
-	if err != nil {
-		return n, err
-	}
+	b := bytes.NewBuffer(make([]byte, 0, 8))		// Start buffer with len 0 cap 8
+
+	b.WriteByte(';')
 
 	for _, slice := range self.props {
 
-		count, err := fmt.Fprintf(w, "%s", slice[0])
-		n += int64(count)
-		if err != nil {
-			return n, err
-		}
+		b.WriteString(slice[0])
 
 		for _, value := range slice[1:] {
-
-			count, err := fmt.Fprintf(w, "[%s]", escape_string(value))	// Values
-			n += int64(count)
-			if err != nil {
-				return n, err
-			}
+			b.WriteByte('[')
+			b.WriteString(escape_string(value))
+			b.WriteByte(']')
 		}
 	}
 
-	return n, nil
+	count, err := fmt.Fprintf(w, b.String())
+	return int64(count), err
 }
 
 func (self *Node) key_index(key string) int {

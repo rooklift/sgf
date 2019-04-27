@@ -336,6 +336,9 @@ func LoadMainLine(filename string) (*Node, error) {
 	}
 }
 
+// LoadRoot loads the root node of an SGF file. Unlike Load, the whole file is
+// never read into memory, making this efficient for batch statistics
+// collection.
 func LoadRoot(filename string) (*Node, error) {
 
 	infile, err := os.Open(filename)

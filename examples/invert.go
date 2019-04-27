@@ -17,20 +17,14 @@ func main() {
 	root := sgf.LoadArgOrQuit(1)							// Equivalent to sgf.Load(os.Args[1])
 	nodes := root.TreeNodes()
 
-	key_count1, val_count1 := root.TreeKeyValueCount()		// Proving all properties survived.
-
 	invert_km_re(root)
 	for _, node := range nodes {
 		invert(node)
 	}
 
-	key_count2, val_count2 := root.TreeKeyValueCount()		// Proving all properties survived.
-
 	err := root.Save(os.Args[1] + ".inverted.sgf")
 	if err != nil {
 		fmt.Printf("%v\n", err)
-	} else {
-		fmt.Printf("Saved. Key/value counts: %v/%v and %v/%v\n", key_count1, val_count1, key_count2, val_count2)
 	}
 }
 

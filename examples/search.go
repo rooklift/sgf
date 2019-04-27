@@ -1,5 +1,7 @@
 package main
 
+// Search a directory for the named player.
+
 import (
 	"fmt"
 	"io/ioutil"
@@ -12,6 +14,7 @@ import (
 func main() {
 
 	if len(os.Args) < 3 {
+		fmt.Printf("Usage: search.exe dirname playername")
 		return
 	}
 

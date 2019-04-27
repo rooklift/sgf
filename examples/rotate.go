@@ -1,5 +1,7 @@
 package main
 
+// Rotates a game tree.
+
 import (
 	"fmt"
 	"os"
@@ -13,19 +15,13 @@ func main() {
 	nodes := root.TreeNodes()
 	boardsize := root.RootBoardSize()
 
-	key_count1, val_count1 := root.TreeKeyValueCount()		// Proving all properties survived.
-
 	for _, node := range nodes {
 		rotate(node, boardsize)
 	}
 
-	key_count2, val_count2 := root.TreeKeyValueCount()		// Proving all properties survived.
-
 	err := root.Save(os.Args[1] + ".rotated.sgf")
 	if err != nil {
 		fmt.Printf("%v\n", err)
-	} else {
-		fmt.Printf("Saved. Key/value counts: %v/%v and %v/%v\n", key_count1, val_count1, key_count2, val_count2)
 	}
 }
 

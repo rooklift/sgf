@@ -2,6 +2,7 @@ package sgf
 
 import (
 	"fmt"
+	"io"
 )
 
 // A Node is the fundamental unit in an SGF tree. Nodes have 0 or more keys,

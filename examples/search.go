@@ -14,7 +14,7 @@ import (
 func main() {
 
 	if len(os.Args) < 3 {
-		fmt.Printf("Usage: search.exe dirname playername")
+		fmt.Printf("Usage: %s dirname playername\n", filepath.Base(os.Args[0]))
 		return
 	}
 

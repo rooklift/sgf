@@ -240,7 +240,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
 	// Just being here must mean we reached the actual end of the file without
 	// reading a final ')' character. Still, we can return what we have.
-	// Note that LoadMainLine() relies on this.
+	// Note that load_special() relies on this.
 
 	return root, len(sgf), nil		// Return characters read.
 }
@@ -295,6 +295,9 @@ func LoadRoot(filename string) (*Node, error) {
 
 func load_special(filename string, root_only bool) (*Node, error) {
 
+	// Pull out the bare minimum bytes necessary to parse the root / mainline.
+	// This relies on the parser being OK with sudden end of input.
+
 	infile, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -303,9 +306,6 @@ func load_special(filename string, root_only bool) (*Node, error) {
 
 	var data bytes.Buffer
 	reader := bufio.NewReader(infile)
-
-	// Pull out the bare minimum bytes necessary to parse the root / mainline.
-	// This relies on the parser being OK with sudden end of input.
 
 	inside_value := false
 	escape_flag := false

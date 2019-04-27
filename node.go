@@ -4,12 +4,11 @@ import (
 	"fmt"
 )
 
-// A Node is the fundamental unit in an SGF tree. Nodes are implemented as maps
-// of type map[string][]string. In other words, a key can have multiple values,
-// all of which are held as strings. These strings are kept in an unescaped
-// state; escaping and unescaping is handled during loading and saving of files.
-// A node also contains information about the node's parent (if not root) and a
-// list of all child nodes.
+// A Node is the fundamental unit in an SGF tree. Nodes have 0 or more keys,
+// which have 1 or more values. Keys and values are strings. These strings are
+// kept in an unescaped state; escaping and unescaping is handled during loading
+// and saving of files. A node also contains information about the node's parent
+// (if not root) and a list of all child nodes.
 type Node struct {
 	props			[][]string		// e.g. ["B" "dd"]["C" "good move!"]["TE" "1"]
 	children		[]*Node

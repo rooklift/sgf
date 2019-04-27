@@ -27,7 +27,7 @@ func main() {
 		if err != nil { panic(err.Error()) }
 
 		for _, f := range files {
-			root, err := sgf.LoadSGFMainLine(filepath.Join(d, f.Name()))			// LoadSGFMainLine in this example.
+			root, err := sgf.Load(filepath.Join(d, f.Name()))
 			if err != nil {
 				continue
 			}

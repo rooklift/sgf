@@ -70,7 +70,7 @@ func (self *Node) Board() *Board {
 
 func (self *Board) update_from_node(node *Node) {
 
-	for _, p := range node.props["AB"] {
+	for _, p := range node.AllValues("AB") {
 		if len(p) == 5 && p[2] == ':' {
 			self.SetStateFromList(p, BLACK)
 		} else {
@@ -79,7 +79,7 @@ func (self *Board) update_from_node(node *Node) {
 		self.Player = WHITE
 	}
 
-	for _, p := range node.props["AW"] {
+	for _, p := range node.AllValues("AW") {
 		if len(p) == 5 && p[2] == ':' {
 			self.SetStateFromList(p, WHITE)
 		} else {
@@ -88,7 +88,7 @@ func (self *Board) update_from_node(node *Node) {
 		self.Player = BLACK			// Prevails in the event of both AB and AW
 	}
 
-	for _, p := range node.props["AE"] {
+	for _, p := range node.AllValues("AE") {
 		if len(p) == 5 && p[2] == ':' {
 			self.SetStateFromList(p, EMPTY)
 		} else {
@@ -98,12 +98,12 @@ func (self *Board) update_from_node(node *Node) {
 
 	// Play move: B / W. Note that "moves" which are not valid onboard points are passes.
 
-	for _, p := range node.props["B"] {
+	for _, p := range node.AllValues("B") {
 		self.PlaceStone(p, BLACK)
 		self.Player = WHITE
 	}
 
-	for _, p := range node.props["W"] {
+	for _, p := range node.AllValues("W") {
 		self.PlaceStone(p, WHITE)
 		self.Player = BLACK
 	}

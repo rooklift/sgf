@@ -339,3 +339,55 @@ func TestCopy(t *testing.T) {
 		t.Errorf("Copy had a child")
 	}
 }
+
+func TestNodeUpdates(t *testing.T) {
+	fmt.Printf("TestNodeUpdates\n")
+
+	expect_keys := func(node *Node, n int) {
+		if len(node.AllKeys()) != n || node.KeyCount() != n {
+			t.Errorf("Wrong number of keys")
+		}
+	}
+
+	expect_vals := func(node *Node, key string, n int) {
+		if len(node.AllValues(key)) != n || node.ValueCount(key) != n {
+			t.Errorf("Wrong number of values")
+		}
+	}
+
+	node := NewNode(nil)
+	expect_keys(node, 0)
+	expect_vals(node, "AB", 0)
+
+	node.AddValue("AB", "dd")
+	expect_keys(node, 1)
+	expect_vals(node, "AB", 1)
+
+	node.AddValue("AB", "dd")
+	expect_keys(node, 1)
+	expect_vals(node, "AB", 1)
+
+	node.AddValue("AB", "pp")
+	expect_keys(node, 1)
+	expect_vals(node, "AB", 2)
+
+	node.AddValue("AB", "dp")
+	expect_keys(node, 1)
+	expect_vals(node, "AB", 3)
+
+	node.SetValue("AB", "jj")
+	expect_keys(node, 1)
+	expect_vals(node, "AB", 1)
+
+	node.DeleteValue("AB", "dd")
+	expect_keys(node, 1)
+	expect_vals(node, "AB", 1)
+
+	node.DeleteValue("AB", "AB")		// Check this doesn't delete the key...
+	expect_keys(node, 1)
+	expect_vals(node, "AB", 1)
+
+	node.DeleteValue("AB", "jj")
+	expect_keys(node, 0)
+	expect_vals(node, "AB", 0)
+}

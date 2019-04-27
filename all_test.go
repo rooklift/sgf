@@ -310,3 +310,32 @@ func TestCache(t *testing.T) {
 		}
 	}
 }
+
+func TestCopy(t *testing.T) {
+	fmt.Printf("TestCopy\n")
+
+	root := NewNode(nil)
+	node := NewNode(root)
+	NewNode(node)			// Add a child.
+
+	node.AddValue("AB", "dd")
+	node.AddValue("AB", "pp")
+
+	c := node.Copy()
+
+	if len(c.AllKeys()) != 1 || c.KeyCount() != 1 {
+		t.Errorf("Copy had wrong number of keys")
+	}
+
+	if len(c.AllValues("AB")) != 2 || c.ValueCount("AB") != 2 {
+		t.Errorf("Copy had wrong number of values")
+	}
+
+	if c.Parent() != nil {
+		t.Errorf("Copy had a parent")
+	}
+
+	if c.MainChild() != nil {
+		t.Errorf("Copy had a child")
+	}
+}

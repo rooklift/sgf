@@ -28,10 +28,6 @@ type Engine struct {
 
 func (self *Engine) Start(path string, args ...string) {
 
-	// We setup our Cmd directly so we can set the Dir (for working
-	// directory) cleanly. Note that cmd.Path gets evaluated relative to
-	// dir, so only needs to be "leelaz.exe" or whatever.
-
 	var cmd exec.Cmd
 
 	cmd.Dir = filepath.Dir(path)
@@ -87,7 +83,7 @@ func (self *Engine) SendAndReceive(msg string) string {
 func main() {
 
 	engine := new(Engine)
-	engine.Start("C:\\Programs (self-installed)\\Leela Zero\\leelaz.exe", "--gtp", "--noponder", "-p", "25", "-w", "networks\\better_192_163e407b")
+	engine.Start("../../../../../Programs (self-installed)/Leela Zero/leelaz.exe", "--gtp", "--noponder", "-p", "25", "-w", "networks/better_192_163e407b")
 
 	colour := sgf.BLACK
 

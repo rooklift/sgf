@@ -1,6 +1,7 @@
 package sgf
 
 import (
+	"bytes"
 	"fmt"
 )
 
@@ -135,28 +136,32 @@ func (self *Board) Dump() {
 // DumpBoard prints the board.
 func (self *Board) DumpBoard() {
 
+	var b bytes.Buffer		// Stops jerky output you get if you Printf a bunch of small items
+
 	ko_x, ko_y, _ := ParsePoint(self.Ko, self.Size)		// Usually -1, -1
 
 	for y := 0; y < self.Size; y++ {
 		for x := 0; x < self.Size; x++ {
 			c := self.State[x][y]
 			if c == BLACK {
-				fmt.Printf(" X")
+				b.WriteString(" X")
 			} else if c == WHITE {
-				fmt.Printf(" O")
+				b.WriteString(" O")
 			} else if ko_x == x && ko_y == y {
-				fmt.Printf(" :")
+				b.WriteString(" :")
 			} else {
 				if IsStarPoint(Point(x, y), self.Size) {
-					fmt.Printf(" ")
-					fmt.Printf(HoshiString)
+					b.WriteString(" ")
+					b.WriteString(HoshiString)
 				} else {
-					fmt.Printf(" .")
+					b.WriteString(" .")
 				}
 			}
 		}
-		fmt.Printf("\n")
+		b.WriteString("\n")
 	}
+
+	fmt.Printf(b.String())
 }
 
 // PlaceStone places a stone of the specified colour at the given location. The

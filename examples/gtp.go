@@ -43,15 +43,26 @@ type Engine struct {
 	stdin	io.WriteCloser
 	stdout	*bufio.Scanner
 	stderr	*bufio.Scanner
+
+	dir		string
+	base	string
+	args	[]string		// Not including base
 }
 
 func (self *Engine) Start(path string, args []string) {
 
+	self.dir = filepath.Dir(path)
+	self.base = filepath.Base(path)
+
+	for _, a := range args {
+		self.args = append(self.args, a)
+	}
+
 	var cmd exec.Cmd
 
-	cmd.Dir = filepath.Dir(path)
-	cmd.Path = filepath.Base(path)
-	cmd.Args = append([]string{cmd.Path}, args...)
+	cmd.Dir = self.dir
+	cmd.Path = self.base
+	cmd.Args = append([]string{self.base}, self.args...)
 
 	var err1 error
 	self.stdin, err1 = cmd.StdinPipe()
@@ -101,23 +112,31 @@ func (self *Engine) SendAndReceive(msg string) string {
 
 func main() {
 
-	engine := new(Engine)
-	engine.Start(Config.Engine1Path, Config.Engine1Args)
+	engine1 := new(Engine)
+	engine2 := new(Engine)
+	engine1.Start(Config.Engine1Path, Config.Engine1Args)
+	engine2.Start(Config.Engine2Path, Config.Engine2Args)
+
+	player_map := map[sgf.Colour]*Engine{sgf.BLACK: engine1, sgf.WHITE: engine2}
+
+	// -------------------------------------------------------------
 
 	root := sgf.NewTree(19)
 	root.SetValue("KM", "7.5")
 
-	outfilename := "foo.sgf"
-
-	engine.SendAndReceive("boardsize 19")
-	engine.SendAndReceive("komi 7.5")
-	engine.SendAndReceive("clear_board")
+	for _, engine := range player_map {
+		engine.SendAndReceive("boardsize 19")
+		engine.SendAndReceive("komi 7.5")
+		engine.SendAndReceive("clear_board")
+	}
 
 	last_save_time := time.Now()
 	node := root
 	colour := sgf.WHITE
 
 	passes_in_a_row := 0
+
+	outfilename := time.Now().Format("2006-01-02-15-04-05") + ".sgf"
 
 	for {
 		colour = colour.Opposite()
@@ -127,38 +146,38 @@ func main() {
 			last_save_time = time.Now()
 		}
 
+		engine := player_map[colour]
 		response := engine.SendAndReceive(fmt.Sprintf("genmove %s", colour.Lower()))
 
 		var move string
 		fmt.Sscanf(response, "= %s", &move)
 
-		if move == "pass" {
-			node = node.PassColour(colour)
-			passes_in_a_row++
-			if passes_in_a_row >= 3 {
-				break					// We have to tell the score somehow.
-			}
-			continue
-		} else {
-			passes_in_a_row = 0
-		}
+		var err error
 
 		if move == "resign" {
-			s := fmt.Sprintf("%s+R", colour.Opposite().Upper())
-			root.SetValue("RE", s)
+			root.SetValue("RE", fmt.Sprintf("%s+R", colour.Opposite().Upper()))
 			break
-		}
-
-		sgf := move_to_sgf(move, 19)
-
-		var err error
-		node, err = node.PlayMoveColour(sgf, colour)
-		if err != nil {
-			fmt.Printf("%v\n", err)
-			break
+		} else if move == "pass" {
+			passes_in_a_row++
+			node = node.PassColour(colour)
+			if passes_in_a_row >= 3 {
+				break
+			}
 		} else {
-			node.Board().Dump()
+			passes_in_a_row = 0
+			node, err = node.PlayMoveColour(move_to_sgf(move, 19), colour)
+			if err != nil {
+				fmt.Printf("%v\n", err)
+				break
+			}
 		}
+
+		// Must only get here with a valid move...
+
+		other_engine := player_map[colour.Opposite()]
+		other_engine.SendAndReceive(fmt.Sprintf("play %s %s", colour.Lower(), move))
+
+		node.Board().Dump()
 	}
 
 	node.Save(outfilename)

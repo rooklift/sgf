@@ -26,10 +26,17 @@ type Engine struct {
 	stderr	*bufio.Scanner
 }
 
-func (self *Engine) Start(args ...string) {
+func (self *Engine) Start(path string, args ...string) {
 
-	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Dir = filepath.Dir(args[0])
+	// We setup our Cmd directly so we can set the Dir (for working
+	// directory) cleanly. Note that cmd.Path gets evaluated relative to
+	// dir, so only needs to be "leelaz.exe" or whatever.
+
+	var cmd exec.Cmd
+
+	cmd.Dir = filepath.Dir(path)
+	cmd.Path = filepath.Base(path)
+	cmd.Args = append([]string{cmd.Path}, args...)
 
 	var err1 error
 	self.stdin, err1 = cmd.StdinPipe()
@@ -67,18 +74,20 @@ func (self *Engine) SendAndReceive(msg string) string {
 		response.WriteString(self.stdout.Text())
 		response.WriteString("\n")
 		if self.stdout.Text() == "" {
-			break
+			return response.String()
 		}
 	}
 
-	return response.String()
+	// If we get to here, Scan() returned false, likely meaning the engine is dead.
+	// We should do something.
+
+	return ""
 }
 
 func main() {
 
 	engine := new(Engine)
-
-	engine.Start("C:\\Programs (self-installed)\\Leela Zero\\leelaz.exe", "--gtp", "--noponder", "-p", "1", "-w", "networks\\better_192_163e407b")
+	engine.Start("C:\\Programs (self-installed)\\Leela Zero\\leelaz.exe", "--gtp", "--noponder", "-p", "25", "-w", "networks\\better_192_163e407b")
 
 	colour := sgf.BLACK
 
@@ -98,7 +107,6 @@ func main() {
 
 		var move string
 		fmt.Sscanf(response, "= %s", &move)
-		fmt.Printf("Move: %s\n", move)
 
 		// FIXME: intercept resign and pass
 
@@ -109,6 +117,8 @@ func main() {
 		if err != nil {
 			fmt.Printf("%v\n", err)
 			break						// FIXME?
+		} else {
+			node.Board().Dump()
 		}
 
 		if time.Now().Sub(last_save_time) > 5 * time.Second {

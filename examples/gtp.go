@@ -97,10 +97,24 @@ func (self *Engine) SendAndReceive(msg string) string {
 
 	var response bytes.Buffer
 	for self.stdout.Scan() {
+
 		response.WriteString(self.stdout.Text())
 		response.WriteString("\n")
+
 		if self.stdout.Text() == "" {
-			return response.String()
+
+			// Return everything except the leading ID thing...
+
+			s := response.String()
+			i := 0
+
+			if len(s) > 0 {
+				for s[i] == '=' || s[i] >= '0' && s[i] <= '9' {
+					i++
+				}
+			}
+
+			return strings.TrimSpace(s[i:])
 		}
 	}
 
@@ -155,10 +169,7 @@ func main() {
 			last_save_time = time.Now()
 		}
 
-		response := player_map[colour].SendAndReceive(fmt.Sprintf("genmove %s", colour.Lower()))
-
-		var move string
-		fmt.Sscanf(response, "= %s", &move)
+		move := player_map[colour].SendAndReceive(fmt.Sprintf("genmove %s", colour.Lower()))
 
 		var err error
 

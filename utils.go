@@ -249,7 +249,7 @@ func ParseGTP(s string, size int) string {
 	}
 
 	up, _ := strconv.Atoi(s[1:])
-	y := size - int(up)
+	y := size - up
 
 	if x < 0 || x >= size || y < 0 || y >= size {
 		return ""

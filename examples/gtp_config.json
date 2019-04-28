@@ -1,0 +1,20 @@
+{
+	"engine_1_path": "../../../../../Programs (self-installed)/Leela Zero/leelaz.exe",
+	"engine_1_args": [
+		"--gtp",
+		"--noponder",
+		"-p",
+		"25",
+		"-w",
+		"networks/better_192_163e407b"
+	],
+	"engine_2_path": "../../../../../Programs (self-installed)/Leela Zero/leelaz.exe",
+	"engine_2_args": [
+		"--gtp",
+		"--noponder",
+		"-p",
+		"25",
+		"-w",
+		"networks/better_192_163e407b"
+	]
+}

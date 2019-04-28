@@ -1,4 +1,3 @@
 *.exe
-examples/foo.sgf
-examples/example.sgf
+examples/*.sgf
 examples/leelaz_opencl_tuning

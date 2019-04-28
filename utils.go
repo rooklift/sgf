@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -230,7 +231,7 @@ func ParseGTP(s string, size int) string {
 		return ""
 	}
 
-	s = s.ToUpper()
+	s = strings.ToUpper(s)
 
 	if s[0] < 'A' || s[0] > 'Z' {
 		return ""

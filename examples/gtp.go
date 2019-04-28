@@ -134,23 +134,29 @@ func main() {
 	a.Start(Config.Engine1Name, Config.Engine1Path, Config.Engine1Args)
 	b.Start(Config.Engine2Name, Config.Engine2Path, Config.Engine2Args)
 
-	player_map := map[sgf.Colour]*Engine{sgf.BLACK: a, sgf.WHITE: b}
+	engines := map[sgf.Colour]*Engine{sgf.BLACK: a, sgf.WHITE: b}
 
-	// -------------------------------------------------------------
+	for {
+		play_game(engines)
+		engines[sgf.WHITE], engines[sgf.BLACK] = engines[sgf.BLACK], engines[sgf.WHITE]
+	}
+}
+
+func play_game(engines map[sgf.Colour]*Engine) {
 
 	root := sgf.NewTree(19)
 	root.SetValue("KM", "7.5")
 
 	root.SetValue("C", fmt.Sprintf("Black:  %s\n%v\n\nWhite:  %s\n%v",
-		player_map[sgf.BLACK].base,
-		player_map[sgf.BLACK].args,
-		player_map[sgf.WHITE].base,
-		player_map[sgf.WHITE].args))
+		engines[sgf.BLACK].base,
+		engines[sgf.BLACK].args,
+		engines[sgf.WHITE].base,
+		engines[sgf.WHITE].args))
 
-	root.SetValue("PB", player_map[sgf.BLACK].name)
-	root.SetValue("PW", player_map[sgf.WHITE].name)
+	root.SetValue("PB", engines[sgf.BLACK].name)
+	root.SetValue("PW", engines[sgf.WHITE].name)
 
-	for _, engine := range player_map {
+	for _, engine := range engines {
 		engine.SendAndReceive("boardsize 19")
 		engine.SendAndReceive("komi 7.5")
 		engine.SendAndReceive("clear_board")
@@ -172,7 +178,7 @@ func main() {
 			last_save_time = time.Now()
 		}
 
-		move := player_map[colour].SendAndReceive(fmt.Sprintf("genmove %s", colour.Lower()))
+		move := engines[colour].SendAndReceive(fmt.Sprintf("genmove %s", colour.Lower()))
 
 		var err error
 
@@ -196,7 +202,7 @@ func main() {
 
 		// Must only get here with a valid move...
 
-		other_engine := player_map[colour.Opposite()]
+		other_engine := engines[colour.Opposite()]
 		other_engine.SendAndReceive(fmt.Sprintf("play %s %s", colour.Lower(), move))
 
 		node.Board().Dump()

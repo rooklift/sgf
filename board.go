@@ -135,7 +135,7 @@ func (self *Board) Dump() {
 
 	s := self.String()
 	s += fmt.Sprintf("Captures: %d by Black - %d by White\n", self.CapturesBy[BLACK], self.CapturesBy[WHITE])
-	s += fmt.Sprintf("Next to play: %v\n", colour_long_names[self.Player])
+	s += fmt.Sprintf("Next to play: %v\n", self.Player.Word())
 
 	fmt.Printf(s)
 	os.Stdout.Sync()		// Same reasoning.

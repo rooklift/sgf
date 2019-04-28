@@ -112,17 +112,26 @@ func (self *Engine) SendAndReceive(msg string) string {
 
 func main() {
 
-	engine1 := new(Engine)
-	engine2 := new(Engine)
-	engine1.Start(Config.Engine1Path, Config.Engine1Args)
-	engine2.Start(Config.Engine2Path, Config.Engine2Args)
+	a := new(Engine)
+	b := new(Engine)
+	a.Start(Config.Engine1Path, Config.Engine1Args)
+	b.Start(Config.Engine2Path, Config.Engine2Args)
 
-	player_map := map[sgf.Colour]*Engine{sgf.BLACK: engine1, sgf.WHITE: engine2}
+	player_map := map[sgf.Colour]*Engine{sgf.BLACK: a, sgf.WHITE: b}
 
 	// -------------------------------------------------------------
 
 	root := sgf.NewTree(19)
 	root.SetValue("KM", "7.5")
+
+	root.SetValue("C", fmt.Sprintf("Black:  %s\n%v\n\nWhite:  %s\n%v",
+		player_map[sgf.BLACK].base,
+		player_map[sgf.BLACK].args,
+		player_map[sgf.WHITE].base,
+		player_map[sgf.WHITE].args))
+
+	root.SetValue("PB", player_map[sgf.BLACK].SendAndReceive("name"))
+	root.SetValue("PW", player_map[sgf.WHITE].SendAndReceive("name"))
 
 	for _, engine := range player_map {
 		engine.SendAndReceive("boardsize 19")
@@ -146,8 +155,7 @@ func main() {
 			last_save_time = time.Now()
 		}
 
-		engine := player_map[colour]
-		response := engine.SendAndReceive(fmt.Sprintf("genmove %s", colour.Lower()))
+		response := player_map[colour].SendAndReceive(fmt.Sprintf("genmove %s", colour.Lower()))
 
 		var move string
 		fmt.Sscanf(response, "= %s", &move)

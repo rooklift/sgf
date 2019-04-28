@@ -224,7 +224,7 @@ func ParsePointList(s string, size int) []string {
 }
 
 // ParseGTP takes a GTP formatted string (e.g. "D16") and a board size, and
-// returns the sgf coordinate (e.g. "dd") or "" if invalid.
+// returns the SGF coordinate (e.g. "dd") or "" if invalid.
 func ParseGTP(s string, size int) string {
 
 	if len(s) < 2 || len(s) > 3 {
@@ -255,7 +255,7 @@ func ParseGTP(s string, size int) string {
 		return ""
 	}
 
-	return sgf.Point(x, y)
+	return Point(x, y)
 }
 
 

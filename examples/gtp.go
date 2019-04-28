@@ -83,14 +83,11 @@ func (self *Engine) SendAndReceive(msg string) string {
 func main() {
 
 	engine := new(Engine)
-	engine.Start("../../../../../Programs (self-installed)/Leela Zero/leelaz.exe", "--gtp", "--noponder", "-p", "25", "-w", "networks/better_192_163e407b")
+	engine.Start("../../../../../Programs (self-installed)/Leela Zero/leelaz.exe",
+					"--gtp", "--noponder", "-p", "25", "-w", "networks/better_192_163e407b")
 
-	colour := sgf.BLACK
-
-	last_save_time := time.Now()
-
-	node := sgf.NewTree(19)
-	node.SetValue("KM", "7.5")
+	root := sgf.NewTree(19)
+	root.SetValue("KM", "7.5")
 
 	outfilename := "foo.sgf"
 
@@ -98,13 +95,41 @@ func main() {
 	engine.SendAndReceive("komi 7.5")
 	engine.SendAndReceive("clear_board")
 
+	last_save_time := time.Now()
+	node := root
+	colour := sgf.WHITE
+
+	passes_in_a_row := 0
+
 	for {
+		colour = colour.Opposite()
+
+		if time.Now().Sub(last_save_time) > 5 * time.Second {
+			node.Save(outfilename)
+			last_save_time = time.Now()
+		}
+
 		response := engine.SendAndReceive(fmt.Sprintf("genmove %s", gtp_names[colour]))
 
 		var move string
 		fmt.Sscanf(response, "= %s", &move)
 
-		// FIXME: intercept resign and pass
+		if move == "pass" {
+			node = node.PassColour(colour)
+			passes_in_a_row++
+			if passes_in_a_row >= 3 {
+				break					// We have to tell the score somehow.
+			}
+			continue
+		} else {
+			passes_in_a_row = 0
+		}
+
+		if move == "resign" {
+			s := fmt.Sprintf("%s+R", colour.Opposite().Upper())
+			root.SetValue("RE", s)
+			break
+		}
 
 		sgf := move_to_sgf(move, 19)
 
@@ -112,17 +137,10 @@ func main() {
 		node, err = node.PlayMoveColour(sgf, colour)
 		if err != nil {
 			fmt.Printf("%v\n", err)
-			break						// FIXME?
+			break
 		} else {
 			node.Board().Dump()
 		}
-
-		if time.Now().Sub(last_save_time) > 5 * time.Second {
-			node.Save(outfilename)
-			last_save_time = time.Now()
-		}
-
-		colour = colour.Opposite()
 	}
 
 	node.Save(outfilename)

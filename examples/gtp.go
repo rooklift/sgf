@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -28,6 +29,7 @@ type Engine struct {
 func (self *Engine) Start(args ...string) {
 
 	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Dir = filepath.Dir(args[0])
 
 	var err1 error
 	self.stdin, err1 = cmd.StdinPipe()
@@ -55,12 +57,13 @@ func (self *Engine) ConsumeStderr() {
 
 func (self *Engine) SendAndReceive(msg string) string {
 
+	// FIXME: detect dead engine
+
 	msg = strings.TrimSpace(msg)
 	fmt.Fprintf(self.stdin, "%s\n", msg)
 
 	var response bytes.Buffer
-	for {
-		self.stdout.Scan()
+	for self.stdout.Scan() {
 		response.WriteString(self.stdout.Text())
 		response.WriteString("\n")
 		if self.stdout.Text() == "" {
@@ -75,16 +78,20 @@ func main() {
 
 	engine := new(Engine)
 
-	engine.Start("C:\\Programs (self-installed)\\Leela Zero\\leelaz.exe", "--gtp", "--noponder", "-p", "1", "-w", "C:\\Programs (self-installed)\\Leela Zero\\networks\\c9fb22c70c0d43c96102b1bb06043510eea3d4f8da1bde3ddaadafdff2a6da5d")
+	engine.Start("C:\\Programs (self-installed)\\Leela Zero\\leelaz.exe", "--gtp", "--noponder", "-p", "1", "-w", "networks\\better_192_163e407b")
 
 	colour := sgf.BLACK
 
 	last_save_time := time.Now()
-	node := sgf.NewTree(19)
 
-	var err error
+	node := sgf.NewTree(19)
+	node.SetValue("KM", "7.5")
 
 	outfilename := "foo.sgf"
+
+	engine.SendAndReceive("boardsize 19")
+	engine.SendAndReceive("komi 7.5")
+	engine.SendAndReceive("clear_board")
 
 	for {
 		response := engine.SendAndReceive(fmt.Sprintf("genmove %s", gtp_names[colour]))
@@ -97,6 +104,7 @@ func main() {
 
 		sgf := move_to_sgf(move, 19)
 
+		var err error
 		node, err = node.PlayMoveColour(sgf, colour)
 		if err != nil {
 			fmt.Printf("%v\n", err)

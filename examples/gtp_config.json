@@ -1,4 +1,5 @@
 {
+	"engine_1_name": "Leela Zero 192",
 	"engine_1_path": "../../../../../Programs (self-installed)/Leela Zero/leelaz.exe",
 	"engine_1_args": [
 		"--gtp",
@@ -8,6 +9,7 @@
 		"-w",
 		"networks/better_192_163e407b"
 	],
+	"engine_2_name": "Elf (via LZ)",
 	"engine_2_path": "../../../../../Programs (self-installed)/Leela Zero/leelaz.exe",
 	"engine_2_args": [
 		"--gtp",

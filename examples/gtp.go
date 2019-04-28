@@ -19,8 +19,10 @@ import (
 const config_filename = "gtp_config.json"
 
 type ConfigStruct struct {
+	Engine1Name			string		`json:"engine_1_name"`
 	Engine1Path			string		`json:"engine_1_path"`
 	Engine1Args			[]string	`json:"engine_1_args"`
+	Engine2Name			string		`json:"engine_2_name"`
 	Engine2Path			string		`json:"engine_2_path"`
 	Engine2Args			[]string	`json:"engine_2_args"`
 }
@@ -32,10 +34,9 @@ func init() {
 	if err != nil {
 		panic("Couldn't load config file " + config_filename)
 	}
-
 	err = json.Unmarshal(file, &Config)
 	if err != nil {
-		panic(err)
+		panic("Couldn't parse JSON: " + err.Error())
 	}
 }
 
@@ -44,13 +45,15 @@ type Engine struct {
 	stdout	*bufio.Scanner
 	stderr	*bufio.Scanner
 
+	name	string			// For the SGF
 	dir		string
 	base	string
 	args	[]string		// Not including base
 }
 
-func (self *Engine) Start(path string, args []string) {
+func (self *Engine) Start(name, path string, args []string) {
 
+	self.name = name
 	self.dir = filepath.Dir(path)
 	self.base = filepath.Base(path)
 
@@ -128,8 +131,8 @@ func main() {
 
 	a := new(Engine)
 	b := new(Engine)
-	a.Start(Config.Engine1Path, Config.Engine1Args)
-	b.Start(Config.Engine2Path, Config.Engine2Args)
+	a.Start(Config.Engine1Name, Config.Engine1Path, Config.Engine1Args)
+	b.Start(Config.Engine2Name, Config.Engine2Path, Config.Engine2Args)
 
 	player_map := map[sgf.Colour]*Engine{sgf.BLACK: a, sgf.WHITE: b}
 
@@ -144,8 +147,8 @@ func main() {
 		player_map[sgf.WHITE].base,
 		player_map[sgf.WHITE].args))
 
-	root.SetValue("PB", player_map[sgf.BLACK].SendAndReceive("name"))
-	root.SetValue("PW", player_map[sgf.WHITE].SendAndReceive("name"))
+	root.SetValue("PB", player_map[sgf.BLACK].name)
+	root.SetValue("PW", player_map[sgf.WHITE].name)
 
 	for _, engine := range player_map {
 		engine.SendAndReceive("boardsize 19")

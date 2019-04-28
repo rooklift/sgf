@@ -3,8 +3,10 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os/exec"
 	"path/filepath"
 	"strconv"
@@ -14,10 +16,27 @@ import (
 	sgf ".."
 )
 
-var gtp_names = map[sgf.Colour]string {
-	sgf.EMPTY: "??",
-	sgf.BLACK: "b",
-	sgf.WHITE: "w",
+const config_filename = "gtp_config.json"
+
+type ConfigStruct struct {
+	Engine1Path			string		`json:"engine_1_path"`
+	Engine1Args			[]string	`json:"engine_1_args"`
+	Engine2Path			string		`json:"engine_2_path"`
+	Engine2Args			[]string	`json:"engine_2_args"`
+}
+
+var Config ConfigStruct
+
+func init() {
+	file, err := ioutil.ReadFile(config_filename)
+	if err != nil {
+		panic("Couldn't load config file " + config_filename)
+	}
+
+	err = json.Unmarshal(file, &Config)
+	if err != nil {
+		panic(err)
+	}
 }
 
 type Engine struct {
@@ -26,7 +45,7 @@ type Engine struct {
 	stderr	*bufio.Scanner
 }
 
-func (self *Engine) Start(path string, args ...string) {
+func (self *Engine) Start(path string, args []string) {
 
 	var cmd exec.Cmd
 
@@ -46,7 +65,7 @@ func (self *Engine) Start(path string, args ...string) {
 	err4 := cmd.Start()
 
 	if err1 != nil || err2 != nil || err3 != nil || err4 != nil {
-		panic(fmt.Sprintf("%v\n%v\n%v\n%v\n", err1, err2, err3, err4))
+		panic(fmt.Sprintf("\nerr1: %v\nerr2: %v\nerr3: %v\nerr4: %v\n", err1, err2, err3, err4))
 	}
 
 	go self.ConsumeStderr()
@@ -83,8 +102,7 @@ func (self *Engine) SendAndReceive(msg string) string {
 func main() {
 
 	engine := new(Engine)
-	engine.Start("../../../../../Programs (self-installed)/Leela Zero/leelaz.exe",
-					"--gtp", "--noponder", "-p", "25", "-w", "networks/better_192_163e407b")
+	engine.Start(Config.Engine1Path, Config.Engine1Args)
 
 	root := sgf.NewTree(19)
 	root.SetValue("KM", "7.5")
@@ -109,7 +127,7 @@ func main() {
 			last_save_time = time.Now()
 		}
 
-		response := engine.SendAndReceive(fmt.Sprintf("genmove %s", gtp_names[colour]))
+		response := engine.SendAndReceive(fmt.Sprintf("genmove %s", colour.Lower()))
 
 		var move string
 		fmt.Sscanf(response, "= %s", &move)

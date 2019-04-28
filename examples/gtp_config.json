@@ -15,6 +15,6 @@
 		"-p",
 		"25",
 		"-w",
-		"networks/better_192_163e407b"
+		"networks/net0"
 	]
 }

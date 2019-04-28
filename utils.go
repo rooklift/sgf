@@ -222,6 +222,42 @@ func ParsePointList(s string, size int) []string {
 	return ret
 }
 
+// ParseGTP takes a GTP formatted string (e.g. "D16") and a board size, and
+// returns the sgf coordinate (e.g. "dd") or "" if invalid.
+func ParseGTP(s string, size int) string {
+
+	if len(s) < 2 || len(s) > 3 {
+		return ""
+	}
+
+	s = s.ToUpper()
+
+	if s[0] < 'A' || s[0] > 'Z' {
+		return ""
+	}
+	if s[1] < '0' || s[1] > '9' {
+		return ""
+	}
+	if len(s) == 3 && (s[2] < '0' || s[2] > '9') {
+		return ""
+	}
+
+	x := int(s[0]) - 65
+	if x >= 8 {					// Adjust for missing "I"
+		x--
+	}
+
+	up, _ := strconv.Atoi(s[1:])
+	y := size - int(up)
+
+	if x < 0 || x >= size || y < 0 || y >= size {
+		return ""
+	}
+
+	return sgf.Point(x, y)
+}
+
+
 // LoadArgOrQuit loads the filename given in os.Args[n] and returns the root
 // node. If this is not possible, the program exits.
 func LoadArgOrQuit(n int) *Node {

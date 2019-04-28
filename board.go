@@ -3,6 +3,7 @@ package sgf
 import (
 	"bytes"
 	"fmt"
+	"os"
 )
 
 var HoshiString = "."	// Can be changed. Used when printing the board.
@@ -128,15 +129,27 @@ func (self *Board) ClearKo() {
 
 // Dump prints the board, and some information about captures and next player.
 func (self *Board) Dump() {
-	self.DumpBoard()
-	fmt.Printf("Captures: %d by Black - %d by White\n", self.CapturesBy[BLACK], self.CapturesBy[WHITE])
-	fmt.Printf("Next to play: %v\n", colour_long_names[self.Player])
+
+	// In all our printing, try to build up the whole
+	// string first to avoid jerky printouts...
+
+	s := self.String()
+	s += fmt.Sprintf("Captures: %d by Black - %d by White\n", self.CapturesBy[BLACK], self.CapturesBy[WHITE])
+	s += fmt.Sprintf("Next to play: %v\n", colour_long_names[self.Player])
+
+	fmt.Printf(s)
+	os.Stdout.Sync()		// Same reasoning.
 }
 
-// DumpBoard prints the board.
+// DumpBoard prints the board; it is equivalent to fmt.Printf(board.String()).
 func (self *Board) DumpBoard() {
+	fmt.Printf(self.String())
+}
 
-	var b bytes.Buffer		// Stops jerky output you get if you Printf a bunch of small items
+// String returns an ASCII representation of the board.
+func (self *Board) String() string {
+
+	var b bytes.Buffer
 
 	ko_x, ko_y, _ := ParsePoint(self.Ko, self.Size)		// Usually -1, -1
 
@@ -161,7 +174,7 @@ func (self *Board) DumpBoard() {
 		b.WriteString("\n")
 	}
 
-	fmt.Printf(b.String())
+	return b.String()
 }
 
 // PlaceStone places a stone of the specified colour at the given location. The

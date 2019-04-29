@@ -119,6 +119,15 @@ func (self *Node) RootBoardSize() int {
 	return sz
 }
 
+// RootKomi travels up the tree to the root, and then finds the komi, which it
+// returns as a float64. If no KM property is present, it returns 0.
+func (self *Node) RootKomi() float64 {
+	root := self.GetRoot()
+	km_string, _ := root.GetValue("KM")
+	km, _ := strconv.ParseFloat(km_string, 64)
+	return km
+}
+
 // Dyer returns the Dyer Signature of the entire tree.
 func (self *Node) Dyer() string {
 

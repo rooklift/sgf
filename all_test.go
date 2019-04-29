@@ -415,3 +415,20 @@ func TestRootLoader(t *testing.T) {
 		t.Errorf("root had a child")
 	}
 }
+
+func TestLine(t *testing.T) {
+	fmt.Printf("TestLine\n")
+
+	root, err := Load("test_kifu/2016-03-10a.sgf")
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	end := root.GetEnd()
+	line := end.GetLine()
+
+	if len(line) != 212 {
+		t.Errorf("line was not the expected length")
+	}
+}

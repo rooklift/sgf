@@ -9,13 +9,10 @@ import (
 // root node, which it returns.
 func (self *Node) GetRoot() *Node {
 	node := self
-	for {
-		if node.parent != nil {
-			node = node.parent
-		} else {
-			return node
-		}
+	for node.parent != nil {
+		node = node.parent
 	}
+	return node
 }
 
 // GetEnd travels down the tree from the node, until it reaches a node with zero
@@ -23,15 +20,11 @@ func (self *Node) GetRoot() *Node {
 // is not on the main line, the result will not be on the main line either, but
 // will instead be the end of the current branch.
 func (self *Node) GetEnd() *Node {
-
 	node := self
-	for {
-		if len(node.children) > 0 {
-			node = node.children[0]
-		} else {
-			return node
-		}
+	for len(node.children) > 0 {
+		node = node.children[0]
 	}
+	return node
 }
 
 // GetLine returns a list of all nodes between the root and the node, inclusive.
@@ -40,13 +33,9 @@ func (self *Node) GetLine() []*Node {
 	var ret []*Node
 
 	node := self
-
-	for {
+	for node != nil {
 		ret = append(ret, node)
 		node = node.parent
-		if node == nil {
-			break
-		}
 	}
 
 	// Reverse the slice...

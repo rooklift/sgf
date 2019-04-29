@@ -120,6 +120,10 @@ func main() {
 	node, err = node.PlayMove("jj")						// Trying to play at the current node.
 	fmt.Printf("%v\n", err)								// Prints the err: jj is not empty.
 
+	// We can adjust the tree so this branch we are on is the main line...
+
+	node.MakeMainLine()
+
 	// Calling Save() will save the entire tree, regardless of node position.
 
 	node.Save("foo.sgf")

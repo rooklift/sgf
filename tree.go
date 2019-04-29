@@ -58,6 +58,25 @@ func (self *Node) GetLine() []*Node {
 	return ret
 }
 
+// MakeMainLine adjusts the tree structure so that the main line leads to this
+// node.
+func (self *Node) MakeMainLine() {
+	node := self
+
+	for node.parent != nil {
+
+		for i, sibling := range node.parent.children {
+			if sibling == node {
+				node.parent.children[i] = node.parent.children[0]
+				node.parent.children[0] = node
+				break
+			}
+		}
+
+		node = node.parent
+	}
+}
+
 // SubtreeSize returns the number of nodes in a node's subtree, including
 // itself.
 func (self *Node) SubtreeSize() int {

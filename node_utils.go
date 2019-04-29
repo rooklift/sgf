@@ -55,10 +55,8 @@ func (self *Node) SetParent(new_parent *Node) {
 	// Check no cyclic structure was created...
 
 	node := self
-	for {
-		if node.parent == nil {
-			break
-		}
+
+	for node.parent != nil {
 		if node.parent == self {
 			panic("Cyclic structure created.")
 		}

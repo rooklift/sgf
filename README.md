@@ -16,6 +16,11 @@ Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu). Som
 * If a board cache becomes invalid, internally we **must** call `clear_board_cache_recursive()`.
 * For weird encodings (e.g. not utf-8), some potential problems if a character contains a `]` or `\` byte.
 
+# Projects using the library
+
+* [gtp](https://github.com/fohristiwhirl/gtp) - a helper for GTP bots
+* [twogtp](https://github.com/fohristiwhirl/twogtp) - a match runner for GTP bots
+
 # Example
 
 ```golang

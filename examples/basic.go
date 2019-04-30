@@ -86,7 +86,7 @@ func main() {
 	}
 
 	// It is also possible to directly manage node creation and properties,
-	// though this is not really recommended...
+	// though this has no legality checks...
 
 	node = sgf.NewNode(node)							// Specify the parent
 	node.AddValue("B", "dj")

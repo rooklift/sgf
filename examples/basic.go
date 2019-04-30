@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	sgf ".."
+	"github.com/fohristiwhirl/sgf"
 )
 
 func main() {

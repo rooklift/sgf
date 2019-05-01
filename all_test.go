@@ -296,6 +296,12 @@ func TestCache(t *testing.T) {
 		}
 	}
 
+	node := root.GetEnd()
+	board := node.Board()
+	if board.CapturesBy[BLACK] != 3 || board.CapturesBy[WHITE] != 5 {
+		t.Errorf("Captures not as expected")
+	}
+
 	root.MainChild().Detach()
 
 	for _, node := range nodes {

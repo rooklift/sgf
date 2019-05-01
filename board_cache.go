@@ -70,7 +70,7 @@ func (self *Node) Board() *Board {
 			sz := node.RootBoardSize()
 			node.__board_cache = NewBoard(sz)
 		} else {
-			node.__board_cache = node.parent.Board()	// fetch a copy.
+			node.__board_cache = node.parent.Board()	// we may well have created parent's board last iteration.
 		}
 
 		// Now update the node's board from its own SGF properties...

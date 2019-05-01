@@ -69,7 +69,7 @@ func (self *Node) Board() *Board {
 			if initial == nil {
 				work = NewBoard(node.RootBoardSize())
 			} else {
-				work = initial.Copy()
+				work = initial.Copy()		// MUST COPY
 			}
 		}
 

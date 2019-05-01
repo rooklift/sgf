@@ -51,7 +51,8 @@ func (self *Node) Board() *Board {
 		return self.__board_cache.Copy()
 	}
 
-	// Generate without recursion...
+	// Generate without recursion... also filling in any empty ancestor caches on the way.
+	// This is essential, see note in Node struct about this.
 
 	line := self.GetLine()
 	var initial, work *Board

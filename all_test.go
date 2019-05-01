@@ -257,6 +257,34 @@ func TestUnicode(t *testing.T) {
 	}
 }
 
+func TestBoard(t *testing.T) {
+	fmt.Printf("TestBoard\n")
+
+	root, err := Load("test_kifu/2016-03-10a.sgf")
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	board := root.GetEnd().Board()
+
+	if board.CapturesBy[BLACK] != 3 || board.CapturesBy[WHITE] != 5 {
+		t.Errorf("Captures not as expected")
+	}
+
+	stones := 0
+	for x := 0; x < board.Size; x++ {
+		for y := 0; y < board.Size; y++ {
+			if board.State[x][y] != EMPTY {
+				stones++
+			}
+		}
+	}
+	if stones != 203 {
+		t.Errorf("Stones not as expected")
+	}
+}
+
 func TestCache(t *testing.T) {
 	fmt.Printf("TestCache\n")
 
@@ -296,12 +324,6 @@ func TestCache(t *testing.T) {
 		}
 	}
 
-	node := root.GetEnd()
-	board := node.Board()
-	if board.CapturesBy[BLACK] != 3 || board.CapturesBy[WHITE] != 5 {
-		t.Errorf("Captures not as expected")
-	}
-
 	root.MainChild().Detach()
 
 	for _, node := range nodes {
@@ -317,8 +339,8 @@ func TestCache(t *testing.T) {
 	}
 }
 
-func TestCopy(t *testing.T) {
-	fmt.Printf("TestCopy\n")
+func TestNodeCopy(t *testing.T) {
+	fmt.Printf("TestNodeCopy\n")
 
 	root := NewNode(nil)
 	node := NewNode(root)

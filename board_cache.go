@@ -5,8 +5,7 @@ package sgf
 
 var mutors = []string{"B", "W", "AB", "AW", "AE", "PL", "SZ"}
 
-var TotalBoardsGenerated int			// For debugging.
-var TotalBoardsDeleted int				// For debugging.
+var total_board_updates int			// For debugging.
 
 // -----------------------------------------------------------------------------------------------
 // clear_board_cache_recursive() needs to be called whenever a node's board cache becomes invalid.
@@ -20,7 +19,6 @@ func (self *Node) clear_board_cache_recursive() {
 		return											// See note in the Node struct about this.
 	}
 	self.__board_cache = nil
-	TotalBoardsDeleted++
 	for _, child := range self.children {
 		child.clear_board_cache_recursive()
 	}
@@ -83,6 +81,8 @@ func (self *Node) Board() *Board {
 
 func (self *Board) update_from_node(node *Node) {
 
+	total_board_updates++
+
 	for _, p := range node.AllValues("AB") {
 		if len(p) == 5 && p[2] == ':' {
 			self.SetStateFromList(p, BLACK)
@@ -98,7 +98,7 @@ func (self *Board) update_from_node(node *Node) {
 		} else {
 			self.SetState(p, WHITE)
 		}
-		self.Player = BLACK			// Prevails in the event of both AB and AW
+		self.Player = BLACK					// Prevails in the event of both AB and AW
 	}
 
 	for _, p := range node.AllValues("AE") {

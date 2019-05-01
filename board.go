@@ -30,7 +30,6 @@ func NewBoard(sz int) *Board {
 	}
 
 	board := new(Board)
-	TotalBoardsGenerated++						// Debugging
 
 	board.Size = sz
 	board.Player = BLACK

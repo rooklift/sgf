@@ -266,13 +266,19 @@ func TestBoard(t *testing.T) {
 		return
 	}
 
-	// Just check this doesn't panic or anything...
+	total_board_updates = 0			// Reset global
 
 	root.Board()
+	if total_board_updates != 1 {
+		t.Errorf("total_board_updates not as expected")
+	}
 
 	// Real tests...
 
 	board := root.GetEnd().Board()
+	if total_board_updates != 212 {	//
+		t.Errorf("total_board_updates not as expected")
+	}
 
 	if board.CapturesBy[BLACK] != 3 || board.CapturesBy[WHITE] != 5 {
 		t.Errorf("Captures not as expected")

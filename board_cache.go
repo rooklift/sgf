@@ -53,32 +53,32 @@ func (self *Node) Board() *Board {
 		return self.__board_cache.Copy()
 	}
 
-	// Otherwise, generate boards for the line, avoiding deep recursion...
-	// We do call Board() but the depth is only ever 2.
+	// Generate without recursion...
 
 	line := self.GetLine()
+	var initial, work *Board
 
 	for _, node := range line {
 
 		if node.__board_cache != nil {
+			initial = node.__board_cache	// Care: points to the real thing, not a copy!
 			continue
 		}
 
-		// For a node that doesn't have a cache, first get a copy of its parent board...
-
-		if node.parent == nil {							// node is root, so make new.
-			sz := node.RootBoardSize()
-			node.__board_cache = NewBoard(sz)
-		} else {
-			node.__board_cache = node.parent.Board()	// we may well have created parent's board last iteration.
+		if work == nil {
+			if initial == nil {
+				work = NewBoard(node.RootBoardSize())
+			} else {
+				work = initial.Copy()
+			}
 		}
 
-		// Now update the node's board from its own SGF properties...
+		work.update_from_node(node)
 
-		node.__board_cache.update_from_node(node)
+		node.__board_cache = work.Copy()
 	}
 
-	return self.__board_cache.Copy()
+	return work								// Safe because the cache stored above was a copy.
 }
 
 func (self *Board) update_from_node(node *Node) {

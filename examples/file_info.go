@@ -1,12 +1,22 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+
 	sgf ".."
 )
 
 func main() {
-	root := sgf.LoadArgOrQuit(1)		// Equivalent to sgf.Load(os.Args[1])
+	if len(os.Args) < 2 { return }
+
+	root, err := sgf.Load(os.Args[1])
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		quit()
+	}
+
 	km, _ := root.GetValue("KM")
 	re, _ := root.GetValue("RE")
 	pb, _ := root.GetValue("PB")
@@ -17,4 +27,15 @@ func main() {
 	fmt.Printf("Nodes in tree: %d\n", root.TreeSize())
 	fmt.Printf("Final board:\n")
 	root.GetEnd().Board().Dump()
+
+	quit()
+}
+
+// For the sake of being useful when dragging files onto the app in Windows,
+// wait until some user input is received before exiting...
+
+func quit() {
+	s := bufio.NewScanner(os.Stdin)
+	s.Scan()
+	os.Exit(0)
 }

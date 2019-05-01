@@ -266,6 +266,12 @@ func TestBoard(t *testing.T) {
 		return
 	}
 
+	// Just check this doesn't panic or anything...
+
+	root.Board()
+
+	// Real tests...
+
 	board := root.GetEnd().Board()
 
 	if board.CapturesBy[BLACK] != 3 || board.CapturesBy[WHITE] != 5 {

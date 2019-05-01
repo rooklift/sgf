@@ -77,7 +77,10 @@ func (self *Node) Board() *Board {
 		node.__board_cache = work.Copy()
 	}
 
-	return work								// Safe because the cache stored above was a copy.
+	// At this point, work is never nil. It is safe to return work itself since we
+	// only stored copies of it in the cache.
+
+	return work
 }
 
 func (self *Board) update_from_node(node *Node) {

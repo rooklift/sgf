@@ -188,7 +188,9 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
 		} else {
 
-			if c == '[' {
+			if c <= ' ' || (c >= 'a' && c <= 'z') {
+				continue												// Silently discard whitespace and lowercase ASCII
+			} else if c == '[' {
 				if node == nil {
 					// The tree has ( but no ; before its first property. We could return an error.
 					// Alternatively, we can tolerate this...
@@ -222,14 +224,14 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				} else {
 					node = NewNode(node)
 				}
-			} else {
-				if c >= 'A' && c <= 'Z' {
-					if keycomplete {
-						key.Reset()
-						keycomplete = false
-					}
-					key.WriteByte(c)
+			} else if c >= 'A' && c <= 'Z' {
+				if keycomplete {
+					key.Reset()
+					keycomplete = false
 				}
+				key.WriteByte(c)
+			} else {
+				return nil, 0, fmt.Errorf("load_sgf_tree(): unacceptable byte 0x%x while expecting key", c)
 			}
 		}
 	}

@@ -3,10 +3,6 @@ package sgf
 // Note: boards are created only as needed, and some SGF manipulation
 // can be done creating no boards whatsoever.
 
-import (
-	"strconv"
-)
-
 var mutors = []string{"B", "W", "AB", "AW", "AE", "PL", "SZ"}
 
 var TotalBoardsGenerated int			// For debugging.
@@ -51,18 +47,35 @@ func (self *Node) mutor_check(key string) {
 // no effect on the SGF node which created it.
 func (self *Node) Board() *Board {
 
-	if self.__board_cache == nil {
-		if self.parent != nil {
-			self.__board_cache = self.parent.Board()
-		} else {										// We are root
-			sz_string, _ := self.GetValue("SZ")
-			sz, _ := strconv.Atoi(sz_string)
-			if sz < 1  { sz = 19 }
-			if sz > 52 { sz = 52 }						// SGF limit
-			self.__board_cache = NewBoard(sz)
+	// Return cache if it exists...
+
+	if self.__board_cache != nil {
+		return self.__board_cache.Copy()
+	}
+
+	// Otherwise, generate boards for the line, avoiding deep recursion...
+	// We do call Board() but the depth is only ever 2.
+
+	line := self.GetLine()
+
+	for _, node := range line {
+
+		if node.__board_cache != nil {
+			continue
 		}
-		self.__board_cache.update_from_node(self)
-		TotalBoardsGenerated++
+
+		// For a node that doesn't have a cache, first get a copy of its parent board...
+
+		if node.parent == nil {							// node is root, so make new.
+			sz := node.RootBoardSize()
+			node.__board_cache = NewBoard(sz)
+		} else {
+			node.__board_cache = node.parent.Board()	// fetch a copy.
+		}
+
+		// Now update the node's board from its own SGF properties...
+
+		node.__board_cache.update_from_node(node)
 	}
 
 	return self.__board_cache.Copy()

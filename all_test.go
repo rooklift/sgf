@@ -297,6 +297,26 @@ func TestBoard(t *testing.T) {
 	}
 }
 
+func TestGroups(t *testing.T) {
+	fmt.Printf("TestGroups\n")
+
+	root, err := Load("test_kifu/group_info.sgf")
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	board := root.Board()
+
+	if board.GroupSize("aa") != 57 {
+		t.Errorf("GroupSize not as expected")
+	}
+
+	if board.Liberties("aa") != 37 {
+		t.Errorf("Liberties (%d) not as expected", board.Liberties("aa"))
+	}
+}
+
 func TestCache(t *testing.T) {
 	fmt.Printf("TestCache\n")
 

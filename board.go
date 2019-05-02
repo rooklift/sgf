@@ -228,26 +228,6 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 	return
 }
 
-func (self *Board) ko_square_finder(p string) string {
-
-	// Only called when we know there is indeed a ko.
-	// Argument is the location of the capturing stone that caused it.
-
-	var hits []string
-
-	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.GetState(a) == EMPTY {
-			hits = append(hits, a)
-		}
-	}
-
-	if len(hits) != 1 {
-		panic(fmt.Sprintf("ko_square_finder(): got %d hits", len(hits)))
-	}
-
-	return hits[0]
-}
-
 // DestroyGroup deletes the group at the specified location. The argument should
 // be an SGF coordinate, e.g. "dd", referring to any stone in the group to be
 // destroyed. The number of stones removed is returned.
@@ -271,3 +251,41 @@ func (self *Board) DestroyGroup(p string) int {
 
 	return count
 }
+
+func (self *Board) ko_square_finder(p string) string {
+
+	// Only called when we know there is indeed a ko.
+	// Argument is the location of the capturing stone that caused it.
+
+	var hits []string
+
+	for _, a := range AdjacentPoints(p, self.Size) {
+		if self.GetState(a) == EMPTY {
+			hits = append(hits, a)
+		}
+	}
+
+	if len(hits) != 1 {
+		panic(fmt.Sprintf("ko_square_finder(): got %d hits", len(hits)))
+	}
+
+	return hits[0]
+}
+
+/*
+func (self *Board) get_state_fast(p string) Colour {
+	x := int(p[0]) - 97
+	y := int(p[1]) - 97
+	if p[0] <= 'Z' { x = int(p[0]) - 39 }
+	if p[1] <= 'Z' { y = int(p[1]) - 39 }
+	return self.State[x][y]
+}
+
+func (self *Board) set_state_fast(p string, c Colour) {
+	x := int(p[0]) - 97
+	y := int(p[1]) - 97
+	if p[0] <= 'Z' { x = int(p[0]) - 39 }
+	if p[1] <= 'Z' { y = int(p[1]) - 39 }
+	self.State[x][y] = c
+}
+*/

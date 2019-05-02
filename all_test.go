@@ -313,7 +313,11 @@ func TestGroups(t *testing.T) {
 	}
 
 	if board.Liberties("aa") != 37 {
-		t.Errorf("Liberties (%d) not as expected", board.Liberties("aa"))
+		t.Errorf("Liberties not as expected")
+	}
+
+	if board.DestroyGroup("aa") != 57 {
+		t.Errorf("DestroyGroup did not return the expected value")
 	}
 }
 

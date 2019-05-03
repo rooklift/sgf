@@ -97,6 +97,7 @@ func (self *Board) update_from_node(node *Node) {
 			self.SetState(p, BLACK)
 		}
 		self.Player = WHITE
+		self.ClearKo()
 	}
 
 	for _, p := range node.AllValues("AW") {
@@ -106,6 +107,7 @@ func (self *Board) update_from_node(node *Node) {
 			self.SetState(p, WHITE)
 		}
 		self.Player = BLACK					// Prevails in the event of both AB and AW
+		self.ClearKo()
 	}
 
 	for _, p := range node.AllValues("AE") {
@@ -114,6 +116,7 @@ func (self *Board) update_from_node(node *Node) {
 		} else {
 			self.SetState(p, EMPTY)
 		}
+		self.ClearKo()
 	}
 
 	// B and W are updated with ForceStone(), which has no legality checks but does

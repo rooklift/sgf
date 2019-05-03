@@ -601,22 +601,28 @@ func TestForcedMovesEquivalence(t *testing.T) {
 				key = "W"
 			}
 
-			// Sometimes do direct board manipulation...
-
 			if rand.Intn(8) == 0 {
+
+				// Sometimes do direct board
+				// manipulation with no captures.
 
 				board.SetState(p, colour)
 				board.Player = colour.Opposite()
+				board.ClearKo()
 
-				key = "A" + key					// Key becomes AW or AB
+				key = "A" + key
 				node = NewNode(node)
-				node.SetValue(key, p)
+				node.SetValue(key, p)			// Key is AB or AW
 
 			} else {
 
+				// Sometimes do stone placement
+				// with captures.
+
 				board.ForceStone(p, colour)
+
 				node = NewNode(node)
-				node.SetValue(key, p)
+				node.SetValue(key, p)			// Key is B or W
 
 			}
 
@@ -629,5 +635,7 @@ func TestForcedMovesEquivalence(t *testing.T) {
 				break
 			}
 		}
+
+		// node.GetRoot().Save("meh.sgf")
 	}
 }

@@ -548,15 +548,22 @@ func TestBoardEquivalence(t *testing.T) {
 		board := NewBoard(19)
 		node := NewTree(19)
 
-		var node_err error
+		var node_err, board_err error
 
 		for n := 0; n < 5000; n++ {
 			x := rand.Intn(19)
 			y := rand.Intn(19)
 			p := fmt.Sprintf("%c%c", alpha[x], alpha[y])
 
-			board_err := board.Play(p)
-			node, node_err = node.Play(p)
+			// Sometimes switch the colours up...
+
+			if rand.Intn(8) == 0 {
+				board_err = board.PlayColour(p, board.Player.Opposite())
+				node, node_err = node.PlayColour(p, node.Board().Player.Opposite())
+			} else {
+				board_err = board.Play(p)
+				node, node_err = node.Play(p)
+			}
 
 			if (board_err == nil && node_err != nil) || (board_err != nil && node_err == nil) {
 				t.Errorf("Got differing errors")

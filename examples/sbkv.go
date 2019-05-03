@@ -6,7 +6,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -16,33 +15,21 @@ import (
 )
 
 func main() {
-
-	dirs := os.Args[1:]
-
-	for _, d := range dirs {
-
-		files, err := ioutil.ReadDir(d)
-
-		if err != nil {
-			panic(err.Error())
-		}
-
-		for _, f := range files {
-			err := handle_file(d, f.Name())
-			if err != nil {
-				fmt.Printf("%s: %v\n", f.Name(), err)
-			}
-		}
-	}
+	if len(os.Args) < 2 { return }
+	filepath.Walk(os.Args[1], handle_file)
 }
 
-func handle_file(dirname, filename string) error {
+func handle_file(path string, _ os.FileInfo, err error) error {
 
-	path := filepath.Join(dirname, filename)
+	// Returning an error halts the whole walk. So don't.
+
+	if err != nil {
+		return nil
+	}
 
 	node, err := sgf.Load(path)
 	if err != nil {
-		return err
+		return nil
 	}
 
 	for {

@@ -21,7 +21,7 @@ var HoshiString = "."	// Can be changed. Used when printing the board.
 // ForceStone() - changes array, makes captures, updates Ko and Player.
 //
 // Play() - performs legality checks, changes array, makes captures, updates Ko
-// and player.
+// and Player.
 type Board struct {
 	Size				int
 	Player				Colour

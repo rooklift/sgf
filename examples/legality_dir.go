@@ -15,7 +15,7 @@ func main() {
 	filepath.Walk(os.Args[1], handle_file)
 }
 
-func handle_file(path string, info os.FileInfo, err error) error {
+func handle_file(path string, _ os.FileInfo, err error) error {
 
 	// Returning an error halts the whole walk. So don't.
 

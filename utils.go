@@ -28,8 +28,8 @@ func NewTree(size int) *Node {
 	return node
 }
 
-// AdjacentPoints returns a slice of all points (formatted as SGF coordinates, e.g. "dd")
-// that are adjacent to the given point, on the given board size.
+// AdjacentPoints returns a slice of all points (formatted as SGF coordinates,
+// e.g. "dd") that are adjacent to the given point, on the given board size.
 func AdjacentPoints(p string, size int) []string {
 
 	x, y, onboard := ParsePoint(p, size)

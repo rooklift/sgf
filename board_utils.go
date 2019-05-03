@@ -67,7 +67,7 @@ func (self *Board) has_liberties_recurse(p string, touched map[string]bool) bool
 	return false
 }
 
-// GroupSize counts the liberties of the group at the given location. The
+// Liberties counts the liberties of the group at the given location. The
 // argument should be an SGF coordinate, e.g. "dd".
 func (self *Board) Liberties(p string) int {
 

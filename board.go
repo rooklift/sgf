@@ -334,6 +334,8 @@ func (self *Board) PlayMove(p string) error {
 	return self.PlayMoveColour(p, self.Player)
 }
 
+// PlayMoveColour is like PlayMove, except the colour is specified rather than
+// being automatically determined.
 func (self *Board) PlayMoveColour(p string, colour Colour) error {
 	legal, err := self.LegalColour(p, colour)
 	if legal == false {

@@ -1,5 +1,9 @@
 package sgf
 
+import (
+	"fmt"
+)
+
 // GroupSize counts the size of the group at the given location. The argument
 // should be an SGF coordinate, e.g. "dd".
 func (self *Board) GroupSize(p string) int {

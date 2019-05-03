@@ -39,7 +39,7 @@ func (self *Node) SetParent(new_parent *Node) {
 	if self.parent != nil {
 		for i := len(self.parent.children) - 1; i >= 0; i-- {
 			if self.parent.children[i] == self {
-				self.parent.children = append(self.parent.children[:i], self.parent.children[i+1:]...)
+				self.parent.children = append(self.parent.children[:i], self.parent.children[i + 1:]...)
 			}
 		}
 	}

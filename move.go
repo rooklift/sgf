@@ -1,9 +1,5 @@
 package sgf
 
-import (
-	"fmt"
-)
-
 // PlayMove attempts to play the specified move at the node. The argument should
 // be an SGF coordinate, e.g. "dd". The colour is determined intelligently.
 //
@@ -22,26 +18,9 @@ func (self *Node) PlayMove(p string) (*Node, error) {
 // being automatically determined.
 func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// Returns new node on success; self on failure.
 
-	if colour != BLACK && colour != WHITE {
-		panic("Node.PlayMoveColour(): no colour specified")						// This is a programming error, so panic, not error.
-	}
-
-	board := self.Board()
-
-	x, y, onboard := ParsePoint(p, board.Size)
-
-	if onboard == false {
-		return self, fmt.Errorf("Node.PlayMoveColour(): invalid or off-board string %q", p)
-	}
-
-	if board.GetState(p) != EMPTY {
-		return self, fmt.Errorf("Node.PlayMoveColour(): point %q (%v,%v) was not empty", p, x, y)
-	}
-
-	if board.HasKo() && board.Ko == p {
-		if colour == board.Player {												// i.e. we've not forced a move by the wrong colour.
-			return self, fmt.Errorf("Node.PlayMoveColour(): ko recapture forbidden")
-		}
+	legal, err := self.Board().LegalColour(p, colour)
+	if legal == false {
+		return self, err
 	}
 
 	// Return the already-extant child if there is such a thing...
@@ -57,15 +36,9 @@ func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// R
 		}
 	}
 
-	proposed_node := NewNode(self)												// Note: already appends child to self.
-	proposed_node.SetValue(key, p)
-
-	if proposed_node.Board().GetState(p) == EMPTY {								// Because of suicide.
-		proposed_node.Detach()													// Unlink the child from self.
-		return self, fmt.Errorf("Node.PlayMoveColour(): suicide forbidden")
-	}
-
-	return proposed_node, nil
+	new_node := NewNode(self)													// Attaches new_node to self.
+	new_node.SetValue(key, p)
+	return new_node, nil
 }
 
 // Pass passes. The colour is determined intelligently. Normally, a new node is

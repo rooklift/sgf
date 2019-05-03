@@ -13,6 +13,12 @@ var HoshiString = "."	// Can be changed. Used when printing the board.
 // has no effect on the SGF nodes themselves. Creating boards from nodes is
 // relatively costly, and should probably be avoided if batch processing many
 // files.
+//
+// The state of points on the board can be altered in 3 different ways:
+//
+// - SetState() - changes array.
+// - PlaceStone() - changes array and makes captures.
+// - PlayMove() - performs legality checks, changes array, makes captures.
 type Board struct {
 	Size				int
 	Player				Colour
@@ -255,6 +261,94 @@ func (self *Board) DestroyGroup(p string) int {
 	return count
 }
 
+// Legal returns true if a play at point p would be legal. The argument should
+// be an SGF coordinate, e.g. "dd". The colour is determined intelligently. The
+// board is not changed. If false, the reason is given in the error.
+func (self *Board) Legal(p string) (bool, error) {
+	return self.LegalColour(p, self.Player)
+}
+
+// LegalColour is like Legal, except the colour is specified rather than being
+// automatically determined.
+func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
+
+	if colour != BLACK && colour != WHITE {
+		return false, fmt.Errorf("Board.LegalColour(): colour not BLACK or WHITE")
+	}
+
+	x, y, onboard := ParsePoint(p, self.Size)
+
+	if onboard == false {
+		return false, fmt.Errorf("Board.LegalColour(): invalid or off-board string %q", p)
+	}
+
+	if self.State[x][y] != EMPTY {
+		return false, fmt.Errorf("Board.LegalColour(): point %q (%v,%v) was not empty", p, x, y)
+	}
+
+	if self.Ko == p {
+		if colour == self.Player {												// i.e. we've not forced a move by the wrong colour.
+			return false, fmt.Errorf("Board.LegalColour(): ko recapture forbidden")
+		}
+	}
+
+	if self.HasLiberties(p) == false {
+
+		// The move we are playing will have no liberties of its own.
+		// Therefore, it will be legal iff it has a neighbour which:
+		//
+		//		- Is an enemy group with 1 liberty, or
+		//		- Is a friendly group with 2 or more liberties.
+
+		allowed := false
+
+		for _, a := range AdjacentPoints(p, self.Size) {
+			if self.GetState(a) == colour.Opposite() {
+				if self.Liberties(a) == 1 {
+					allowed = true
+					break
+				}
+			} else if self.GetState(a) == colour {
+				if self.Liberties(a) >= 2 {
+					allowed = true
+					break
+				}
+			} else {
+				panic("wat")
+			}
+		}
+
+		if allowed == false {
+			return false, fmt.Errorf("Board.LegalColour(): suicide forbidden")
+		}
+	}
+
+	// The move is legal!
+
+	return true, nil
+}
+
+// PlayMove attempts to play at point p, with full legality checks. The argument should
+// be an SGF coordinate, e.g. "dd". The colour is determined intelligently. If the move is illegal, returns an error.
+func (self *Board) PlayMove(p string) error {
+	return self.PlayMoveColour(p, self.Player)
+}
+
+func (self *Board) PlayMoveColour(p string, colour Colour) error {
+	legal, err := self.LegalColour(p, colour)
+	if legal == false {
+		return err
+	}
+	self.PlaceStone(p, colour)
+	return nil
+}
+
+// Pass swaps the identity of the next player, and clears any ko.
+func (self *Board) Pass() {
+	self.ClearKo()
+	self.Player = self.Player.Opposite()
+}
+
 func (self *Board) ko_square_finder(p string) string {
 
 	// Only called when we know there is indeed a ko.
@@ -274,6 +368,8 @@ func (self *Board) ko_square_finder(p string) string {
 
 	return hits[0]
 }
+
+
 
 /*
 func (self *Board) get_state_fast(p string) Colour {

@@ -110,12 +110,12 @@ func Point(x, y int) string {
 }
 
 // HandicapPoints returns a slice of SGF coordinates (e.g. "dd") that are
-// Black's handicap stones, for the specified boardsize and handicap (max
+// Black's handicap stones, for the specified board size and handicap (max
 // handicap: 9). The tygem argument indicates whether the 3rd stone in an H3
 // game should be in the top left. Works poorly for very small board sizes.
-func HandicapPoints(boardsize, handicap int, tygem bool) []string {
+func HandicapPoints(size, handicap int, tygem bool) []string {
 
-	if boardsize < 4 || handicap < 2 {
+	if size < 4 || handicap < 2 {
 		return nil
 	}
 
@@ -123,9 +123,9 @@ func HandicapPoints(boardsize, handicap int, tygem bool) []string {
 		handicap = 9
 	}
 
-	d := 1; if boardsize >= 7 { d = 2 }; if boardsize >= 13 { d = 3 }
+	d := 1; if size >= 7 { d = 2 }; if size >= 13 { d = 3 }
 
-	z := boardsize
+	z := size
 
 	var ret []string
 

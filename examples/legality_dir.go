@@ -1,10 +1,9 @@
 package main
 
-// Scan a directory of SGF files for illegal moves.
+// Scan a directory of SGF files for illegal moves. Recursive.
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -12,33 +11,22 @@ import (
 )
 
 func main() {
-
-	dirs := os.Args[1:]
-
-	for _, d := range dirs {
-
-		files, err := ioutil.ReadDir(d)
-
-		if err != nil {
-			panic(err.Error())
-		}
-
-		for _, f := range files {
-			err := handle_file(d, f.Name())
-			if err != nil {
-				fmt.Printf("%s: %v\n", f.Name(), err)
-			}
-		}
-	}
+	if len(os.Args) < 2 { return }
+	root_dir := os.Args[1]
+	filepath.Walk(root_dir, handle_file)
 }
 
-func handle_file(dirname, filename string) error {
+func handle_file(path string, info os.FileInfo, err error) error {
 
-	path := filepath.Join(dirname, filename)
+	// Returning an error halts the whole walk. So don't.
+
+	if err != nil {
+		return nil
+	}
 
 	root, err := sgf.LoadMainLine(path)
 	if err != nil {
-		return err
+		return nil
 	}
 
 	i := 0
@@ -59,7 +47,8 @@ func handle_file(dirname, filename string) error {
 			_, err := board.LegalColour(b, sgf.BLACK)
 			if err != nil {
 				re, _ := root.GetValue("RE")
-				return fmt.Errorf("Move %d of %d: %v   %s", i, len(node.GetEnd().GetLine()) - 1, err, re)
+				fmt.Printf("%s: Move %d of %d: %v -- %s\n", filepath.Base(path), i, len(node.GetEnd().GetLine()) - 1, err, re)
+				return nil
 			}
 		}
 
@@ -68,7 +57,8 @@ func handle_file(dirname, filename string) error {
 			_, err := board.LegalColour(w, sgf.WHITE)
 			if err != nil {
 				re, _ := root.GetValue("RE")
-				return fmt.Errorf("Move %d of %d: %v   %s", i, len(node.GetEnd().GetLine()) - 1, err, re)
+				fmt.Printf("%s: Move %d of %d: %v -- %s\n", filepath.Base(path), i, len(node.GetEnd().GetLine()) - 1, err, re)
+				return nil
 			}
 		}
 

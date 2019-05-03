@@ -328,8 +328,9 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 	return true, nil
 }
 
-// PlayMove attempts to play at point p, with full legality checks. The argument should
-// be an SGF coordinate, e.g. "dd". The colour is determined intelligently. If the move is illegal, returns an error.
+// PlayMove attempts to play at point p, with full legality checks. The argument
+// should be an SGF coordinate, e.g. "dd". The colour is determined
+// intelligently. If the move is illegal, returns an error.
 func (self *Board) PlayMove(p string) error {
 	return self.PlayMoveColour(p, self.Player)
 }

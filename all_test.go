@@ -519,7 +519,7 @@ func TestBoardEdits(t *testing.T) {
 	board.Play("pp")
 	expect_next_player(board, WHITE)
 
-	board.Play("pp")				// Fails
+	board.Play("pp")					// Fails
 	expect_next_player(board, WHITE)
 
 	board.ForceStone("pp", WHITE)		// Succeeds
@@ -536,6 +536,4 @@ func TestBoardEdits(t *testing.T) {
 
 	board.Pass()
 	expect_next_player(board, WHITE)
-
-	board.Dump()
 }

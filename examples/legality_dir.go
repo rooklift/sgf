@@ -59,7 +59,7 @@ func handle_file(dirname, filename string) error {
 			_, err := board.LegalColour(b, sgf.BLACK)
 			if err != nil {
 				re, _ := root.GetValue("RE")
-				return fmt.Errorf("Move %d of %d: %v   %s", i, len(node.GetEnd().GetLine()), err, re)
+				return fmt.Errorf("Move %d of %d: %v   %s", i, len(node.GetEnd().GetLine()) - 1, err, re)
 			}
 		}
 
@@ -68,7 +68,7 @@ func handle_file(dirname, filename string) error {
 			_, err := board.LegalColour(w, sgf.WHITE)
 			if err != nil {
 				re, _ := root.GetValue("RE")
-				return fmt.Errorf("Move %d of %d: %v   %s", i, len(node.GetEnd().GetLine()), err, re)
+				return fmt.Errorf("Move %d of %d: %v   %s", i, len(node.GetEnd().GetLine()) - 1, err, re)
 			}
 		}
 

@@ -76,38 +76,37 @@ func (self *Board) has_liberties_recurse(p string, touched map[string]bool) bool
 // The argument should be an SGF coordinate, e.g. "dd".
 func (self *Board) Liberties(p string) []string {
 
-	if self.GetState(p) == EMPTY {
+	colour := self.GetState(p)
+
+	if colour == EMPTY {
 		return nil
 	}
 
-	touched := make(map[string]bool)
-	libs := make(map[string]bool)
-
-	self.liberties_recurse(p, touched, libs)
+	touched := make(map[string]Colour)
+	touched[p] = colour						// Note this.
+	self.liberties_recurse(p, colour, touched)
 
 	var ret []string
-	for key, _ := range libs {
-		ret = append(ret, key)
+	for key, value := range touched {
+		if value == EMPTY {
+			ret = append(ret, key)
+		}
 	}
 
 	return ret
 }
 
-func (self *Board) liberties_recurse(p string, touched, libs map[string]bool) {
+func (self *Board) liberties_recurse(p string, colour Colour, touched map[string]Colour) {
 
 	// Note that this function uses the touched map in a different way from others.
-	// Literally every point that's examined is flagged as touched.
-
-	touched[p] = true
-	colour := self.GetState(p)
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if touched[a] == false {
-			touched[a] = true							// This is fine regardless of what's on the point
-			if self.GetState(a) == EMPTY {
-				libs[a] = true
-			} else if self.GetState(a) == colour {
-				self.liberties_recurse(a, touched, libs)
+		_, ok := touched[a]
+		if ok == false {
+			a_colour := self.GetState(a)
+			touched[a] = a_colour
+			if a_colour == colour {
+				self.liberties_recurse(a, colour, touched)
 			}
 		}
 	}

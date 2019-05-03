@@ -46,31 +46,6 @@ func (self *Node) PlayColour(p string, colour Colour) (*Node, error) {		// Retur
 // already existed in a child, that child is returned instead and no new node is
 // created.
 func (self *Node) Pass() *Node {
-
-	if self.__board_cache != nil {
-		return self.PassColour(self.Board().Player)
-	}
-
-	// Since we don't really need a board, try and not make one...
-
-	keys := self.AllKeys()
-
-	seen_black := false
-	seen_white := false
-
-	for _, key := range keys {
-		if key == "B" || key == "AB" { seen_black = true }
-		if key == "W" || key == "AW" { seen_white = true }
-	}
-
-	if seen_black && seen_white == false {
-		return self.PassColour(WHITE)
-	} else if seen_white && seen_black == false {
-		return self.PassColour(BLACK)
-	}
-
-	// As a last resort, generate a board...
-
 	return self.PassColour(self.Board().Player)
 }
 

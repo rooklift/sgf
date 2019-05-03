@@ -13,15 +13,6 @@ var HoshiString = "."	// Can be changed. Used when printing the board.
 // has no effect on the SGF nodes themselves. Creating boards from nodes is
 // relatively costly, and should probably be avoided if batch processing many
 // files.
-//
-// The state of points on the board can be altered in 3 different ways:
-//
-// SetState() - changes array.
-//
-// ForceStone() - changes array, makes captures, updates Ko and Player.
-//
-// Play() - performs legality checks, changes array, makes captures, updates Ko
-// and Player.
 type Board struct {
 	Size				int
 	Player				Colour

@@ -537,3 +537,34 @@ func TestBoardEdits(t *testing.T) {
 	board.Pass()
 	expect_next_player(board, WHITE)
 }
+
+func TestBoardEquivalence(t *testing.T) {
+	fmt.Printf("TestBoardEquivalence\n")
+
+	const alpha = "abcdefghijklmnopqrs"
+
+	for i := 0; i < 10; i++ {
+
+		board := NewBoard(19)
+		node := NewTree(19)
+
+		var node_err error
+
+		for n := 0; n < 5000; n++ {
+			x := rand.Intn(19)
+			y := rand.Intn(19)
+			p := fmt.Sprintf("%c%c", alpha[x], alpha[y])
+
+			board_err := board.Play(p)
+			node, node_err = node.Play(p)
+
+			if (board_err == nil && node_err != nil) || (board_err != nil && node_err == nil) {
+				t.Errorf("Got differing errors")
+			}
+
+			if board.Equals(node.Board()) != true {
+				t.Errorf("Got differing boards")
+			}
+		}
+	}
+}

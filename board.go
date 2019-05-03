@@ -212,9 +212,6 @@ func (self *Board) String() string {
 // recaptures will succeed, as will playing on an occupied point.
 //
 // The board's Ko and Player fields are updated.
-//
-// As a reminder, editing a board has no effect on the node in an SGF tree from
-// which it was created (if any).
 func (self *Board) ForceStone(p string, colour Colour) {
 
 	if colour != BLACK && colour != WHITE {
@@ -358,6 +355,9 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 // should be an SGF coordinate, e.g. "dd". The colour is determined
 // intelligently. If successful, the board is changed. If the move is illegal,
 // returns an error.
+//
+// As a reminder, editing a board has no effect on the node in an SGF tree from
+// which it was created (if any).
 func (self *Board) Play(p string) error {
 	return self.PlayColour(p, self.Player)
 }

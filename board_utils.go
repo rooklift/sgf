@@ -4,42 +4,43 @@ import (
 	"fmt"
 )
 
-// GroupSize counts the size of the group at the given location. The argument
-// should be an SGF coordinate, e.g. "dd".
-func (self *Board) GroupSize(p string) int {
-
-	// If the point is empty, should this return 0, or the size of the empty "string"? Hmm.
+// Stones returns all stones in the group at point p, in arbitrary order. The
+// argument should be an SGF coordinate, e.g. "dd".
+func (self *Board) Stones(p string) []string {
 
 	if self.GetState(p) == EMPTY {
-		return 0
+		return nil
 	}
 
 	touched := make(map[string]bool)
-	return self.group_size_recurse(p, touched)
+	self.stones_recurse(p, touched)
+
+	var ret []string
+	for key, _ := range touched {
+		ret = append(ret, key)
+	}
+
+	return ret
 }
 
-func (self *Board) group_size_recurse(p string, touched map[string]bool) int {
+func (self *Board) stones_recurse(p string, touched map[string]bool) {
 
 	touched[p] = true
 	colour := self.GetState(p)
 
-	count := 1
-
 	for _, a := range AdjacentPoints(p, self.Size) {
 		if self.GetState(a) == colour {
 			if touched[a] == false {
-				count += self.group_size_recurse(a, touched)
+				self.stones_recurse(a, touched)
 			}
 		}
 	}
-
-	return count
 }
 
-// HasLiberties checks whether the group at the given location has any
-// liberties. The argument should be an SGF coordinate, e.g. "dd". For groups of
-// stones on normal boards, this is always true, but can be false if the calling
-// program is manipulating the board directly.
+// HasLiberties checks whether the group at point p has any liberties. The
+// argument should be an SGF coordinate, e.g. "dd". For groups of stones on
+// normal boards, this is always true, but can be false if the calling program
+// is manipulating the board directly.
 //
 // If the point p is empty, returns true if any of its neighbours are also
 // empty, otherwise false.
@@ -71,8 +72,8 @@ func (self *Board) has_liberties_recurse(p string, touched map[string]bool) bool
 	return false
 }
 
-// Liberties counts the liberties of the group at the given location. The
-// argument should be an SGF coordinate, e.g. "dd".
+// Liberties counts the liberties of the group at point p. The argument should
+// be an SGF coordinate, e.g. "dd".
 func (self *Board) Liberties(p string) int {
 
 	// What on earth is the correct answer to how many liberties an empty square has?

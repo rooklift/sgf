@@ -309,8 +309,8 @@ func TestGroups(t *testing.T) {
 
 	board := root.Board()
 
-	if board.GroupSize("aa") != 57 {
-		t.Errorf("GroupSize not as expected")
+	if len(board.Stones("aa")) != 57 {
+		t.Errorf("len(board.Stones()) not as expected")
 	}
 
 	if board.Liberties("aa") != 37 {

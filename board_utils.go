@@ -123,3 +123,70 @@ func (self *Board) Singleton(p string) bool {
 
 	return true
 }
+
+// Legal returns true if a play at point p would be legal. The argument should
+// be an SGF coordinate, e.g. "dd". The colour is determined intelligently. The
+// board is not changed. If false, the reason is given in the error.
+func (self *Board) Legal(p string) (bool, error) {
+	return self.LegalColour(p, self.Player)
+}
+
+// LegalColour is like Legal, except the colour is specified rather than being
+// automatically determined.
+func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
+
+	if colour != BLACK && colour != WHITE {
+		return false, fmt.Errorf("Board.LegalColour(): colour not BLACK or WHITE")
+	}
+
+	x, y, onboard := ParsePoint(p, self.Size)
+
+	if onboard == false {
+		return false, fmt.Errorf("Board.LegalColour(): invalid or off-board string %q", p)
+	}
+
+	if self.State[x][y] != EMPTY {
+		return false, fmt.Errorf("Board.LegalColour(): point %q (%v,%v) was not empty", p, x, y)
+	}
+
+	if self.Ko == p {
+		if colour == self.Player {												// i.e. we've not forced a move by the wrong colour.
+			return false, fmt.Errorf("Board.LegalColour(): ko recapture forbidden")
+		}
+	}
+
+	if self.HasLiberties(p) == false {
+
+		// The move we are playing will have no liberties of its own.
+		// Therefore, it will be legal iff it has a neighbour which:
+		//
+		//		- Is an enemy group with 1 liberty, or
+		//		- Is a friendly group with 2 or more liberties.
+
+		allowed := false
+
+		for _, a := range AdjacentPoints(p, self.Size) {
+			if self.GetState(a) == colour.Opposite() {
+				if self.Liberties(a) == 1 {
+					allowed = true
+					break
+				}
+			} else if self.GetState(a) == colour {
+				if self.Liberties(a) >= 2 {
+					allowed = true
+					break
+				}
+			} else {
+				panic("wat")
+			}
+		}
+
+		if allowed == false {
+			return false, fmt.Errorf("Board.LegalColour(): suicide forbidden")
+		}
+	}
+
+	// The move is legal!
+
+	return true, nil
+}

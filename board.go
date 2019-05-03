@@ -188,6 +188,8 @@ func (self *Board) String() string {
 // "dd". Aside from the obvious sanity checks, there are no legality checks - ko
 // recaptures will succeed, as will playing on an occupied point.
 //
+// The board's Ko and Player fields are updated.
+//
 // As a reminder, editing a board has no effect on the node in an SGF tree from
 // which it was created (if any).
 func (self *Board) PlaceStone(p string, colour Colour) {
@@ -199,16 +201,16 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 	self.ClearKo()
 
 	if ValidPoint(p, self.Size) == false {		// Consider this a pass
+		self.Player = colour.Opposite()
 		return
 	}
 
 	self.SetState(p, colour)
 
-	opponent := colour.Opposite()
 	caps := 0
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.GetState(a) == opponent {
+		if self.GetState(a) == colour.Opposite() {
 			if self.HasLiberties(a) == false {
 				caps += self.DestroyGroup(a)
 			}
@@ -221,7 +223,7 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 
 	if self.HasLiberties(p) == false {
 		suicide_caps := self.DestroyGroup(p)
-		self.CapturesBy[opponent] += suicide_caps
+		self.CapturesBy[colour.Opposite()] += suicide_caps
 	}
 
 	// Work out ko square...
@@ -234,6 +236,7 @@ func (self *Board) PlaceStone(p string, colour Colour) {
 		}
 	}
 
+	self.Player = colour.Opposite()
 	return
 }
 

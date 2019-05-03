@@ -121,12 +121,12 @@ func (self *Board) update_from_node(node *Node) {
 
 	for _, p := range node.AllValues("B") {
 		self.PlaceStone(p, BLACK)
-		self.Player = WHITE
+		// self.Player = WHITE				// Redundant now, done in PlaceStone()
 	}
 
 	for _, p := range node.AllValues("W") {
 		self.PlaceStone(p, WHITE)
-		self.Player = BLACK
+		// self.Player = BLACK				// Redundant now, done in PlaceStone()
 	}
 
 	// Respect PL property

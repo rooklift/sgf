@@ -177,10 +177,13 @@ func (self *Board) String() string {
 	return b.String()
 }
 
-// PlaceStone places a stone of the specified colour at the given location. The
-// argument should be an SGF coordinate, e.g. "dd". Aside from the obvious
-// sanity checks, there are no legality checks. As a reminder, editing a board
-// has no effect on the node in an SGF tree from which it was created (if any).
+// PlaceStone places a stone of the specified colour at the given location, and
+// makes any resulting captures. The argument should be an SGF coordinate, e.g.
+// "dd". Aside from the obvious sanity checks, there are no legality checks - ko
+// recaptures will succeed, as will playing on an occupied point.
+//
+// As a reminder, editing a board has no effect on the node in an SGF tree from
+// which it was created (if any).
 func (self *Board) PlaceStone(p string, colour Colour) {
 
 	if colour != BLACK && colour != WHITE {

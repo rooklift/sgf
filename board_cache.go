@@ -87,6 +87,9 @@ func (self *Board) update_from_node(node *Node) {
 
 	total_board_updates++
 
+	// AB, AW, and AE are updated with SetState() which can create illegal positions,
+	// this is normal according to the specs.
+
 	for _, p := range node.AllValues("AB") {
 		if len(p) == 5 && p[2] == ':' {
 			self.SetStateFromList(p, BLACK)
@@ -113,7 +116,8 @@ func (self *Board) update_from_node(node *Node) {
 		}
 	}
 
-	// Play move: B / W. Note that "moves" which are not valid onboard points are passes.
+	// B and W are updated with PlaceStone(), which has no legality checks but does
+	// perform captures. Again, this is what the specs require.
 
 	for _, p := range node.AllValues("B") {
 		self.PlaceStone(p, BLACK)

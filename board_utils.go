@@ -140,22 +140,22 @@ func (self *Board) Legal(p string) (bool, error) {
 func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 
 	if colour != BLACK && colour != WHITE {
-		return false, fmt.Errorf("Board.LegalColour(): colour not BLACK or WHITE")
+		return false, fmt.Errorf("colour not BLACK or WHITE")
 	}
 
 	x, y, onboard := ParsePoint(p, self.Size)
 
 	if onboard == false {
-		return false, fmt.Errorf("Board.LegalColour(): invalid or off-board string %q", p)
+		return false, fmt.Errorf("invalid or off-board string %q", p)
 	}
 
 	if self.State[x][y] != EMPTY {
-		return false, fmt.Errorf("Board.LegalColour(): point %q (%v,%v) was not empty", p, x, y)
+		return false, fmt.Errorf("point %q (%v,%v) was not empty", p, x, y)
 	}
 
 	if self.Ko == p {
-		if colour == self.Player {												// i.e. we've not forced a move by the wrong colour.
-			return false, fmt.Errorf("Board.LegalColour(): ko recapture forbidden")
+		if colour == self.Player {						// i.e. we've not forced a move by the wrong colour.
+			return false, fmt.Errorf("ko recapture at %q (%v,%v) forbidden", p, x, y)
 		}
 	}
 
@@ -186,7 +186,7 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 		}
 
 		if allowed == false {
-			return false, fmt.Errorf("Board.LegalColour(): suicide forbidden")
+			return false, fmt.Errorf("suicide at %q (%v,%v) forbidden", p, x, y)
 		}
 	}
 

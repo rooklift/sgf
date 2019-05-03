@@ -36,12 +36,13 @@ func handle_file(dirname, filename string) error {
 
 	path := filepath.Join(dirname, filename)
 
-	node, err := sgf.Load(path)
+	root, err := sgf.LoadMainLine(path)
 	if err != nil {
 		return err
 	}
 
 	i := 0
+	node := root
 
 	for {
 		child := node.MainChild()
@@ -57,7 +58,8 @@ func handle_file(dirname, filename string) error {
 		if b != "" && b != "tt" {
 			_, err := board.LegalColour(b, sgf.BLACK)
 			if err != nil {
-				return fmt.Errorf("Move %d: %v", i, err)
+				re, _ := root.GetValue("RE")
+				return fmt.Errorf("Move %d of %d: %v   %s", i, len(node.GetEnd().GetLine()), err, re)
 			}
 		}
 
@@ -65,7 +67,8 @@ func handle_file(dirname, filename string) error {
 		if w != "" && w != "tt" {
 			_, err := board.LegalColour(w, sgf.WHITE)
 			if err != nil {
-				return fmt.Errorf("Move %d: %v", i, err)
+				re, _ := root.GetValue("RE")
+				return fmt.Errorf("Move %d of %d: %v   %s", i, len(node.GetEnd().GetLine()), err, re)
 			}
 		}
 

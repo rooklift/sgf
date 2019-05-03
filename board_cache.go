@@ -120,16 +120,14 @@ func (self *Board) update_from_node(node *Node) {
 	}
 
 	// B and W are updated with ForceStone(), which has no legality checks but does
-	// perform captures. Again, this is what the specs require.
+	// perform captures, as well as swapping the next player and setting the ko square.
 
 	for _, p := range node.AllValues("B") {
 		self.ForceStone(p, BLACK)
-		// self.Player = WHITE				// Redundant now, done in ForceStone()
 	}
 
 	for _, p := range node.AllValues("W") {
 		self.ForceStone(p, WHITE)
-		// self.Player = BLACK				// Redundant now, done in ForceStone()
 	}
 
 	// Respect PL property

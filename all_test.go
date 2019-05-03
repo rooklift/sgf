@@ -317,16 +317,16 @@ func TestGroups(t *testing.T) {
 		t.Errorf("len(board.Liberties()) not as expected")
 	}
 
-	if board.DestroyGroup("aa") != 57 {
-		t.Errorf("DestroyGroup did not return the expected value")
-	}
-
 	if board.HasLiberties("pd") {
 		t.Errorf("Empty point was considered as having liberties when it doesn't")
 	}
 
 	if board.HasLiberties("pp") == false {
 		t.Errorf("Empty point was considered as NOT having liberties when it does")
+	}
+
+	if board.DestroyGroup("aa") != 57 {
+		t.Errorf("DestroyGroup did not return the expected value")
 	}
 }
 

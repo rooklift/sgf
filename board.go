@@ -86,7 +86,8 @@ func (self *Board) GetState(p string) Colour {
 }
 
 // SetState sets the colour at the specified location. The argument should be an
-// SGF coordinate, e.g. "dd".
+// SGF coordinate, e.g. "dd". This method has no effect on ko status, nor next
+// player, and no captures are performed. Illegal positions can be created.
 func (self *Board) SetState(p string, c Colour) {
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {

@@ -56,6 +56,25 @@ func NewBoard(sz int) *Board {
 	return board
 }
 
+// Equals returns true if the two boards are the same, including ko status,
+// captures, and next player to move.
+func (self *Board) Equals(other *Board) bool {
+	if self.Size != other.Size || self.Player != other.Player || self.Ko != other.Ko {
+		return false
+	}
+	if self.CapturesBy[BLACK] != other.CapturesBy[BLACK] || self.CapturesBy[WHITE] != other.CapturesBy[WHITE] {
+		return false
+	}
+	for x := 0; x < self.Size; x++ {
+		for y := 0; y < self.Size; y++ {
+			if self.State[x][y] != other.State[x][y] {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 // GetState returns the colour at the specified location. The argument should be
 // an SGF coordinate, e.g. "dd".
 func (self *Board) GetState(p string) Colour {
@@ -336,7 +355,8 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 
 // Play attempts to play at point p, with full legality checks. The argument
 // should be an SGF coordinate, e.g. "dd". The colour is determined
-// intelligently. If the move is illegal, returns an error.
+// intelligently. If successful, the board is changed. If the move is illegal,
+// returns an error.
 func (self *Board) Play(p string) error {
 	return self.PlayColour(p, self.Player)
 }

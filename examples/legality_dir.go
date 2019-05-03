@@ -12,8 +12,7 @@ import (
 
 func main() {
 	if len(os.Args) < 2 { return }
-	root_dir := os.Args[1]
-	filepath.Walk(root_dir, handle_file)
+	filepath.Walk(os.Args[1], handle_file)
 }
 
 func handle_file(path string, info os.FileInfo, err error) error {

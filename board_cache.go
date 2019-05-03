@@ -123,11 +123,11 @@ func (self *Board) update_from_node(node *Node) {
 	// perform captures, as well as swapping the next player and setting the ko square.
 
 	for _, p := range node.AllValues("B") {
-		self.ForceStone(p, BLACK)
+		self.ForceStone(p, BLACK)			// Sets .Player and .Ko
 	}
 
 	for _, p := range node.AllValues("W") {
-		self.ForceStone(p, WHITE)
+		self.ForceStone(p, WHITE)			// Sets .Player and .Ko
 	}
 
 	// Respect PL property

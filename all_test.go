@@ -504,3 +504,36 @@ func TestLine(t *testing.T) {
 		t.Errorf("line was not the expected length")
 	}
 }
+
+func TestBoardEdits(t *testing.T) {
+	fmt.Printf("TestBoardEdits\n")
+
+	board := NewBoard(19)
+
+	expect_next_player := func(board *Board, colour Colour) {
+		if board.Player != colour {
+			t.Errorf("Wrong colour to play")
+		}
+	}
+
+	board.PlayMove("pp")
+	expect_next_player(board, WHITE)
+
+	board.PlayMove("pp")				// Fails
+	expect_next_player(board, WHITE)
+
+	board.PlaceStone("pp", WHITE)		// Succeeds
+	expect_next_player(board, BLACK)
+
+	board.PlaceStone("pp", WHITE)		// Succeeds
+	expect_next_player(board, BLACK)
+
+	board.PlaceStone("pp", BLACK)		// Succeeds
+	expect_next_player(board, WHITE)
+
+	board.PlayMove("dd")
+	expect_next_player(board, BLACK)
+
+	board.Pass()
+	expect_next_player(board, WHITE)
+}

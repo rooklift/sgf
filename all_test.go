@@ -538,8 +538,8 @@ func TestBoardEdits(t *testing.T) {
 	expect_next_player(board, WHITE)
 }
 
-func TestBoardEquivalence(t *testing.T) {
-	fmt.Printf("TestBoardEquivalence\n")
+func TestLegalMovesEquivalence(t *testing.T) {
+	fmt.Printf("TestLegalMovesEquivalence\n")
 
 	const alpha = "abcdefghijklmnopqrst"		// 20 chars, so sometimes generates offboard
 
@@ -568,6 +568,40 @@ func TestBoardEquivalence(t *testing.T) {
 			if (board_err == nil && node_err != nil) || (board_err != nil && node_err == nil) {
 				t.Errorf("Got differing errors")
 			}
+
+			if board.Equals(node.Board()) != true {
+				t.Errorf("Got differing boards")
+			}
+		}
+	}
+}
+
+func TestForcedMovesEquivalence(t *testing.T) {
+	fmt.Printf("TestForcedMovesEquivalence\n")
+
+	const alpha = "abcdefghijklmnopqrst"		// 20 chars, so sometimes generates offboard
+
+	for i := 0; i < 10; i++ {
+
+		board := NewBoard(19)
+		node := NewTree(19)
+
+		for n := 0; n < 5000; n++ {
+			x := rand.Intn(20)					// See above
+			y := rand.Intn(20)
+			p := fmt.Sprintf("%c%c", alpha[x], alpha[y])
+
+			colour := BLACK
+			key := "B"
+			if rand.Intn(2) == 0 {
+				colour = WHITE
+				key = "W"
+			}
+
+			node = NewNode(node)
+			node.SetValue(key, p)
+
+			board.ForceStone(p, colour)
 
 			if board.Equals(node.Board()) != true {
 				t.Errorf("Got differing boards")

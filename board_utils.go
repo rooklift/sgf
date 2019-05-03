@@ -33,15 +33,21 @@ func (self *Board) group_size_recurse(p string, touched map[string]bool) int {
 }
 
 // HasLiberties checks whether the group at the given location has any
-// liberties. The argument should be an SGF coordinate, e.g. "dd". Unless the
-// calling program is directly manipulating the board, this condition will
-// always be true, since normally zero-liberty groups are never present.
+// liberties. The argument should be an SGF coordinate, e.g. "dd". For groups of
+// stones on normal boards, this is always true, but can be false if the calling
+// program is manipulating the board directly.
+//
+// If the point p is empty, returns true if any of its neighbours are also
+// empty, otherwise false.
 func (self *Board) HasLiberties(p string) bool {
 	touched := make(map[string]bool)
 	return self.has_liberties_recurse(p, touched)
 }
 
 func (self *Board) has_liberties_recurse(p string, touched map[string]bool) bool {
+
+	// Also works if the point p is EMPTY.
+	// Offboard p returns false.
 
 	touched[p] = true
 	colour := self.GetState(p)

@@ -87,8 +87,8 @@ func (self *Board) update_from_node(node *Node) {
 
 	total_board_updates++
 
-	// AB, AW, and AE are updated with SetState() which can create illegal positions,
-	// this is normal according to the specs. Ko is cleared, next player is updated.
+	// AB, AW, and AE are updated with AddStone() or AddList() which can create illegal
+	// positions; this is normal according to the specs. Ko is cleared, next player is updated.
 
 	for _, p := range node.AllValues("AB") {
 		if len(p) == 5 && p[2] == ':' {

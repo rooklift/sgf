@@ -541,7 +541,7 @@ func TestBoardEdits(t *testing.T) {
 func TestBoardEquivalence(t *testing.T) {
 	fmt.Printf("TestBoardEquivalence\n")
 
-	const alpha = "abcdefghijklmnopqrs"
+	const alpha = "abcdefghijklmnopqrst"		// 20 chars, so sometimes generates offboard
 
 	for i := 0; i < 10; i++ {
 
@@ -551,8 +551,8 @@ func TestBoardEquivalence(t *testing.T) {
 		var node_err, board_err error
 
 		for n := 0; n < 5000; n++ {
-			x := rand.Intn(19)
-			y := rand.Intn(19)
+			x := rand.Intn(20)					// See above
+			y := rand.Intn(20)
 			p := fmt.Sprintf("%c%c", alpha[x], alpha[y])
 
 			// Sometimes switch the colours up...

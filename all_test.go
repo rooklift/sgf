@@ -10,7 +10,6 @@ import (
 
 func init() {
 	rand.Seed(time.Now().UTC().UnixNano())
-	fmt.Printf("\n")
 }
 
 func TestIllegality(t *testing.T) {

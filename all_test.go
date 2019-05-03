@@ -24,22 +24,22 @@ func TestIllegality(t *testing.T) {
 	node := root.GetEnd()
 	original_end := node
 
-	node, err = node.PlayMove(Point(10,8))
+	node, err = node.Play(Point(10,8))
 	if err == nil {
 		t.Errorf("Recaptured a ko")
 	}
 
-	node, err = node.PlayMove(Point(11,9))
+	node, err = node.Play(Point(11,9))
 	if err == nil {
 		t.Errorf("Played a suicide move")
 	}
 
-	node, err = node.PlayMove(Point(11,10))
+	node, err = node.Play(Point(11,10))
 	if err == nil {
 		t.Errorf("Played on top of a stone")
 	}
 
-	node, err = node.PlayMove(Point(19,19))
+	node, err = node.Play(Point(19,19))
 	if err == nil {
 		t.Errorf("Played an off-board move")
 	}
@@ -516,24 +516,26 @@ func TestBoardEdits(t *testing.T) {
 		}
 	}
 
-	board.PlayMove("pp")
+	board.Play("pp")
 	expect_next_player(board, WHITE)
 
-	board.PlayMove("pp")				// Fails
+	board.Play("pp")				// Fails
 	expect_next_player(board, WHITE)
 
-	board.PlaceStone("pp", WHITE)		// Succeeds
+	board.ForceStone("pp", WHITE)		// Succeeds
 	expect_next_player(board, BLACK)
 
-	board.PlaceStone("pp", WHITE)		// Succeeds
+	board.ForceStone("pp", WHITE)		// Succeeds
 	expect_next_player(board, BLACK)
 
-	board.PlaceStone("pp", BLACK)		// Succeeds
+	board.ForceStone("pp", BLACK)		// Succeeds
 	expect_next_player(board, WHITE)
 
-	board.PlayMove("dd")
+	board.Play("dd")
 	expect_next_player(board, BLACK)
 
 	board.Pass()
 	expect_next_player(board, WHITE)
+
+	board.Dump()
 }

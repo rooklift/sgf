@@ -1,7 +1,7 @@
 package sgf
 
-// PlayMove attempts to play the specified move at the node. The argument should
-// be an SGF coordinate, e.g. "dd". The colour is determined intelligently.
+// Play attempts to play the specified move at the node. The argument should be
+// an SGF coordinate, e.g. "dd". The colour is determined intelligently.
 //
 // If successful, a new node is created, and attached as a child. That child is
 // then returned and the error is nil. However, if the specified move already
@@ -9,14 +9,14 @@ package sgf
 // created; the error is still nil. On failure, the original node is returned,
 // along with an error. Failure indicates the move was illegal.
 //
-// Note that passes cannot be played with PlayMove.
-func (self *Node) PlayMove(p string) (*Node, error) {
-	return self.PlayMoveColour(p, self.Board().Player)							// Uses board info to determine colour.
+// Note that passes cannot be played with Play.
+func (self *Node) Play(p string) (*Node, error) {
+	return self.PlayColour(p, self.Board().Player)							// Uses board info to determine colour.
 }
 
-// PlayMoveColour is like PlayMove, except the colour is specified rather than
-// being automatically determined.
-func (self *Node) PlayMoveColour(p string, colour Colour) (*Node, error) {		// Returns new node on success; self on failure.
+// PlayColour is like Play, except the colour is specified rather than being
+// automatically determined.
+func (self *Node) PlayColour(p string, colour Colour) (*Node, error) {		// Returns new node on success; self on failure.
 
 	legal, err := self.Board().LegalColour(p, colour)
 	if legal == false {

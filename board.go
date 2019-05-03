@@ -17,8 +17,8 @@ var HoshiString = "."	// Can be changed. Used when printing the board.
 // The state of points on the board can be altered in 3 different ways:
 //
 // - SetState() - changes array.
-// - PlaceStone() - changes array and makes captures.
-// - PlayMove() - performs legality checks, changes array, makes captures.
+// - ForceStone() - changes array and makes captures.
+// - Play() - performs legality checks, changes array, makes captures.
 type Board struct {
 	Size				int
 	Player				Colour
@@ -183,7 +183,7 @@ func (self *Board) String() string {
 	return b.String()
 }
 
-// PlaceStone places a stone of the specified colour at the given location, and
+// ForceStone places a stone of the specified colour at the given location, and
 // makes any resulting captures. The argument should be an SGF coordinate, e.g.
 // "dd". Aside from the obvious sanity checks, there are no legality checks - ko
 // recaptures will succeed, as will playing on an occupied point.
@@ -192,10 +192,10 @@ func (self *Board) String() string {
 //
 // As a reminder, editing a board has no effect on the node in an SGF tree from
 // which it was created (if any).
-func (self *Board) PlaceStone(p string, colour Colour) {
+func (self *Board) ForceStone(p string, colour Colour) {
 
 	if colour != BLACK && colour != WHITE {
-		panic("Board.PlaceStone(): no colour")
+		panic("Board.ForceStone(): no colour")
 	}
 
 	self.ClearKo()
@@ -331,21 +331,21 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 	return true, nil
 }
 
-// PlayMove attempts to play at point p, with full legality checks. The argument
+// Play attempts to play at point p, with full legality checks. The argument
 // should be an SGF coordinate, e.g. "dd". The colour is determined
 // intelligently. If the move is illegal, returns an error.
-func (self *Board) PlayMove(p string) error {
-	return self.PlayMoveColour(p, self.Player)
+func (self *Board) Play(p string) error {
+	return self.PlayColour(p, self.Player)
 }
 
-// PlayMoveColour is like PlayMove, except the colour is specified rather than
+// PlayColour is like Play, except the colour is specified rather than
 // being automatically determined.
-func (self *Board) PlayMoveColour(p string, colour Colour) error {
+func (self *Board) PlayColour(p string, colour Colour) error {
 	legal, err := self.LegalColour(p, colour)
 	if legal == false {
 		return err
 	}
-	self.PlaceStone(p, colour)
+	self.ForceStone(p, colour)
 	return nil
 }
 

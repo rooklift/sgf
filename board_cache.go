@@ -88,46 +88,41 @@ func (self *Board) update_from_node(node *Node) {
 	total_board_updates++
 
 	// AB, AW, and AE are updated with SetState() which can create illegal positions,
-	// this is normal according to the specs.
+	// this is normal according to the specs. Ko is cleared, next player is updated.
 
 	for _, p := range node.AllValues("AB") {
 		if len(p) == 5 && p[2] == ':' {
-			self.SetStateFromList(p, BLACK)
+			self.AddList(p, BLACK)
 		} else {
-			self.SetState(p, BLACK)
+			self.AddStone(p, BLACK)
 		}
-		self.Player = WHITE
-		self.ClearKo()
 	}
 
 	for _, p := range node.AllValues("AW") {
 		if len(p) == 5 && p[2] == ':' {
-			self.SetStateFromList(p, WHITE)
+			self.AddList(p, WHITE)
 		} else {
-			self.SetState(p, WHITE)
+			self.AddStone(p, WHITE)
 		}
-		self.Player = BLACK					// Prevails in the event of both AB and AW
-		self.ClearKo()
 	}
 
 	for _, p := range node.AllValues("AE") {
 		if len(p) == 5 && p[2] == ':' {
-			self.SetStateFromList(p, EMPTY)
+			self.AddList(p, EMPTY)
 		} else {
-			self.SetState(p, EMPTY)
+			self.AddStone(p, EMPTY)
 		}
-		self.ClearKo()
 	}
 
 	// B and W are updated with ForceStone(), which has no legality checks but does
 	// perform captures, as well as swapping the next player and setting the ko square.
 
 	for _, p := range node.AllValues("B") {
-		self.ForceStone(p, BLACK)			// Sets .Player and .Ko
+		self.ForceStone(p, BLACK)
 	}
 
 	for _, p := range node.AllValues("W") {
-		self.ForceStone(p, WHITE)			// Sets .Player and .Ko
+		self.ForceStone(p, WHITE)
 	}
 
 	// Respect PL property

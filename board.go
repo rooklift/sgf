@@ -75,8 +75,8 @@ func (self *Board) Equals(other *Board) bool {
 	return true
 }
 
-// GetState returns the colour at the specified location. The argument should be
-// an SGF coordinate, e.g. "dd".
+// GetState returns the colour at the specified point. The argument should be an
+// SGF coordinate, e.g. "dd".
 func (self *Board) GetState(p string) Colour {
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
@@ -85,24 +85,16 @@ func (self *Board) GetState(p string) Colour {
 	return self.State[x][y]
 }
 
-// SetState sets the colour at the specified location. The argument should be an
-// SGF coordinate, e.g. "dd". This method has no effect on ko status, nor next
-// player, and no captures are performed. Illegal positions can be created.
-func (self *Board) SetState(p string, c Colour) {
+// SetState sets the colour at the specified point. The argument should be an
+// SGF coordinate, e.g. "dd". This method has no side effects whatsoever: it has
+// no effect on ko status, nor the next player, and no captures are performed.
+// Illegal positions can be created.
+func (self *Board) SetState(p string, colour Colour) {
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
 		return
 	}
-	self.State[x][y] = c
-}
-
-// SetStateFromList sets the colour at the specified locations. The argument
-// should be an SGF rectangle, e.g. "dd:fg".
-func (self *Board) SetStateFromList(s string, c Colour) {
-	points := ParsePointList(s, self.Size)
-	for _, point := range points {
-		self.SetState(point, c)
-	}
+	self.State[x][y] = colour
 }
 
 // Copy returns a deep copy of the board.
@@ -206,12 +198,42 @@ func (self *Board) String() string {
 	return b.String()
 }
 
-// ForceStone places a stone of the specified colour at the given location, and
-// makes any resulting captures. The argument should be an SGF coordinate, e.g.
-// "dd". Aside from the obvious sanity checks, there are no legality checks - ko
-// recaptures will succeed, as will playing on an occupied point.
+// AddStone adjusts the board according to the rules of SGF properties AB, AW,
+// and AE, setting the board state without making captures. The argument should
+// be an SGF coordinate, e.g. "dd".
 //
-// The board's Ko and Player fields are updated.
+// Any ko square is cleared. If the colour was BLACK or WHITE, the next player
+// is set to be the opposite colour.
+func (self *Board) AddStone(p string, colour Colour) {
+	self.SetState(p, colour)
+	self.ClearKo()
+	if colour != EMPTY {
+		self.Player = colour.Opposite()
+	}
+}
+
+// AddList is like AddStone, but expects an SGF points list such as "dd:fg".
+func (self *Board) AddList(s string, colour Colour) {
+	points := ParsePointList(s, self.Size)
+	for _, point := range points {
+		self.SetState(point, colour)
+	}
+	self.ClearKo()
+	if colour != EMPTY {
+		self.Player = colour.Opposite()
+	}
+}
+
+// ForceStone adjusts the board according to the rules of SGF properties B and
+// W. The argument should be an SGF coordinate, e.g. "dd".
+//
+// A stone of the specified colour is placed at the given location, and makes
+// any resulting captures. Aside from the obvious sanity checks, there are no
+// legality checks - ko recaptures will succeed, as will playing on an occupied
+// point.
+//
+// The board's Ko and Player fields are updated. Invalid point strings are
+// considered passes.
 func (self *Board) ForceStone(p string, colour Colour) {
 
 	if colour != BLACK && colour != WHITE {
@@ -410,11 +432,11 @@ func (self *Board) get_state_fast(p string) Colour {
 	return self.State[x][y]
 }
 
-func (self *Board) set_state_fast(p string, c Colour) {
+func (self *Board) set_state_fast(p string, colour Colour) {
 	x := int(p[0]) - 97
 	y := int(p[1]) - 97
 	if p[0] <= 'Z' { x = int(p[0]) - 39 }
 	if p[1] <= 'Z' { y = int(p[1]) - 39 }
-	self.State[x][y] = c
+	self.State[x][y] = colour
 }
 */

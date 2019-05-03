@@ -150,7 +150,7 @@ func HandicapPoints(size, handicap int, tygem bool) []string {
 		}
 	}
 
-	if boardsize % 2 == 0 {
+	if size % 2 == 0 {
 		return ret
 	}
 

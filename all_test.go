@@ -551,7 +551,7 @@ func TestLegalMovesEquivalence(t *testing.T) {
 
 		var node_err, board_err error
 
-		for n := 0; n < 5000; n++ {
+		for n := 0; n < 1000; n++ {
 			x := rand.Intn(20)					// See above
 			y := rand.Intn(20)
 			p := fmt.Sprintf("%c%c", alpha[x], alpha[y])
@@ -589,7 +589,7 @@ func TestForcedMovesEquivalence(t *testing.T) {
 		board := NewBoard(19)
 		node := NewTree(19)
 
-		for n := 0; n < 5000; n++ {
+		for n := 0; n < 1000; n++ {
 			x := rand.Intn(20)					// See above
 			y := rand.Intn(20)
 			p := fmt.Sprintf("%c%c", alpha[x], alpha[y])

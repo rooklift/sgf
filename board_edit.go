@@ -138,3 +138,27 @@ func (self *Board) SetKo(p string) {
 func (self *Board) ClearKo() {
 	self.Ko = ""
 }
+
+// DestroyGroup deletes the group at the specified location. The argument should
+// be an SGF coordinate, e.g. "dd", referring to any stone in the group to be
+// destroyed. The number of stones removed is returned.
+func (self *Board) DestroyGroup(p string) int {
+
+	colour := self.GetState(p)
+
+	if colour != BLACK && colour != WHITE {				// Also happens if p is off board.
+		return 0
+	}
+
+	self.SetState(p, EMPTY)
+	count := 1
+
+	for _, a := range AdjacentPoints(p, self.Size) {
+
+		if self.GetState(a) == colour {
+			count += self.DestroyGroup(a)
+		}
+	}
+
+	return count
+}

@@ -313,8 +313,8 @@ func TestGroups(t *testing.T) {
 		t.Errorf("len(board.Stones()) not as expected")
 	}
 
-	if board.Liberties("aa") != 37 {
-		t.Errorf("Liberties not as expected")
+	if len(board.Liberties("aa")) != 37 {
+		t.Errorf("len(board.Liberties()) not as expected")
 	}
 
 	if board.DestroyGroup("aa") != 57 {

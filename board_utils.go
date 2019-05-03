@@ -72,21 +72,28 @@ func (self *Board) has_liberties_recurse(p string, touched map[string]bool) bool
 	return false
 }
 
-// Liberties counts the liberties of the group at point p. The argument should
-// be an SGF coordinate, e.g. "dd".
-func (self *Board) Liberties(p string) int {
-
-	// What on earth is the correct answer to how many liberties an empty square has?
+// Liberties returns the liberties of the group at point p, in arbitrary order.
+// The argument should be an SGF coordinate, e.g. "dd".
+func (self *Board) Liberties(p string) []string {
 
 	if self.GetState(p) == EMPTY {
-		return -1
+		return nil
 	}
 
 	touched := make(map[string]bool)
-	return self.liberties_recurse(p, touched)
+	libs := make(map[string]bool)
+
+	self.liberties_recurse(p, touched, libs)
+
+	var ret []string
+	for key, _ := range libs {
+		ret = append(ret, key)
+	}
+
+	return ret
 }
 
-func (self *Board) liberties_recurse(p string, touched map[string]bool) int {
+func (self *Board) liberties_recurse(p string, touched, libs map[string]bool) {
 
 	// Note that this function uses the touched map in a different way from others.
 	// Literally every point that's examined is flagged as touched.
@@ -94,20 +101,16 @@ func (self *Board) liberties_recurse(p string, touched map[string]bool) int {
 	touched[p] = true
 	colour := self.GetState(p)
 
-	count := 0
-
 	for _, a := range AdjacentPoints(p, self.Size) {
 		if touched[a] == false {
 			touched[a] = true							// This is fine regardless of what's on the point
 			if self.GetState(a) == EMPTY {
-				count += 1
+				libs[a] = true
 			} else if self.GetState(a) == colour {
-				count += self.liberties_recurse(a, touched)
+				self.liberties_recurse(a, touched, libs)
 			}
 		}
 	}
-
-	return count
 }
 
 // Singleton returns true if the specified stone is a group of size 1. The
@@ -180,12 +183,12 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 
 		for _, a := range AdjacentPoints(p, self.Size) {
 			if self.GetState(a) == colour.Opposite() {
-				if self.Liberties(a) == 1 {
+				if len(self.Liberties(a)) == 1 {
 					allowed = true
 					break
 				}
 			} else if self.GetState(a) == colour {
-				if self.Liberties(a) >= 2 {
+				if len(self.Liberties(a)) >= 2 {
 					allowed = true
 					break
 				}

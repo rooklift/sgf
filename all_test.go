@@ -3,6 +3,7 @@ package sgf
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"testing"
 	"time"
 )
@@ -567,10 +568,12 @@ func TestLegalMovesEquivalence(t *testing.T) {
 
 			if (board_err == nil && node_err != nil) || (board_err != nil && node_err == nil) {
 				t.Errorf("Got differing errors")
+				break
 			}
 
 			if board.Equals(node.Board()) != true {
 				t.Errorf("Got differing boards")
+				break
 			}
 		}
 	}
@@ -598,13 +601,32 @@ func TestForcedMovesEquivalence(t *testing.T) {
 				key = "W"
 			}
 
-			node = NewNode(node)
-			node.SetValue(key, p)
+			// Sometimes do direct board manipulation...
 
-			board.ForceStone(p, colour)
+			if rand.Intn(8) == 0 {
+
+				board.SetState(p, colour)
+				board.Player = colour.Opposite()
+
+				key = "A" + key					// Key becomes AW or AB
+				node = NewNode(node)
+				node.SetValue(key, p)
+
+			} else {
+
+				board.ForceStone(p, colour)
+				node = NewNode(node)
+				node.SetValue(key, p)
+
+			}
 
 			if board.Equals(node.Board()) != true {
-				t.Errorf("Got differing boards")
+				t.Errorf("Got differing boards at move %d", n)
+				board.Dump()
+				node.Board().Dump()
+				node.GetRoot().write_tree(os.Stdout)
+				fmt.Printf("\n")
+				break
 			}
 		}
 	}

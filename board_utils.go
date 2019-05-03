@@ -159,7 +159,15 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 		}
 	}
 
-	if self.HasLiberties(p) == false {
+	has_own_liberties := false
+	for _, a := range AdjacentPoints(p, self.Size) {
+		if self.GetState(a) == EMPTY {
+			has_own_liberties = true
+			break
+		}
+	}
+
+	if has_own_liberties == false {
 
 		// The move we are playing will have no liberties of its own.
 		// Therefore, it will be legal iff it has a neighbour which:

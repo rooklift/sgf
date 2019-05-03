@@ -16,9 +16,12 @@ var HoshiString = "."	// Can be changed. Used when printing the board.
 //
 // The state of points on the board can be altered in 3 different ways:
 //
-// - SetState() - changes array.
-// - ForceStone() - changes array and makes captures.
-// - Play() - performs legality checks, changes array, makes captures.
+// SetState() - changes array.
+//
+// ForceStone() - changes array, makes captures, updates Ko and Player.
+//
+// Play() - performs legality checks, changes array, makes captures, updates Ko
+// and player.
 type Board struct {
 	Size				int
 	Player				Colour

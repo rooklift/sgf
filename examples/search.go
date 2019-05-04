@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	sgf ".."
 )
@@ -43,7 +44,7 @@ func handle_file(dirname, filename, search string) error {
 	pb, _ := root.GetValue("PB")
 	pw, _ := root.GetValue("PW")
 
-	if pb == search || pw == search {
+	if strings.ToLower(pb) == strings.ToLower(search) || strings.ToLower(pw) == strings.ToLower(search) {
 		fmt.Printf("%v\n", fullpath)
 	}
 

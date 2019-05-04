@@ -27,12 +27,12 @@ func handle_file(path string, _ os.FileInfo, err error) error {
 		return nil
 	}
 
-	node, err := sgf.Load(path)
+	root, err := sgf.Load(path)
 	if err != nil {
 		return nil
 	}
 
-	for {
+	for node := root; node != nil; node = node.MainChild() {
 
 		comment, _ := node.GetValue("C")
 		lines := strings.Split(comment, "\n")			// Always returns at least one string
@@ -41,7 +41,6 @@ func handle_file(path string, _ os.FileInfo, err error) error {
 			val *= 100
 			node.SetValue("SBKV", fmt.Sprintf("%.2f", val))
 		}
-
 		if node.Parent() != nil {
 			for _, sibling := range node.Parent().Children() {
 				_, ok := sibling.GetValue("TE")
@@ -57,13 +56,9 @@ func handle_file(path string, _ os.FileInfo, err error) error {
 				}
 			}
 		}
-
-		if node.MainChild() == nil {
-			node.Save(path)
-			fmt.Printf("%s\n", path)
-			return nil
-		}
-
-		node = node.MainChild()
 	}
+
+	root.Save(path)
+	fmt.Printf("%s\n", path)
+	return nil
 }

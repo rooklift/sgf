@@ -24,8 +24,7 @@ func main() {
 	dt, _ := root.GetValue("DT")
 	fmt.Printf("%s (B) vs %s (W)\n", pb, pw)
 	fmt.Printf("Komi: %q, Result: %q, Date: %q\n", km, re, dt)
-	fmt.Printf("Nodes in tree: %d\n", root.TreeSize())
-	fmt.Printf("Final board:\n")
+	fmt.Printf("Nodes in tree: %d, Dyer: %s\n", root.TreeSize(), root.Dyer())
 	root.GetEnd().Board().Dump()
 
 	quit()

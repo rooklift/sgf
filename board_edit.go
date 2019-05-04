@@ -17,7 +17,7 @@ func (self *Board) Set(p string, colour Colour) {
 // be an SGF coordinate, e.g. "dd".
 //
 // Any ko square is cleared. If the colour was BLACK or WHITE, the next player
-// is set to be the opposite colour.
+// is set to the opposite colour. Aside from that, AddStone behaves like Set.
 func (self *Board) AddStone(p string, colour Colour) {
 	self.Set(p, colour)
 	self.ClearKo()

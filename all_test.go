@@ -317,11 +317,11 @@ func TestGroups(t *testing.T) {
 	}
 
 	if board.HasLiberties("pd") {
-		t.Errorf("Empty point was considered as having liberties when it doesn't")
+		t.Errorf("Empty point was considered as having liberties")
 	}
 
-	if board.HasLiberties("pp") == false {
-		t.Errorf("Empty point was considered as NOT having liberties when it does")
+	if board.HasLiberties("pp") {
+		t.Errorf("Empty point was considered as having liberties")
 	}
 
 	if board.DestroyGroup("aa") != 57 {

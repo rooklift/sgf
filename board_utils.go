@@ -8,12 +8,13 @@ import (
 // argument should be an SGF coordinate, e.g. "dd".
 func (self *Board) Stones(p string) []string {
 
-	if self.Get(p) == EMPTY {				// true also if offboard / invalid
+	colour := self.Get(p)
+	if colour == EMPTY {					// true also if offboard / invalid
 		return nil
 	}
 
 	touched := make(map[string]bool)
-	self.stones_recurse(p, touched)
+	self.stones_recurse(p, colour, touched)
 
 	var ret []string
 	for key, _ := range touched {
@@ -23,15 +24,14 @@ func (self *Board) Stones(p string) []string {
 	return ret
 }
 
-func (self *Board) stones_recurse(p string, touched map[string]bool) {
+func (self *Board) stones_recurse(p string, colour Colour, touched map[string]bool) {
 
 	touched[p] = true
-	colour := self.get_fast(p)
 
 	for _, a := range AdjacentPoints(p, self.Size) {
 		if self.get_fast(a) == colour {
 			if touched[a] == false {
-				self.stones_recurse(a, touched)
+				self.stones_recurse(a, colour, touched)
 			}
 		}
 	}
@@ -42,17 +42,14 @@ func (self *Board) stones_recurse(p string, touched map[string]bool) {
 // normal boards, this is always true, but can be false if the calling program
 // is manipulating the board directly.
 //
-// If the point p is empty, returns true if any of its neighbours are also
-// empty, otherwise false.
+// If the point p is empty, returns false.
 func (self *Board) HasLiberties(p string) bool {
 
-	x, y, onboard := ParsePoint(p, self.Size)
-
-	if onboard == false {
+	colour := self.Get(p)
+	if colour == EMPTY {					// true also if offboard / invalid
 		return false
 	}
 
-	colour := self.State[x][y]
 	touched := make(map[string]bool)
 	return self.has_liberties_recurse(p, colour, touched)
 }
@@ -82,7 +79,6 @@ func (self *Board) has_liberties_recurse(p string, colour Colour, touched map[st
 func (self *Board) Liberties(p string) []string {
 
 	colour := self.Get(p)
-
 	if colour == EMPTY {					// true also if offboard / invalid
 		return nil
 	}
@@ -118,8 +114,7 @@ func (self *Board) liberties_recurse(p string, colour Colour, touched map[string
 func (self *Board) Singleton(p string) bool {
 
 	colour := self.Get(p)
-
-	if colour == EMPTY {
+	if colour == EMPTY {					// true also if offboard / invalid
 		return false
 	}
 

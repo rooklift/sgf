@@ -14,27 +14,25 @@ func (self *Board) Stones(p string) []string {
 	}
 
 	touched := make(map[string]bool)
-	self.stones_recurse(p, colour, touched)
-
-	var ret []string
-	for key, _ := range touched {
-		ret = append(ret, key)
-	}
-
-	return ret
+	return self.stones_recurse(p, colour, touched, nil)
 }
 
-func (self *Board) stones_recurse(p string, colour Colour, touched map[string]bool) {
+func (self *Board) stones_recurse(p string, colour Colour, touched map[string]bool, ret []string) []string {
+
+	// Note the constant returning and updating of ret since appends are not visible to caller otherwise.
 
 	touched[p] = true
+	ret = append(ret, p)
 
 	for _, a := range AdjacentPoints(p, self.Size) {
 		if self.get_fast(a) == colour {
 			if touched[a] == false {
-				self.stones_recurse(a, colour, touched)
+				ret = self.stones_recurse(a, colour, touched, ret)
 			}
 		}
 	}
+
+	return ret
 }
 
 // HasLiberties checks whether the group at point p has any liberties. The
@@ -91,7 +89,7 @@ func (self *Board) Liberties(p string) []string {
 func (self *Board) liberties_recurse(p string, colour Colour, touched map[string]bool, ret []string) []string {
 
 	// Note that this function uses the touched map in a different way from others.
-	// Also note the constant returning and updating of ret since appends are not visible to caller otherwise.
+	// Note the constant returning and updating of ret since appends are not visible to caller otherwise.
 
 	for _, a := range AdjacentPoints(p, self.Size) {
 		t := touched[a]

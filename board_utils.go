@@ -82,7 +82,7 @@ func (self *Board) Liberties(p string) []string {
 	}
 
 	touched := make(map[string]bool)
-	touched[p] = true						// Note this
+	touched[p] = true						// Note this - slightly different setup than the other functions
 	return self.liberties_recurse(p, colour, touched, nil)
 }
 

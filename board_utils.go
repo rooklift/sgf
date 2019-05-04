@@ -8,7 +8,7 @@ import (
 // argument should be an SGF coordinate, e.g. "dd".
 func (self *Board) Stones(p string) []string {
 
-	if self.Get(p) == EMPTY {
+	if self.Get(p) == EMPTY {				// true also if offboard / invalid
 		return nil
 	}
 
@@ -26,10 +26,10 @@ func (self *Board) Stones(p string) []string {
 func (self *Board) stones_recurse(p string, touched map[string]bool) {
 
 	touched[p] = true
-	colour := self.Get(p)
+	colour := self.get_fast(p)
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.Get(a) == colour {
+		if self.get_fast(a) == colour {
 			if touched[a] == false {
 				self.stones_recurse(a, touched)
 			}
@@ -45,24 +45,29 @@ func (self *Board) stones_recurse(p string, touched map[string]bool) {
 // If the point p is empty, returns true if any of its neighbours are also
 // empty, otherwise false.
 func (self *Board) HasLiberties(p string) bool {
+
+	x, y, onboard := ParsePoint(p, self.Size)
+
+	if onboard == false {
+		return false
+	}
+
+	colour := self.State[x][y]
 	touched := make(map[string]bool)
-	return self.has_liberties_recurse(p, touched)
+	return self.has_liberties_recurse(p, colour, touched)
 }
 
-func (self *Board) has_liberties_recurse(p string, touched map[string]bool) bool {
-
-	// Also works if the point p is EMPTY.
-	// Offboard p returns false.
+func (self *Board) has_liberties_recurse(p string, colour Colour, touched map[string]bool) bool {
 
 	touched[p] = true
-	colour := self.Get(p)
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.Get(a) == EMPTY {
+		a_colour := self.get_fast(a)
+		if a_colour == EMPTY {
 			return true
-		} else if self.Get(a) == colour {
+		} else if a_colour == colour {
 			if touched[a] == false {
-				if self.has_liberties_recurse(a, touched) {
+				if self.has_liberties_recurse(a, colour, touched) {
 					return true
 				}
 			}
@@ -78,12 +83,12 @@ func (self *Board) Liberties(p string) []string {
 
 	colour := self.Get(p)
 
-	if colour == EMPTY {
+	if colour == EMPTY {					// true also if offboard / invalid
 		return nil
 	}
 
 	touched := make(map[string]bool)
-	touched[p] = true											// Note this.
+	touched[p] = true						// Note this
 	return self.liberties_recurse(p, colour, touched, nil)
 }
 
@@ -96,7 +101,7 @@ func (self *Board) liberties_recurse(p string, colour Colour, touched map[string
 		t := touched[a]
 		if t == false {
 			touched[a] = true
-			a_colour := self.Get(a)
+			a_colour := self.get_fast(a)
 			if a_colour == EMPTY {
 				ret = append(ret, a)
 			} else if a_colour == colour {
@@ -119,7 +124,7 @@ func (self *Board) Singleton(p string) bool {
 	}
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.Get(a) == colour {
+		if self.get_fast(a) == colour {
 			return false
 		}
 	}
@@ -160,7 +165,7 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 
 	has_own_liberties := false
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.Get(a) == EMPTY {
+		if self.get_fast(a) == EMPTY {
 			has_own_liberties = true
 			break
 		}
@@ -177,12 +182,12 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 		allowed := false
 
 		for _, a := range AdjacentPoints(p, self.Size) {
-			if self.Get(a) == colour.Opposite() {
+			if self.get_fast(a) == colour.Opposite() {
 				if len(self.Liberties(a)) == 1 {
 					allowed = true
 					break
 				}
-			} else if self.Get(a) == colour {
+			} else if self.get_fast(a) == colour {
 				if len(self.Liberties(a)) >= 2 {
 					allowed = true
 					break

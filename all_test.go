@@ -327,6 +327,13 @@ func TestGroups(t *testing.T) {
 	if board.DestroyGroup("aa") != 57 {
 		t.Errorf("DestroyGroup did not return the expected value")
 	}
+
+	// None of the group info methods should crash if given an invalid point...
+
+	board.Stones("ZZ")
+	board.HasLiberties("ZZ")
+	board.Liberties("ZZ")
+	board.Singleton("ZZ")
 }
 
 func TestCache(t *testing.T) {

@@ -106,6 +106,15 @@ func (self *Board) Get(p string) Colour {
 	return self.State[x][y]
 }
 
+// get_fast is for trusted input.
+func (self *Board) get_fast(p string) Colour {
+	x := int(p[0]) - 97
+	y := int(p[1]) - 97
+	if p[0] <= 'Z' { x = int(p[0]) - 39 }
+	if p[1] <= 'Z' { y = int(p[1]) - 39 }
+	return self.State[x][y]
+}
+
 // HasKo returns true if the board has a ko square, on which capture by the
 // current player to move is prohibited.
 func (self *Board) HasKo() bool {
@@ -181,23 +190,3 @@ func (self *Board) ko_square_finder(p string) string {
 
 	return hits[0]
 }
-
-
-
-/*
-func (self *Board) get_state_fast(p string) Colour {
-	x := int(p[0]) - 97
-	y := int(p[1]) - 97
-	if p[0] <= 'Z' { x = int(p[0]) - 39 }
-	if p[1] <= 'Z' { y = int(p[1]) - 39 }
-	return self.State[x][y]
-}
-
-func (self *Board) set_state_fast(p string, colour Colour) {
-	x := int(p[0]) - 97
-	y := int(p[1]) - 97
-	if p[0] <= 'Z' { x = int(p[0]) - 39 }
-	if p[1] <= 'Z' { y = int(p[1]) - 39 }
-	self.State[x][y] = colour
-}
-*/

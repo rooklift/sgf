@@ -328,6 +328,21 @@ func TestGroups(t *testing.T) {
 		t.Errorf("DestroyGroup did not return the expected value")
 	}
 
+	// Try adding some stones to make an illegal position...
+
+	root, err = Load("test_kifu/2016-03-10a.sgf")
+	if err != nil {
+		t.Errorf(err.Error())
+		return
+	}
+
+	board = root.GetEnd().Board()
+	board.AddStone("jk", WHITE)
+	board.AddStone("kk", WHITE)
+	if board.HasLiberties("kk") == true || len(board.Liberties("kk")) != 0 {
+		t.Errorf("Group with no liberties reported as having liberties")
+	}
+
 	// None of the group info methods should crash if given an invalid point...
 
 	board.Stones("ZZ")

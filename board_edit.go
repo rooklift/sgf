@@ -1,10 +1,10 @@
 package sgf
 
-// SetState sets the colour at the specified point. The argument should be an
-// SGF coordinate, e.g. "dd". This method has no side effects whatsoever: it has
-// no effect on ko status, nor the next player, and no captures are performed.
+// Set sets the colour at the specified point. The argument should be an SGF
+// coordinate, e.g. "dd". This method has no side effects whatsoever: it has no
+// effect on ko status, nor the next player, and no captures are performed.
 // Illegal positions can be created.
-func (self *Board) SetState(p string, colour Colour) {
+func (self *Board) Set(p string, colour Colour) {
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
 		return
@@ -19,7 +19,7 @@ func (self *Board) SetState(p string, colour Colour) {
 // Any ko square is cleared. If the colour was BLACK or WHITE, the next player
 // is set to be the opposite colour.
 func (self *Board) AddStone(p string, colour Colour) {
-	self.SetState(p, colour)
+	self.Set(p, colour)
 	self.ClearKo()
 	if colour != EMPTY {
 		self.Player = colour.Opposite()
@@ -30,7 +30,7 @@ func (self *Board) AddStone(p string, colour Colour) {
 func (self *Board) AddList(s string, colour Colour) {
 	points := ParsePointList(s, self.Size)
 	for _, point := range points {
-		self.SetState(point, colour)
+		self.Set(point, colour)
 	}
 	self.ClearKo()
 	if colour != EMPTY {
@@ -61,12 +61,12 @@ func (self *Board) ForceStone(p string, colour Colour) {
 		return
 	}
 
-	self.SetState(p, colour)
+	self.Set(p, colour)
 
 	caps := 0
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.GetState(a) == colour.Opposite() {
+		if self.Get(a) == colour.Opposite() {
 			if self.HasLiberties(a) == false {
 				caps += self.DestroyGroup(a)
 			}
@@ -144,18 +144,18 @@ func (self *Board) ClearKo() {
 // destroyed. The number of stones removed is returned.
 func (self *Board) DestroyGroup(p string) int {
 
-	colour := self.GetState(p)
+	colour := self.Get(p)
 
 	if colour != BLACK && colour != WHITE {				// Also happens if p is off board.
 		return 0
 	}
 
-	self.SetState(p, EMPTY)
+	self.Set(p, EMPTY)
 	count := 1
 
 	for _, a := range AdjacentPoints(p, self.Size) {
 
-		if self.GetState(a) == colour {
+		if self.Get(a) == colour {
 			count += self.DestroyGroup(a)
 		}
 	}

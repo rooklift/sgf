@@ -96,9 +96,9 @@ func (self *Board) Copy() *Board {
 	return ret
 }
 
-// GetState returns the colour at the specified point. The argument should be an
-// SGF coordinate, e.g. "dd".
-func (self *Board) GetState(p string) Colour {
+// Get returns the colour at the specified point. The argument should be an SGF
+// coordinate, e.g. "dd".
+func (self *Board) Get(p string) Colour {
 	x, y, onboard := ParsePoint(p, self.Size)
 	if onboard == false {
 		return EMPTY
@@ -170,7 +170,7 @@ func (self *Board) ko_square_finder(p string) string {
 	var hits []string
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		if self.GetState(a) == EMPTY {
+		if self.Get(a) == EMPTY {
 			hits = append(hits, a)
 		}
 	}

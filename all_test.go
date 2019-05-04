@@ -605,7 +605,7 @@ func TestForcedMovesEquivalence(t *testing.T) {
 				// Sometimes do direct board
 				// manipulation with no captures.
 
-				board.SetState(p, colour)
+				board.Set(p, colour)
 				board.Player = colour.Opposite()
 				board.ClearKo()
 

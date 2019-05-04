@@ -83,33 +83,29 @@ func (self *Board) Liberties(p string) []string {
 	}
 
 	touched := make(map[string]Colour)
-	touched[p] = colour						// Note this.
-	self.liberties_recurse(p, colour, touched)
-
-	var ret []string
-	for key, value := range touched {
-		if value == EMPTY {
-			ret = append(ret, key)
-		}
-	}
-
-	return ret
+	touched[p] = colour											// Note this.
+	return self.liberties_recurse(p, colour, touched, nil)
 }
 
-func (self *Board) liberties_recurse(p string, colour Colour, touched map[string]Colour) {
+func (self *Board) liberties_recurse(p string, colour Colour, touched map[string]Colour, ret []string) []string {
 
 	// Note that this function uses the touched map in a different way from others.
+	// Also note the constant returning and updating of ret since appends are not visible to caller otherwise.
 
 	for _, a := range AdjacentPoints(p, self.Size) {
 		_, ok := touched[a]
 		if ok == false {
 			a_colour := self.GetState(a)
 			touched[a] = a_colour
-			if a_colour == colour {
-				self.liberties_recurse(a, colour, touched)
+			if a_colour == EMPTY {
+				ret = append(ret, a)
+			} else if a_colour == colour {
+				ret = self.liberties_recurse(a, colour, touched, ret)
 			}
 		}
 	}
+
+	return ret
 }
 
 // Singleton returns true if the specified stone is a group of size 1. The

@@ -38,8 +38,7 @@ func handle_file(path string, _ os.FileInfo, err error) error {
 		lines := strings.Split(comment, "\n")			// Always returns at least one string
 		val, err := strconv.ParseFloat(strings.TrimSpace(lines[0]), 64)
 		if err == nil {
-			val *= 100
-			node.SetValue("SBKV", fmt.Sprintf("%.2f", val))
+			node.SetValue("SBKV", fmt.Sprintf("%.2f", val * 100))
 		}
 		if node.Parent() != nil {
 			for _, sibling := range node.Parent().Children() {

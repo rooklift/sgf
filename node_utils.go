@@ -88,3 +88,53 @@ func (self *Node) String() string {
 	return fmt.Sprintf("Node %p: depth %d, %d %s, subtree size %d, keys %v",
 				self, len(self.GetLine()) - 1, len(self.children), noun, self.SubtreeSize(), keys)
 }
+
+// Validate checks a node for obvious problems; it returns the first problem
+// found as an error, otherwise it returns nil.
+func (self *Node) Validate() error {
+
+	all_b := self.AllValues("B")
+	all_w := self.AllValues("W")
+	all_ab := self.AllValues("AB")
+	all_aw := self.AllValues("AW")
+	all_ae := self.AllValues("AE")
+
+	if len(all_b) + len(all_w) > 1 {
+		return fmt.Errorf("Too many moves (B or W values)")
+	}
+
+	if len(all_b) + len(all_w) > 0 && len(all_ab) + len(all_aw) + len(all_ae) > 0 {
+		return fmt.Errorf("Mix of move and setup properties")
+	}
+
+	if self.parent != nil {
+
+		board := self.parent.Board()
+
+		if len(all_b) > 0 {
+			mv := all_b[0]
+			if ValidPoint(mv, board.Size) {
+				legal, err := board.LegalColour(mv, BLACK)
+				if legal == false {
+					return err
+				}
+			} else if mv != "" && mv != "tt" {
+				return fmt.Errorf("Got B value: %s", mv)
+			}
+		}
+
+		if len(all_w) > 0 {
+			mv := all_w[0]
+			if ValidPoint(mv, board.Size) {
+				legal, err := board.LegalColour(mv, WHITE)
+				if legal == false {
+					return err
+				}
+			} else if mv != "" && mv != "tt" {
+				return fmt.Errorf("Got W value: %s", mv)
+			}
+		}
+	}
+
+	return nil
+}

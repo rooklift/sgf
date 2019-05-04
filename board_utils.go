@@ -82,21 +82,21 @@ func (self *Board) Liberties(p string) []string {
 		return nil
 	}
 
-	touched := make(map[string]Colour)
-	touched[p] = colour											// Note this.
+	touched := make(map[string]bool)
+	touched[p] = true											// Note this.
 	return self.liberties_recurse(p, colour, touched, nil)
 }
 
-func (self *Board) liberties_recurse(p string, colour Colour, touched map[string]Colour, ret []string) []string {
+func (self *Board) liberties_recurse(p string, colour Colour, touched map[string]bool, ret []string) []string {
 
 	// Note that this function uses the touched map in a different way from others.
 	// Also note the constant returning and updating of ret since appends are not visible to caller otherwise.
 
 	for _, a := range AdjacentPoints(p, self.Size) {
-		_, ok := touched[a]
-		if ok == false {
+		t := touched[a]
+		if t == false {
+			touched[a] = true
 			a_colour := self.GetState(a)
-			touched[a] = a_colour
 			if a_colour == EMPTY {
 				ret = append(ret, a)
 			} else if a_colour == colour {

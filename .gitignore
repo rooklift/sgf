@@ -3,3 +3,4 @@ examples/*.sgf
 examples/leelaz_opencl_tuning
 misc/*
 *.bat
+*.sh

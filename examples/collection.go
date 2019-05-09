@@ -43,7 +43,6 @@ func main() {
 	}
 
 	fmt.Printf("%d files will be included.\n", len(roots))
-	fmt.Printf("%d boards were generated.\n", sgf.TotalBoardsGenerated)
 	fmt.Printf("Name the file: ")
 
 	scanner := bufio.NewScanner(os.Stdin)

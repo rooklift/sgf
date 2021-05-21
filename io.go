@@ -224,6 +224,8 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 				} else {
 					node = NewNode(node)
 				}
+				key.Reset()
+				keycomplete = false
 			} else if c >= 'A' && c <= 'Z' {
 				if keycomplete {
 					key.Reset()

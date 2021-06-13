@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	sgf ".."
+	"github.com/fohristiwhirl/sgf"
 )
 
 func main() {

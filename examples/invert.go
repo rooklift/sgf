@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	sgf ".."
+	"github.com/fohristiwhirl/sgf"
 )
 
 var	reverse_map = map[string]string{

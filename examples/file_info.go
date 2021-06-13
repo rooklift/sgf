@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	sgf ".."
+	"github.com/fohristiwhirl/sgf"
 )
 
 func main() {

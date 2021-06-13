@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	sgf ".."
+	"github.com/fohristiwhirl/sgf"
 )
 
 func main() {

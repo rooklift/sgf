@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	sgf ".."
+	"github.com/fohristiwhirl/sgf"
 )
 
 func main() {

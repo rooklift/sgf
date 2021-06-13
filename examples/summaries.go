@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/fohristiwhirl/sgf"
+	"github.com/rooklift/sgf"
 )
 
 type Record struct {

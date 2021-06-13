@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fohristiwhirl/sgf"
+	"github.com/rooklift/sgf"
 )
 
 func main() {

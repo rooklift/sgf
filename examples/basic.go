@@ -3,7 +3,7 @@ package main
 import (
     "fmt"
 
-    "github.com/fohristiwhirl/sgf"
+    "github.com/rooklift/sgf"
 )
 
 func main() {

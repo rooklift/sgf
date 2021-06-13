@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/fohristiwhirl/sgf"
+	"github.com/rooklift/sgf"
 )
 
 func main() {

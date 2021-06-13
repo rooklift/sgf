@@ -1,4 +1,4 @@
-Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu). Some auto-generated documentation is available for the various methods, etc, [at GoDoc](https://godoc.org/github.com/fohristiwhirl/sgf).
+Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu). Some auto-generated documentation is available for the various methods, etc, [at GoDoc](https://godoc.org/github.com/rooklift/sgf).
 
 # Technical notes
 
@@ -18,8 +18,8 @@ Golang library for manipulation of SGF trees (i.e. Go / Weiqi / Baduk kifu). Som
 
 # Projects using the library
 
-* [gtp](https://github.com/fohristiwhirl/gtp) - a helper for GTP bots
-* [twogtp](https://github.com/fohristiwhirl/twogtp) - a match runner for GTP bots
+* [gtp](https://github.com/rooklift/gtp) - a helper for GTP bots
+* [twogtp](https://github.com/rooklift/twogtp) - a match runner for GTP bots
 
 # Example
 
@@ -28,7 +28,7 @@ package main
 
 import (
     "fmt"
-    "github.com/fohristiwhirl/sgf"
+    "github.com/rooklift/sgf"
 )
 
 func main() {

@@ -127,6 +127,15 @@ func (self *Node) RootBoardSize() int {
 	return sz
 }
 
+// RootHandicap travels up the tree to the root, and then finds the handicap,
+// which it returns as an integer. If no HA property is present, it returns 0.
+func (self *Node) RootHandicap() int {
+	root := self.GetRoot()
+	ha_string, _ := root.GetValue("HA")
+	ha, _ := strconv.Atoi(ha_string)
+	return ha
+}
+
 // RootKomi travels up the tree to the root, and then finds the komi, which it
 // returns as a float64. If no KM property is present, it returns 0.
 func (self *Node) RootKomi() float64 {

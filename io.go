@@ -62,7 +62,7 @@ func (self *Node) TreeString() string {
 		return "nil"
 	}
 	var buf bytes.Buffer
-	self.write_tree(&buf)
+	self.GetRoot().write_tree(&buf)
 	return buf.String()
 }
 

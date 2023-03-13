@@ -56,8 +56,8 @@ func (self *Node) Save(filename string) error {
 	return SaveCollection([]*Node{self}, filename)		// Not using self.GetRoot() since SaveCollection does.
 }
 
-// TreeString returns the entire tree as a string in SGF format.
-func (self *Node) TreeString() string {
+// SGF returns the entire tree as a string in SGF format.
+func (self *Node) SGF() string {
 	if self == nil {
 		return "nil"
 	}

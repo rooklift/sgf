@@ -8,5 +8,5 @@ import (
 
 func main() {
 	root := sgf.LoadArgOrQuit(1)
-	fmt.Println(root.TreeString())
+	fmt.Println(root.SGF())
 }

@@ -97,11 +97,11 @@ func TestCyclicAttachment(t *testing.T) {
 	// Trying to attach the node to a descendent or itself should panic...
 
 	defer func() {
-        r := recover()
-        if r == nil {
-            t.Errorf("The cyclic attachment did not cause a panic")
-        }
-    }()
+		r := recover()
+		if r == nil {
+			t.Errorf("The cyclic attachment did not cause a panic")
+		}
+	}()
 
 	node.SetParent(d)
 }

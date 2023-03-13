@@ -56,6 +56,16 @@ func (self *Node) Save(filename string) error {
 	return SaveCollection([]*Node{self}, filename)		// Not using self.GetRoot() since SaveCollection does.
 }
 
+// TreeString returns the entire tree as a string in SGF format.
+func (self *Node) TreeString() string {
+	if self == nil {
+		return "nil"
+	}
+	var buf bytes.Buffer
+	self.write_tree(&buf)
+	return buf.String()
+}
+
 func (self *Node) write_tree(w io.Writer) {
 
 	node := self

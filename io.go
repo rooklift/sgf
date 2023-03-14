@@ -59,7 +59,7 @@ func (self *Node) Save(filename string) error {
 // SGF returns the entire tree as a string in SGF format.
 func (self *Node) SGF() string {
 	if self == nil {
-		return "nil"
+		return "<nil>"
 	}
 	var buf bytes.Buffer
 	self.GetRoot().write_tree(&buf)

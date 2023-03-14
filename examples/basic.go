@@ -104,6 +104,10 @@ func main() {
 
 	node.MakeMainLine()
 
+	// Calling SGF() will return the SGF of the tree as a string.
+
+	fmt.Println(node.SGF())
+
 	// Calling Save() will save the entire tree, regardless of node position.
 
 	node.Save("foo.sgf")

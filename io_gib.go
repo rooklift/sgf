@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+// LoadGIB parses a GIB string, creating a tree of SGF nodes, and returns the
+// root.
 func LoadGIB(gib string) (*Node, error) {
 
 	root := NewTree(19)

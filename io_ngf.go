@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+// LoadNGF parses an NGF string, creating a tree of SGF nodes, and returns the
+// root.
 func LoadNGF(ngf string) (*Node, error) {
 
 	ngf = strings.TrimSpace(ngf)

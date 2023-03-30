@@ -146,6 +146,10 @@ func Load(filename string) (*Node, error) {
 
 	return root, nil
 }
+
+// LoadSGF parses an SGF string, creating a tree of SGF nodes, and returns the
+// root. If the string has more than one SGF tree only the first is loaded - use
+// LoadCollectionSGF() for such strings instead.
 func LoadSGF(sgf string) (*Node, error) {
 	root, _, err := load_sgf_tree(sgf, nil)
 	return root, err
@@ -263,11 +267,11 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	return root, len(sgf), nil		// Return characters read.
 }
 
-// LoadCollection loads an SGF file and returns a slice of all root nodes found
-// in it. It is useful for reading the rare SGF files that are in the
-// "collection" format. The input file is closed automatically. Note that it is
-// OK to use this function on normal, single-tree SGF files, in which case a
-// slice of length 1 will be returned.
+// LoadCollection loads an SGF file, possibly creating many trees, and returns a
+// slice of all root nodes created. It is useful for reading the rare SGF files
+// that are in the "collection" format. The input file is closed automatically.
+// Note that it is OK to use this function on normal, single-tree SGF files, in
+// which case a slice of length 1 will be returned.
 func LoadCollection(filename string) ([]*Node, error) {
 
 	file_bytes, err := ioutil.ReadFile(filename)
@@ -278,6 +282,8 @@ func LoadCollection(filename string) ([]*Node, error) {
 	return LoadCollectionSGF(string(file_bytes))
 }
 
+// LoadCollectionSGF parses an SGF string, possibly creating many trees, and
+// returns a slice of all root nodes created.
 func LoadCollectionSGF(sgf string) ([]*Node, error) {
 	var ret []*Node
 	sgf = strings.TrimSpace(sgf)		// Otherwise any trailing characters will trigger an extra attempt to read a tree.

@@ -666,7 +666,7 @@ func TestLoadSGF(t *testing.T) {
 	sgf := "(;GM[1]FF[4]CA[UTF-8]AP[Sabaki:0.52.2]KM[6.5]SZ[13]DT[2023-03-30];B[aa];W[ba];B[ca])"
 	s, err := LoadSGF(sgf)
 	if err != nil {
-		t.Errorf("Failed to parse the sgf contents")
+		t.Errorf("Failed to parse the SGF contents")
 	}
 	if s.SGF() != sgf {
 		t.Errorf("Parsed and generated SGF should be the same")		// How safe is this test? Key order is arbitrary in SGF...

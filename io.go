@@ -150,15 +150,16 @@ func LoadData(data, filename string) (*Node, error) {
 }
 
 func LoadSGF(sgf string) (*Node, error) {
-	return LoadData(sgf, ".sgf")
+	root, _, err := load_sgf_tree(sgf, nil)
+	return root, err
 }
 
 func LoadGIB(sgf string) (*Node, error) {
-	return LoadData(sgf, ".gib")
+	return load_gib(sgf)
 }
 
 func LoadNGF(sgf string) (*Node, error) {
-	return LoadData(sgf, ".ngf")
+	return load_ngf(sgf)
 }
 
 func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {

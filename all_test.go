@@ -662,15 +662,12 @@ func TestForcedMovesEquivalence(t *testing.T) {
 }
 
 func TestLoadAndSafeSGFData(t *testing.T) {
-	t.Parallel()
-
 	sgfData := "(;GM[1]FF[4]CA[UTF-8]AP[Sabaki:0.52.2]KM[6.5]SZ[13]DT[2023-03-30];B[aa];W[ba];B[ca])"
-
 	s, err := LoadSGF(sgfData)
 	if err != nil {
-		t.Errorf("should parse the sgf contents")
+		t.Errorf("Failed to parse the sgf contents")
 	}
 	if s.SGF() != sgfData {
-		t.Errorf("parsed and generated SGF should be the same")
+		t.Errorf("Parsed and generated SGF should be the same")		// How safe is this test? Key order is arbitrary in SGF...
 	}
 }

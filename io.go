@@ -151,11 +151,6 @@ func LoadSGF(sgf string) (*Node, error) {
 	return root, err
 }
 
-func LoadSGFTree(sgf string) (*Node, error) {
-	root, _, err := load_sgf_tree(sgf, nil)
-	return root, err
-}
-
 func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
 	// A tree is whatever is between ( and ).

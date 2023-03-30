@@ -125,13 +125,11 @@ func Load(filename string) (*Node, error) {
 	}
 
 	data := string(file_bytes)
-	return LoadData(data, filename)
-}
 
-func LoadData(data, filename string) (*Node, error) {
 	// If RAM wastage was ever an issue, one can do the super-spooky:
 	// data := *(*string)(unsafe.Pointer(&file_bytes))
 	// See https://github.com/golang/go/issues/25484 for details.
+
 	root, _, err := load_sgf_tree(data, nil)
 
 	if err != nil {
@@ -148,7 +146,6 @@ func LoadData(data, filename string) (*Node, error) {
 
 	return root, nil
 }
-
 func LoadSGF(sgf string) (*Node, error) {
 	root, _, err := load_sgf_tree(sgf, nil)
 	return root, err

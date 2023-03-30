@@ -666,19 +666,11 @@ func TestLoadAndSafeSGFData(t *testing.T) {
 
 	sgfData := "(;GM[1]FF[4]CA[UTF-8]AP[Sabaki:0.52.2]KM[6.5]SZ[13]DT[2023-03-30];B[aa];W[ba];B[ca])"
 
-	s1, err := LoadData(sgfData, ".sgf")
+	s, err := LoadSGF(sgfData)
 	if err != nil {
 		t.Errorf("should parse the sgf contents")
 	}
-	if s1.SGF() != sgfData {
-		t.Errorf("parsed and generated SGF should be the same")
-	}
-
-	s2, err := LoadSGF(sgfData)
-	if err != nil {
-		t.Errorf("should parse the sgf contents")
-	}
-	if s2.SGF() != sgfData {
+	if s.SGF() != sgfData {
 		t.Errorf("parsed and generated SGF should be the same")
 	}
 }

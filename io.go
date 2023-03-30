@@ -275,10 +275,10 @@ func LoadCollection(filename string) ([]*Node, error) {
 		return nil, err
 	}
 
-	return LoadSGFCollection(string(file_bytes))
+	return LoadCollectionSGF(string(file_bytes))
 }
 
-func LoadSGFCollection(sgf string) ([]*Node, error) {
+func LoadCollectionSGF(sgf string) ([]*Node, error) {
 	var ret []*Node
 	sgf = strings.TrimSpace(sgf)		// Otherwise any trailing characters will trigger an extra attempt to read a tree.
 

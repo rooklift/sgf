@@ -134,9 +134,9 @@ func Load(filename string) (*Node, error) {
 
 	if err != nil {
 		if strings.HasSuffix(strings.ToLower(filename), ".gib") {
-			root, err = load_gib(data)
+			root, err = LoadGIB(data)
 		} else if strings.HasSuffix(strings.ToLower(filename), ".ngf") {
-			root, err = load_ngf(data)
+			root, err = LoadNGF(data)
 		}
 	}
 
@@ -145,6 +145,10 @@ func Load(filename string) (*Node, error) {
 	}
 
 	return root, nil
+}
+func LoadSGF(sgf string) (*Node, error) {
+	root, _, err := load_sgf_tree(sgf, nil)
+	return root, err
 }
 
 func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
@@ -266,22 +270,24 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 // slice of length 1 will be returned.
 func LoadCollection(filename string) ([]*Node, error) {
 
-	var ret []*Node
-
 	file_bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return ret, err
+		return nil, err
 	}
 
-	data := string(file_bytes)
-	data = strings.TrimSpace(data)		// Otherwise any trailing characters will trigger an extra attempt to read a tree.
+	return LoadSGFCollection(string(file_bytes))
+}
+
+func LoadSGFCollection(sgf string) ([]*Node, error) {
+	var ret []*Node
+	sgf = strings.TrimSpace(sgf)		// Otherwise any trailing characters will trigger an extra attempt to read a tree.
 
 	for {
-		if len(data) == 0 {
+		if len(sgf) == 0 {
 			return ret, nil
 		}
 
-		root, chars_read, err := load_sgf_tree(data, nil)
+		root, chars_read, err := load_sgf_tree(sgf, nil)
 
 		if err != nil {
 			return ret, err
@@ -289,7 +295,7 @@ func LoadCollection(filename string) ([]*Node, error) {
 
 		ret = append(ret, root)
 
-		data = data[chars_read:]
+		sgf = sgf[chars_read:]
 	}
 }
 

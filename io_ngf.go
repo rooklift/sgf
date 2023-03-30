@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func load_ngf(ngf string) (*Node, error) {
+func LoadNGF(ngf string) (*Node, error) {
 
 	ngf = strings.TrimSpace(ngf)
 

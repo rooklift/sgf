@@ -661,7 +661,7 @@ func TestForcedMovesEquivalence(t *testing.T) {
 	}
 }
 
-func TestLoadAndSafeSGFData(t *testing.T) {
+func TestLoadSGF(t *testing.T) {
 	sgfData := "(;GM[1]FF[4]CA[UTF-8]AP[Sabaki:0.52.2]KM[6.5]SZ[13]DT[2023-03-30];B[aa];W[ba];B[ca])"
 	s, err := LoadSGF(sgfData)
 	if err != nil {

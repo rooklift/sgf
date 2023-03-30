@@ -136,9 +136,9 @@ func LoadData(data, filename string) (*Node, error) {
 
 	if err != nil {
 		if strings.HasSuffix(strings.ToLower(filename), ".gib") {
-			root, err = load_gib(data)
+			root, err = LoadGIB(data)
 		} else if strings.HasSuffix(strings.ToLower(filename), ".ngf") {
-			root, err = load_ngf(data)
+			root, err = LoadNGF(data)
 		}
 	}
 
@@ -154,12 +154,9 @@ func LoadSGF(sgf string) (*Node, error) {
 	return root, err
 }
 
-func LoadGIB(sgf string) (*Node, error) {
-	return load_gib(sgf)
-}
-
-func LoadNGF(sgf string) (*Node, error) {
-	return load_ngf(sgf)
+func LoadSGFTree(sgf string) (*Node, error) {
+	root, _, err := load_sgf_tree(sgf, nil)
+	return root, err
 }
 
 func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {

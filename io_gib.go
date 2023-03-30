@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func load_gib(gib string) (*Node, error) {
+func LoadGIB(gib string) (*Node, error) {
 
 	root := NewTree(19)
 	node := root

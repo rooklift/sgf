@@ -125,11 +125,13 @@ func Load(filename string) (*Node, error) {
 	}
 
 	data := string(file_bytes)
+	return LoadData(data, filename)
+}
 
+func LoadData(data, filename string) (*Node, error) {
 	// If RAM wastage was ever an issue, one can do the super-spooky:
 	// data := *(*string)(unsafe.Pointer(&file_bytes))
 	// See https://github.com/golang/go/issues/25484 for details.
-
 	root, _, err := load_sgf_tree(data, nil)
 
 	if err != nil {
@@ -145,6 +147,18 @@ func Load(filename string) (*Node, error) {
 	}
 
 	return root, nil
+}
+
+func LoadSGF(sgf string) (*Node, error) {
+	return LoadData(sgf, ".sgf")
+}
+
+func LoadGIB(sgf string) (*Node, error) {
+	return LoadData(sgf, ".gib")
+}
+
+func LoadNGF(sgf string) (*Node, error) {
+	return LoadData(sgf, ".ngf")
 }
 
 func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {

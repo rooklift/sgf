@@ -672,3 +672,13 @@ func TestLoadSGF(t *testing.T) {
 		t.Errorf("Parsed and generated SGF should be the same")		// How safe is this test? Key order is arbitrary in SGF...
 	}
 }
+
+func TestPercentageSignInComment(t *testing.T) {
+	t.Parallel()
+
+	sgfData := "(;C[test%test])"
+	s, _ := LoadSGF(sgfData)
+	if sgfData != s.SGF() {
+		t.Errorf("percentage sign not serialized correctly: %s", s.SGF())
+	}
+}

@@ -70,7 +70,7 @@ func (self *Node) write_tree(w io.Writer) {
 
 	node := self
 
-	fmt.Fprintf(w, "(")
+	fmt.Fprint(w, "(")
 
 	for {
 		node.WriteTo(w)

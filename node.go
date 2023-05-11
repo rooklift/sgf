@@ -78,7 +78,7 @@ func (self *Node) WriteTo(w io.Writer) (n int64, err error) {
 		}
 	}
 
-	count, err := fmt.Fprintf(w, b.String())
+	count, err := fmt.Fprint(w, b.String())
 	return int64(count), err
 }
 

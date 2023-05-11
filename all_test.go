@@ -674,8 +674,7 @@ func TestLoadSGF(t *testing.T) {
 }
 
 func TestPercentageSignInComment(t *testing.T) {
-	t.Parallel()
-
+	fmt.Printf("TestPercentageSignInComment\n")
 	sgfData := "(;C[test%test])"
 	s, _ := LoadSGF(sgfData)
 	if sgfData != s.SGF() {

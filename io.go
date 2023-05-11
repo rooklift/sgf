@@ -87,10 +87,10 @@ func (self *Node) write_tree(w io.Writer) {
 		}
 	}
 
-	fmt.Fprintf(w, ")")
+	fmt.Fprint(w, ")")
 
 	// We could print a newline...
-	// fmt.Fprintf(w, "\n")
+	// fmt.Fprint(w, "\n")
 
 	return
 }

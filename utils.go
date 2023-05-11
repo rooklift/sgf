@@ -264,7 +264,7 @@ func ParseGTP(s string, size int) string {
 func LoadArgOrQuit(n int) *Node {
 
 	if len(os.Args) <= n {
-		fmt.Printf("LoadArgOrQuit(): no such arg\n")
+		fmt.Print("LoadArgOrQuit(): no such arg\n")
 		os.Exit(1)
 	}
 

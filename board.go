@@ -131,13 +131,13 @@ func (self *Board) Dump() {
 	s += fmt.Sprintf("Captures: %d by Black - %d by White\n", self.CapturesBy[BLACK], self.CapturesBy[WHITE])
 	s += fmt.Sprintf("Next to play: %v\n", self.Player.Word())
 
-	fmt.Printf(s)
+	fmt.Print(s)
 	os.Stdout.Sync()		// Same reasoning.
 }
 
-// DumpBoard prints the board; it is equivalent to fmt.Printf(board.String()).
+// DumpBoard prints the board; it is equivalent to fmt.Print(board.String()).
 func (self *Board) DumpBoard() {
-	fmt.Printf(self.String())
+	fmt.Print(self.String())
 }
 
 // String returns an ASCII representation of the board.

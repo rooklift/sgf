@@ -26,7 +26,10 @@ func LoadNGF(ngf string) (*Node, error) {
 
 	// ------------------------------------
 
-	boardsize, _ = strconv.Atoi(strings.TrimSpace(lines[1]))
+	boardsize, err := strconv.Atoi(strings.TrimSpace(lines[1]))
+	if err != nil || boardsize < 1 || boardsize > 52 {
+		return nil, fmt.Errorf("load_ngf(): got bad board size")
+	}
 
 	// ------------------------------------
 
@@ -51,7 +54,7 @@ func LoadNGF(ngf string) (*Node, error) {
 
 	// ------------------------------------
 
-	komi, err := strconv.ParseFloat(strings.TrimSpace(lines[7]), 64)
+	komi, err = strconv.ParseFloat(strings.TrimSpace(lines[7]), 64)
 	if err == nil {
 		if float64(int(komi)) == komi {
 			komi += 0.5

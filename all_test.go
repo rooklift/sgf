@@ -204,6 +204,16 @@ func TestNgfLoader(t *testing.T) {
 	}
 }
 
+func TestNgfBadBoardSize(t *testing.T) {
+	fmt.Printf("TestNgfBadBoardSize\n")
+
+	badNgf := "header\nnot-a-size\nwhite\nblack\nx\n0\nx\n6.5\n20230525\nx\nblack win\nPM00BJJ\n"
+
+	if _, err := LoadNGF(badNgf); err == nil {
+		t.Errorf("Expected bad board size to return an error")
+	}
+}
+
 func TestHandicap(t *testing.T) {
 	fmt.Printf("TestHandicap\n")
 

@@ -34,6 +34,17 @@ func (self *Node) MainChild() *Node {
 // panics if a cyclic tree is created.
 func (self *Node) SetParent(new_parent *Node) {
 
+	// Check if this would create a cyclic structure...
+
+	node := new_parent
+
+	for node != nil {
+		if node == self {
+			panic("Cyclic structure requested")
+		}
+		node = node.parent
+	}
+
 	// Delete from parent's list of children...
 
 	if self.parent != nil {
@@ -50,17 +61,6 @@ func (self *Node) SetParent(new_parent *Node) {
 
 	if self.parent != nil {
 		self.parent.children = append(self.parent.children, self)
-	}
-
-	// Check no cyclic structure was created...
-
-	node := self
-
-	for node.parent != nil {
-		if node.parent == self {
-			panic("Cyclic structure created.")
-		}
-		node = node.parent
 	}
 
 	// Clear the board cache (and that of all descendents) because it's invalid now.

@@ -12,6 +12,12 @@ func init() {
 	rand.Seed(time.Now().UTC().UnixNano())
 }
 
+type failingWriter struct{}
+
+func (failingWriter) Write([]byte) (int, error) {
+	return 0, fmt.Errorf("forced write error")
+}
+
 func TestIllegality(t *testing.T) {
 	fmt.Printf("TestIllegality\n")
 
@@ -680,6 +686,14 @@ func TestLoadSGF(t *testing.T) {
 	}
 	if s.SGF() != sgf {
 		t.Errorf("Parsed and generated SGF should be the same")		// How safe is this test? Key order is arbitrary in SGF...
+	}
+}
+
+func TestWriteTreeError(t *testing.T) {
+	fmt.Printf("TestWriteTreeError\n")
+
+	if err := NewTree(19).write_tree(failingWriter{}); err == nil {
+		t.Errorf("Expected write_tree to return writer error")
 	}
 }
 

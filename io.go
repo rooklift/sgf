@@ -17,6 +17,7 @@ import (
 func SaveCollection(nodes []*Node, filename string) error {
 
 	var roots []*Node
+	var first_err error
 
 	for _, node := range nodes {
 		if node != nil {
@@ -33,20 +34,29 @@ func SaveCollection(nodes []*Node, filename string) error {
 		return err
 	}
 
-	w := bufio.NewWriter(outfile)		// bufio for speedier output if file is huge.
+	w := bufio.NewWriter(outfile)						// bufio for speedier output if file is huge.
 	for _, root := range roots {
-		root.write_tree(w)
+		err = root.write_tree(w)
+		if err != nil && first_err == nil {
+			first_err = err
+		}
+		if err != nil {
+			break
+		}
 	}
-	w.Flush()							// "After all data has been written, the client should call the Flush method"
+	err = w.Flush()										// "After all data has been written, the client should call the Flush method"
+	if err != nil && first_err == nil {
+		first_err = err
+	}
 
 	// We didn't defer outfile.Close() like normal people so we can check its error here, just in case...
 
 	err = outfile.Close()
-	if err != nil {
-		return err
+	if err != nil && first_err == nil {
+		first_err = err
 	}
 
-	return nil
+	return first_err
 }
 
 // Save saves the entire game tree to the specified file. It does not need to be
@@ -66,17 +76,26 @@ func (self *Node) SGF() string {
 	return buf.String()
 }
 
-func (self *Node) write_tree(w io.Writer) {
+func (self *Node) write_tree(w io.Writer) error {
 
 	node := self
 
-	fmt.Fprint(w, "(")
+	_, err := io.WriteString(w, "(")
+	if err != nil {
+		return err
+	}
 
 	for {
-		node.WriteTo(w)
+		_, err := node.WriteTo(w)
+		if err != nil {
+			return err
+		}
 		if len(node.children) > 1 {
 			for _, child := range node.children {
-				child.write_tree(w)
+				err := child.write_tree(w)
+				if err != nil {
+					return err
+				}
 			}
 			break
 		} else if len(node.children) == 1 {
@@ -87,12 +106,15 @@ func (self *Node) write_tree(w io.Writer) {
 		}
 	}
 
-	fmt.Fprint(w, ")")
+	_, err = io.WriteString(w, ")")
+	if err != nil {
+		return err
+	}
 
 	// We could print a newline...
 	// fmt.Fprint(w, "\n")
 
-	return
+	return nil
 }
 
 func escape_string(s string) string {

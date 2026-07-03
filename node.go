@@ -175,7 +175,6 @@ func (self *Node) GetValue(key string) (val string, ok bool) {
 // SetValue sets the specified string as the first and only value for the given
 // key.
 func (self *Node) SetValue(key, val string) {
-	assert_valid_key(key)
 	self.DeleteKey(key)
 	self.AddValue(key, val)
 }

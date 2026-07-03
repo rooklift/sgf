@@ -228,8 +228,16 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
 		} else {
 
-			if c <= ' ' || (c >= 'a' && c <= 'z') {
-				continue												// Silently discard whitespace and lowercase ASCII
+			if c <= ' ' {						// Silently discard whitespace
+				continue
+			} else if (c >= 'a' && c <= 'z') {
+				// Usually discard lowercase ASCII. However, if we already completed
+				// the key, this must be a new key...
+				if keycomplete {
+					key.Reset()
+					keycomplete = false
+				}
+				continue
 			} else if c == '[' {
 				if node == nil {
 					// The tree has ( but no ; before its first property. We could return an error.

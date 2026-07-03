@@ -16,14 +16,11 @@ func (self *Board) Set(p string, colour Colour) {
 // and AE, setting the board state without making captures. The argument should
 // be an SGF coordinate, e.g. "dd".
 //
-// Any ko square is cleared. If the colour was BLACK or WHITE, the next player
-// is set to the opposite colour. Aside from that, AddStone behaves like Set.
+// Any ko square is cleared. Aside from that, AddStone behaves like Set.
+// Note that the current player is not changed.
 func (self *Board) AddStone(p string, colour Colour) {
 	self.Set(p, colour)
 	self.ClearKo()
-	if colour != EMPTY {
-		self.Player = colour.Opposite()
-	}
 }
 
 // AddList is like AddStone, but expects an SGF points list such as "dd:fg".
@@ -33,9 +30,6 @@ func (self *Board) AddList(s string, colour Colour) {
 		self.Set(point, colour)
 	}
 	self.ClearKo()
-	if colour != EMPTY {
-		self.Player = colour.Opposite()
-	}
 }
 
 // ForceStone adjusts the board according to the rules of SGF properties B and

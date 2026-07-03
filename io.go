@@ -194,7 +194,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
 	start_i := 0								// About to become 3 if we BOM-strip...
 	if parent_of_local_root == nil {
-		if len(sgf > 3) {
+		if len(sgf) >= 3 {
 			if sgf[0] == 0xEF && sgf[1] == 0xBB && sgf[2] == 0xBF {
 				start_i = 3
 			}

@@ -145,10 +145,6 @@ func Load(filename string) (*Node, error) {
 		return nil, err
 	}
 
-	if len(file_bytes) >= 3 && file_bytes[0] == 0xEF && file_bytes[1] == 0xBB && file_bytes[2] == 0xBF {
-		file_bytes = file_bytes[3:]
-	}
-
 	data := string(file_bytes)
 
 	// If RAM wastage was ever an issue, one can do the super-spooky:
@@ -196,7 +192,16 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 	var key bytes.Buffer						// ran into https://play.golang.org/p/435YV7klTuI
 	var keycomplete bool
 
-	for i := 0; i < len(sgf); i++ {
+	start_i := 0								// About to become 3 if we BOM-strip...
+	if parent_of_local_root == nil {
+		if len(sgf > 3) {
+			if sgf[0] == 0xEF && sgf[1] == 0xBB && sgf[2] == 0xBF {
+				start_i = 3
+			}
+		}
+	}
+
+	for i := start_i; i < len(sgf); i++ {
 
 		c := sgf[i]
 
@@ -310,10 +315,6 @@ func LoadCollection(filename string) ([]*Node, error) {
 	file_bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
-	}
-
-	if len(file_bytes) >= 3 && file_bytes[0] == 0xEF && file_bytes[1] == 0xBB && file_bytes[2] == 0xBF {
-		file_bytes = file_bytes[3:]
 	}
 
 	return LoadCollectionSGF(string(file_bytes))

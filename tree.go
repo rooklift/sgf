@@ -50,19 +50,16 @@ func (self *Node) GetLine() []*Node {
 // MakeMainLine adjusts the tree structure so that the main line leads to this
 // node.
 func (self *Node) MakeMainLine() {
-	node := self
-
-	for node.parent != nil {
-
-		for i, sibling := range node.parent.children {
-			if sibling == node {
-				node.parent.children[i] = node.parent.children[0]
-				node.parent.children[0] = node
-				break
+	for node := self; node.parent != nil; node = node.parent {
+		if node.parent.children[0] != node {
+			for i, sibling := range node.parent.children {
+				if sibling == node {
+					copy(node.parent.children[1:i+1], node.parent.children[:i])
+					node.parent.children[0] = node
+					break
+				}
 			}
 		}
-
-		node = node.parent
 	}
 }
 

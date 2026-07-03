@@ -644,7 +644,6 @@ func TestForcedMovesEquivalence(t *testing.T) {
 				// manipulation with no captures.
 
 				board.Set(p, colour)
-				board.Player = colour.Opposite()
 				board.ClearKo()
 
 				key = "A" + key

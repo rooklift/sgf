@@ -88,7 +88,7 @@ func (self *Board) update_from_node(node *Node) {
 	total_board_updates++
 
 	// AB, AW, and AE are updated with AddStone() or AddList() which can create illegal
-	// positions; this is normal according to the specs. Ko is cleared, next player is updated.
+	// positions; this is normal according to the specs. Ko is cleared, next player is UNCHANGED.
 
 	for _, p := range node.AllValues("AB") {
 		if len(p) == 5 && p[2] == ':' {
@@ -133,5 +133,14 @@ func (self *Board) update_from_node(node *Node) {
 	}
 	if pl == "W" || pl == "w" {
 		self.Player = WHITE
+	}
+
+	// Convention: if the root node sets up Black stones only (i.e. it's a
+	// handicap game) and there is no PL property, White is next to move.
+
+	if node.parent == nil && pl == "" {
+		if len(node.AllValues("AB")) > 0 && len(node.AllValues("AW")) == 0 && len(node.AllValues("B")) == 0 && len(node.AllValues("W")) == 0 {
+			self.Player = WHITE
+		}
 	}
 }

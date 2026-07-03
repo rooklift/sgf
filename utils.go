@@ -233,7 +233,7 @@ func ParseGTP(s string, size int) string {
 
 	s = strings.ToUpper(s)
 
-	if s[0] < 'A' || s[0] > 'Z' {
+	if s[0] < 'A' || s[0] > 'Z' || s[0] == 'I' {
 		return ""
 	}
 	if s[1] < '0' || s[1] > '9' {

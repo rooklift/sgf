@@ -101,6 +101,7 @@ func (self *Node) key_index(key string) int {
 // already exists for the key, nothing happens.
 func (self *Node) AddValue(key, val string) {
 
+	assert_valid_key(key)
 	self.mutor_check(key)								// If key is a MUTOR, clear board caches.
 
 	ki := self.key_index(key)
@@ -174,6 +175,7 @@ func (self *Node) GetValue(key string) (val string, ok bool) {
 // SetValue sets the specified string as the first and only value for the given
 // key.
 func (self *Node) SetValue(key, val string) {
+	assert_valid_key(key)
 	self.DeleteKey(key)
 	self.AddValue(key, val)
 }
@@ -229,3 +231,15 @@ func (self *Node) AllValues(key string) []string {
 	return ret
 }
 
+func assert_valid_key(key string) {
+
+	if len(key) == 0 {
+		panic("assert_valid_key(): key was zero length")
+	}
+
+	for i := 0; i < len(key); i++ {
+		if key[i] < 'A' || key[i] > 'Z' {
+			panic("assert_valid_key(): key contained non-uppercase-ASCII character")
+		}
+	}
+}

@@ -238,7 +238,7 @@ func load_sgf_tree(sgf string, parent_of_local_root *Node) (*Node, int, error) {
 
 			if c <= ' ' {
 				// Silently discard whitespace.
-			} else if (c >= 'a' && c <= 'z') {
+			} else if c >= 'a' && c <= 'z' {
 				// Usually discard lowercase ASCII. However, if we already completed
 				// the key, this must be a new key...
 				if keycomplete {

@@ -141,9 +141,12 @@ func escape_string(s string) string {
 func Load(filename string) (*Node, error) {
 
 	file_bytes, err := ioutil.ReadFile(filename)
-
 	if err != nil {
 		return nil, err
+	}
+
+	if len(file_bytes) >= 3 && file_bytes[0] == 0xEF && file_bytes[1] == 0xBB && file_bytes[2] == 0xBF {
+		file_bytes = file_bytes[3:]
 	}
 
 	data := string(file_bytes)
@@ -307,6 +310,10 @@ func LoadCollection(filename string) ([]*Node, error) {
 	file_bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(file_bytes) >= 3 && file_bytes[0] == 0xEF && file_bytes[1] == 0xBB && file_bytes[2] == 0xBF {
+		file_bytes = file_bytes[3:]
 	}
 
 	return LoadCollectionSGF(string(file_bytes))

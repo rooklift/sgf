@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 )
@@ -702,5 +703,221 @@ func TestPercentageSignInComment(t *testing.T) {
 	s, _ := LoadSGF(sgfData)
 	if sgfData != s.SGF() {
 		t.Errorf("percentage sign not serialized correctly: %s", s.SGF())
+	}
+}
+
+// Whitespace between property values is valid SGF and must be tolerated,
+// e.g. line-wrapped point lists like AB[dd]\n[pp].
+func TestWhitespaceBetweenValues(t *testing.T) {
+	fmt.Printf("TestWhitespaceBetweenValues\n")
+
+	for _, sgf := range []string{
+		"(;GM[1]SZ[19]AB[dd]\n[pp])",
+		"(;GM[1]SZ[19]AB[dd] [pp])",
+		"(;GM[1]SZ[19]AB[dd]\r\n\t[pp])",
+	} {
+		root, err := LoadSGF(sgf)
+		if err != nil {
+			t.Errorf("%q did not load: %v", sgf, err)
+			continue
+		}
+		ab := root.AllValues("AB")
+		if len(ab) != 2 || ab[0] != "dd" || ab[1] != "pp" {
+			t.Errorf("%q gave AB values %v", sgf, ab)
+		}
+	}
+}
+
+// A lowercase ident after a completed key must not silently attach its value
+// to the previous key (weight[0.5] once became SZ[19][0.5]). It is an error.
+// Meanwhile, FF[3] style idents like CoPyright must still work.
+func TestLowercaseKeys(t *testing.T) {
+	fmt.Printf("TestLowercaseKeys\n")
+
+	if _, err := LoadSGF("(;GM[1]SZ[19]weight[0.5])"); err == nil {
+		t.Errorf("Lowercase ident did not cause an error")
+	}
+
+	root, err := LoadSGF("(;GM[1]SZ[19]CoPyright[meh])")
+	if err != nil {
+		t.Errorf("FF[3] ident failed to load: %v", err)
+	} else if cp, _ := root.GetValue("CP"); cp != "meh" {
+		t.Errorf("FF[3] ident CoPyright did not become CP")
+	}
+}
+
+// A UTF-8 byte order mark must be tolerated by every loading entry point.
+func TestBOM(t *testing.T) {
+	fmt.Printf("TestBOM\n")
+
+	bom_sgf := "\xef\xbb\xbf(;GM[1]FF[4]SZ[19];B[dd];W[pp])"
+
+	filename := filepath.Join(t.TempDir(), "bom.sgf")
+	if err := os.WriteFile(filename, []byte(bom_sgf), 0644); err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	if _, err := LoadSGF(bom_sgf); err != nil {
+		t.Errorf("LoadSGF: %v", err)
+	}
+	if _, err := Load(filename); err != nil {
+		t.Errorf("Load: %v", err)
+	}
+	if _, err := LoadRoot(filename); err != nil {
+		t.Errorf("LoadRoot: %v", err)
+	}
+	if _, err := LoadMainLine(filename); err != nil {
+		t.Errorf("LoadMainLine: %v", err)
+	}
+
+	// A collection: the parser's returned character counts must stay aligned
+	// with the input string despite the skipped BOM bytes...
+
+	roots, err := LoadCollectionSGF("\xef\xbb\xbf(;GM[1]SZ[19];B[dd])(;GM[1]SZ[9];B[cc])")
+	if err != nil {
+		t.Errorf("LoadCollectionSGF: %v", err)
+	} else if len(roots) != 2 {
+		t.Errorf("LoadCollectionSGF: got %d trees, wanted 2", len(roots))
+	} else {
+		sz, _ := roots[1].GetValue("SZ")
+		if sz != "9" {
+			t.Errorf("LoadCollectionSGF: second tree had SZ %q", sz)
+		}
+	}
+
+	// A BOM alone is not a tree...
+
+	if _, err := LoadSGF("\xef\xbb\xbf"); err == nil {
+		t.Errorf("BOM-only string did not cause an error")
+	}
+}
+
+// GTP coordinates skip the letter I.
+func TestParseGTP(t *testing.T) {
+	fmt.Printf("TestParseGTP\n")
+
+	tests := map[string]string{
+		"I5":  "",			// No I in GTP
+		"i5":  "",
+		"H5":  "ho",
+		"J5":  "io",		// J is adjacent to H
+		"A1":  "as",
+		"T19": "sa",
+		"A0":  "",			// Off board
+		"U1":  "",			// Off board
+	}
+
+	for s, expected := range tests {
+		if result := ParseGTP(s, 19); result != expected {
+			t.Errorf("ParseGTP(%q, 19) returned %q, expected %q", s, result, expected)
+		}
+	}
+}
+
+// MakeMainLine must preserve the relative order of the displaced siblings.
+func TestMakeMainLineOrder(t *testing.T) {
+	fmt.Printf("TestMakeMainLineOrder\n")
+
+	root := NewTree(19)
+	for _, p := range []string{"aa", "bb", "cc", "dd"} {
+		root.Play(p)
+	}
+
+	get_order := func() string {
+		s := ""
+		for _, child := range root.Children() {
+			mv, _ := child.GetValue("B")
+			s += mv
+		}
+		return s
+	}
+
+	root.Children()[2].MakeMainLine()
+	if get_order() != "ccaabbdd" {
+		t.Errorf("Expected order ccaabbdd, got %s", get_order())
+	}
+
+	root.Children()[0].MakeMainLine()		// Already main line: no change.
+	if get_order() != "ccaabbdd" {
+		t.Errorf("Expected order ccaabbdd, got %s", get_order())
+	}
+
+	root.Children()[3].MakeMainLine()
+	if get_order() != "ddccaabb" {
+		t.Errorf("Expected order ddccaabb, got %s", get_order())
+	}
+}
+
+// Writing a key that the parser could not read back must panic.
+func TestBadKeyPanics(t *testing.T) {
+	fmt.Printf("TestBadKeyPanics\n")
+
+	expect_panic := func(desc string, fn func()) {
+		defer func() {
+			if recover() == nil {
+				t.Errorf("%s did not panic", desc)
+			}
+		}()
+		fn()
+	}
+
+	node := NewNode(nil)
+
+	expect_panic("Lowercase key", func() { node.SetValue("weight", "0.5") })
+	expect_panic("Empty key", func() { node.SetValue("", "x") })
+	expect_panic("Mixed case key", func() { node.AddValue("aB", "dd") })
+	expect_panic("Key with bracket", func() { node.AddValue("B[", "dd") })
+}
+
+// Setup properties (AB / AW / AE) must not change the player to move.
+// Exception by convention: a root that sets up Black stones only (i.e. a
+// handicap game) with no PL property means White is next to move.
+func TestSetupPlayer(t *testing.T) {
+	fmt.Printf("TestSetupPlayer\n")
+
+	tests := []struct {
+		sgf      string
+		expected Colour
+	}{
+		{"(;GM[1]SZ[19]HA[2]AB[pd][dp])", WHITE},			// Handicap convention
+		{"(;GM[1]SZ[19]AB[pd][dp]PL[B])", BLACK},			// PL beats the convention
+		{"(;GM[1]SZ[19]AB[pd]AW[dp])", BLACK},				// Mixed setup: default stands
+		{"(;GM[1]SZ[19];AB[dd])", BLACK},					// Mid-tree AB: player unchanged
+		{"(;GM[1]SZ[19];B[pd];AW[dd])", WHITE},				// Mid-tree AW: player unchanged
+		{"(;GM[1]SZ[19];B[pd];AE[pd])", WHITE},				// Mid-tree AE: player unchanged
+	}
+
+	for _, test := range tests {
+		root, err := LoadSGF(test.sgf)
+		if err != nil {
+			t.Errorf("%q did not load: %v", test.sgf, err)
+			continue
+		}
+		if player := root.GetEnd().Board().Player; player != test.expected {
+			t.Errorf("%q: next player was %v, expected %v", test.sgf, player.Word(), test.expected.Word())
+		}
+	}
+
+	// Board-level: AddStone and AddList must leave the player alone...
+
+	board := NewBoard(19)
+	board.AddStone("dd", WHITE)
+	board.AddList("aa:bb", WHITE)
+	if board.Player != BLACK {
+		t.Errorf("AddStone / AddList changed the player")
+	}
+
+	// End to end: at the root of a real handicap game, Play() must choose White...
+
+	root, err := Load("test_kifu/3handicap.gib")
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+	node, err := root.Play("jj")
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+	if _, ok := node.GetValue("W"); !ok {
+		t.Errorf("Play() at handicap root did not choose White")
 	}
 }

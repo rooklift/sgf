@@ -120,6 +120,7 @@ func Point(x, y int) string {
 // Black's handicap stones, for the specified board size and handicap (max
 // handicap: 9). The tygem argument indicates whether the 3rd stone in an H3
 // game should be in the top left. Works poorly for very small board sizes.
+// Assumes a square board.
 func HandicapPoints(size, handicap int, tygem bool) []string {
 
 	if size < 4 || handicap < 2 {
@@ -179,7 +180,7 @@ func HandicapPoints(size, handicap int, tygem bool) []string {
 }
 
 // IsStarPoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
-// true if it would be considered a star (hoshi) point.
+// true if it would be considered a star (hoshi) point. Assumes a square board.
 func IsStarPoint(p string, size int) bool {
 
 	starpoints := HandicapPoints(size, 9, false)

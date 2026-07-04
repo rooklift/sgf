@@ -37,6 +37,8 @@ func rotate(node *sgf.Node, width, height int) {
 			x, y, onboard := sgf.ParsePoint(val, width, height)
 			if onboard {
 				all_values[i] = sgf.Point(height - 1 - y, x)
+			} else {
+				// Pass, all_values[i] remains unchanged and will be written as-is.
 			}
 		}
 		node.SetValues(key, all_values)

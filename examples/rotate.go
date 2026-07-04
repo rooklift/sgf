@@ -1,6 +1,6 @@
 package main
 
-// Rotates a game tree.
+// Rotates a game tree. FIXME: for rectangular boards.
 
 import (
 	"fmt"

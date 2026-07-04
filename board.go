@@ -149,8 +149,8 @@ func (self *Board) String() string {
 
 	ko_x, ko_y, _ := ParsePoint(self.Ko, self.Width, self.Height)		// Usually -1, -1
 
-	for y := 0; y < self.Width; y++ {
-		for x := 0; x < self.Height; x++ {
+	for y := 0; y < self.Height; y++ {
+		for x := 0; x < self.Width; x++ {
 			c := self.State[x][y]
 			if c == BLACK {
 				b.WriteString(" X")

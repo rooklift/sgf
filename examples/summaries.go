@@ -52,7 +52,7 @@ func handle_file(path string, _ os.FileInfo, err error) error {
 	record.Filename = filepath.Base(path)
 	record.Dyer = root.Dyer()
 
-	record.SZ = root.RootBoardSize()
+	record.SZ, _ = root.RootBoardSize()
 	record.HA = root.RootHandicap()
 
 	record.PB, _ = root.GetValue("PB")

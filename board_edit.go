@@ -5,7 +5,7 @@ package sgf
 // effect on ko status, nor the next player, and no captures are performed.
 // Illegal positions can be created.
 func (self *Board) Set(p string, colour Colour) {
-	x, y, onboard := ParsePoint(p, self.Size)
+	x, y, onboard := ParsePoint(p, self.Width, self.Height)
 	if onboard == false {
 		return
 	}
@@ -25,7 +25,7 @@ func (self *Board) AddStone(p string, colour Colour) {
 
 // AddList is like AddStone, but expects an SGF points list such as "dd:fg".
 func (self *Board) AddList(s string, colour Colour) {
-	points := ParsePointList(s, self.Size)
+	points := ParsePointList(s, self.Width, self.Height)
 	for _, point := range points {
 		self.Set(point, colour)
 	}
@@ -50,7 +50,7 @@ func (self *Board) ForceStone(p string, colour Colour) {
 
 	self.ClearKo()
 
-	if ValidPoint(p, self.Size) == false {		// Consider this a pass
+	if ValidPoint(p, self.Width, self.Height) == false {		// Consider this a pass
 		self.Player = colour.Opposite()
 		return
 	}
@@ -59,7 +59,7 @@ func (self *Board) ForceStone(p string, colour Colour) {
 
 	caps := 0
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.Width, self.Height) {
 		if self.Get(a) == colour.Opposite() {
 			if self.HasLiberties(a) == false {
 				caps += self.DestroyGroup(a)
@@ -121,7 +121,7 @@ func (self *Board) Pass() {
 // SetKo sets the ko square. The argument should be an SGF coordinate, e.g.
 // "dd".
 func (self *Board) SetKo(p string) {
-	if ValidPoint(p, self.Size) == false {
+	if ValidPoint(p, self.Width, self.Height) == false {
 		self.Ko = ""
 	} else {
 		self.Ko = p
@@ -147,7 +147,7 @@ func (self *Board) DestroyGroup(p string) int {
 	self.Set(p, EMPTY)
 	count := 1
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.Width, self.Height) {
 
 		if self.Get(a) == colour {
 			count += self.DestroyGroup(a)

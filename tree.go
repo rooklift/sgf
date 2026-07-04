@@ -3,6 +3,7 @@ package sgf
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 // GetRoot travels up the tree, examining each node's parent until it finds the
@@ -113,15 +114,29 @@ func (self *Node) TreeKeyValueCount() (int, int) {
 	return self.GetRoot().SubTreeKeyValueCount()
 }
 
-// RootBoardSize travels up the tree to the root, and then finds the board size,
-// which it returns as an integer. If no SZ property is present, it returns 19.
-func (self *Node) RootBoardSize() int {
+// RootBoardSize travels up the tree to the root, and then finds the board width
+// and height, which it returns as integers. If no valid SZ is found, it returns
+// 19x19.
+func (self *Node) RootBoardSize() (int, int) {
 	root := self.GetRoot()
 	sz_string, _ := root.GetValue("SZ")
-	sz, _ := strconv.Atoi(sz_string)
-	if sz < 1  { return 19 }
-	if sz > 52 { return 52 }					// SGF limit
-	return sz
+	if strings.Contains(sz_string, ":") {
+		// SZ in format [w:h]
+		parts := strings.Split(sz_string, ":")
+		width, _ := strconv.Atoi(parts[0])
+		height, _ := strconv.Atoi(parts[1])
+		if width < 1 || width > 52 || height < 1 || height > 52 {
+			return 19, 19
+		}
+		return width, height
+	} else {
+		// SZ in normal format
+		sz, _ := strconv.Atoi(sz_string)
+		if sz < 1 || sz > 52 {
+			return 19, 19
+		}
+		return sz, sz
+	}
 }
 
 // RootHandicap travels up the tree to the root, and then finds the handicap,
@@ -150,7 +165,7 @@ func (self *Node) Dyer() string {
 	move_count := 0
 
 	node := self.GetRoot()
-	size := node.RootBoardSize()
+	width, height := node.RootBoardSize()
 
 	for {
 
@@ -165,7 +180,7 @@ func (self *Node) Dyer() string {
 				if move_count == 20 || move_count == 40 || move_count == 60 ||
 				   move_count == 31 || move_count == 51 || move_count == 71 {
 
-					if ValidPoint(mv, size) {
+					if ValidPoint(mv, width, height) {
 						vals[move_count] = mv
 					}
 				}

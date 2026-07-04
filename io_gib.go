@@ -12,7 +12,7 @@ import (
 // root.
 func LoadGIB(gib string) (*Node, error) {
 
-	root := NewTree(19)
+	root := NewTree(19, 19)
 	node := root
 
 	lines := strings.Split(gib, "\n")

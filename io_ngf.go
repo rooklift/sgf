@@ -93,7 +93,7 @@ func LoadNGF(ngf string) (*Node, error) {
 
 	// ------------------------------------
 
-	root := NewTree(boardsize)
+	root := NewTree(boardsize, boardsize)
 	node := root
 
 	if handicap > 1 {

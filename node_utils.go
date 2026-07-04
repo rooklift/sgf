@@ -113,7 +113,7 @@ func (self *Node) Validate() error {
 
 		if len(all_b) > 0 {
 			mv := all_b[0]
-			if ValidPoint(mv, board.Size) {
+			if ValidPoint(mv, board.Width, board.Height) {
 				legal, err := board.LegalColour(mv, BLACK)
 				if legal == false {
 					return err
@@ -125,7 +125,7 @@ func (self *Node) Validate() error {
 
 		if len(all_w) > 0 {
 			mv := all_w[0]
-			if ValidPoint(mv, board.Size) {
+			if ValidPoint(mv, board.Width, board.Height) {
 				legal, err := board.LegalColour(mv, WHITE)
 				if legal == false {
 					return err

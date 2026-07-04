@@ -302,8 +302,8 @@ func TestBoard(t *testing.T) {
 	}
 
 	stones := 0
-	for x := 0; x < board.Size; x++ {
-		for y := 0; y < board.Size; y++ {
+	for x := 0; x < board.Width; x++ {
+		for y := 0; y < board.Height; y++ {
 			if board.State[x][y] != EMPTY {
 				stones++
 			}
@@ -547,7 +547,7 @@ func TestLine(t *testing.T) {
 func TestBoardEdits(t *testing.T) {
 	fmt.Printf("TestBoardEdits\n")
 
-	board := NewBoard(19)
+	board := NewBoard(19, 19)
 
 	expect_next_player := func(board *Board, colour Colour) {
 		if board.Player != colour {
@@ -584,8 +584,8 @@ func TestLegalMovesEquivalence(t *testing.T) {
 
 	for i := 0; i < 10; i++ {
 
-		board := NewBoard(19)
-		node := NewTree(19)
+		board := NewBoard(19, 19)
+		node := NewTree(19, 19)
 
 		var node_err, board_err error
 
@@ -624,8 +624,8 @@ func TestForcedMovesEquivalence(t *testing.T) {
 
 	for i := 0; i < 10; i++ {
 
-		board := NewBoard(19)
-		node := NewTree(19)
+		board := NewBoard(19, 19)
+		node := NewTree(19, 19)
 
 		for n := 0; n < 1000; n++ {
 			x := rand.Intn(20)					// See above
@@ -692,7 +692,7 @@ func TestLoadSGF(t *testing.T) {
 func TestWriteTreeError(t *testing.T) {
 	fmt.Printf("TestWriteTreeError\n")
 
-	if err := NewTree(19).write_tree(failingWriter{}); err == nil {
+	if err := NewTree(19, 19).write_tree(failingWriter{}); err == nil {
 		t.Errorf("Expected write_tree to return writer error")
 	}
 }
@@ -808,8 +808,8 @@ func TestParseGTP(t *testing.T) {
 	}
 
 	for s, expected := range tests {
-		if result := ParseGTP(s, 19); result != expected {
-			t.Errorf("ParseGTP(%q, 19) returned %q, expected %q", s, result, expected)
+		if result := ParseGTP(s, 19, 19); result != expected {
+			t.Errorf("ParseGTP(%q, 19, 19) returned %q, expected %q", s, result, expected)
 		}
 	}
 }
@@ -818,7 +818,7 @@ func TestParseGTP(t *testing.T) {
 func TestMakeMainLineOrder(t *testing.T) {
 	fmt.Printf("TestMakeMainLineOrder\n")
 
-	root := NewTree(19)
+	root := NewTree(19, 19)
 	for _, p := range []string{"aa", "bb", "cc", "dd"} {
 		root.Play(p)
 	}
@@ -900,7 +900,7 @@ func TestSetupPlayer(t *testing.T) {
 
 	// Board-level: AddStone and AddList must leave the player alone...
 
-	board := NewBoard(19)
+	board := NewBoard(19, 19)
 	board.AddStone("dd", WHITE)
 	board.AddList("aa:bb", WHITE)
 	if board.Player != BLACK {

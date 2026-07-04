@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -19,6 +20,8 @@ func (failingWriter) Write([]byte) (int, error) {
 	return 0, fmt.Errorf("forced write error")
 }
 
+// Play() must reject ko recaptures, suicide, occupied points, and off-board
+// points, leaving the tree unchanged.
 func TestIllegality(t *testing.T) {
 	fmt.Printf("TestIllegality\n")
 
@@ -60,6 +63,8 @@ func TestIllegality(t *testing.T) {
 	}
 }
 
+// A file containing multiple game trees must load as a collection, with each
+// tree complete.
 func TestCollection(t *testing.T) {
 	fmt.Printf("TestCollection\n")
 
@@ -82,6 +87,8 @@ func TestCollection(t *testing.T) {
 	}
 }
 
+// Attaching a node to itself or one of its own descendents would make a cycle
+// in the tree, and must panic.
 func TestCyclicAttachment(t *testing.T) {
 	fmt.Printf("TestCyclicAttachment\n")
 
@@ -113,6 +120,8 @@ func TestCyclicAttachment(t *testing.T) {
 	node.SetParent(d)
 }
 
+// The Dyer signature (the coordinates of moves 20, 40, 60, 31, 51, 71) of a
+// known game must match the known value.
 func TestDyer(t *testing.T) {
 	fmt.Printf("TestDyer\n")
 
@@ -127,6 +136,7 @@ func TestDyer(t *testing.T) {
 	}
 }
 
+// Escaped ] and \ characters in values must be unescaped at load time.
 func TestUnescaping(t *testing.T) {
 	fmt.Printf("TestUnescaping\n")
 
@@ -149,6 +159,8 @@ func TestUnescaping(t *testing.T) {
 	}
 }
 
+// LoadMainLine must discard all variations, keeping only each node's main
+// child.
 func TestMainLineLoader(t *testing.T) {
 	fmt.Printf("TestMainLineLoader\n")
 
@@ -163,6 +175,8 @@ func TestMainLineLoader(t *testing.T) {
 	}
 }
 
+// GIB format (Tygem) files must load, with handicap converted to HA and AB
+// properties.
 func TestGibLoader(t *testing.T) {
 	fmt.Printf("TestGibLoader\n")
 
@@ -187,6 +201,8 @@ func TestGibLoader(t *testing.T) {
 	}
 }
 
+// NGF format (WBaduk) files must load, with handicap converted to HA and AB
+// properties.
 func TestNgfLoader(t *testing.T) {
 	fmt.Printf("TestNgfLoader\n")
 
@@ -211,6 +227,8 @@ func TestNgfLoader(t *testing.T) {
 	}
 }
 
+// An NGF file with an unreadable board size line must produce an error, not a
+// panic.
 func TestNgfBadBoardSize(t *testing.T) {
 	fmt.Printf("TestNgfBadBoardSize\n")
 
@@ -221,6 +239,7 @@ func TestNgfBadBoardSize(t *testing.T) {
 	}
 }
 
+// A real 9 handicap game must have its stones present as AB values.
 func TestHandicap(t *testing.T) {
 	fmt.Printf("TestHandicap\n")
 
@@ -241,6 +260,7 @@ func TestHandicap(t *testing.T) {
 	}
 }
 
+// TreeKeyValueCount must count every key and value in a large tree.
 func TestKeyValues(t *testing.T) {
 	fmt.Printf("TestKeyValues\n")
 
@@ -257,6 +277,7 @@ func TestKeyValues(t *testing.T) {
 	}
 }
 
+// Multi-byte UTF-8 values must survive loading intact.
 func TestUnicode(t *testing.T) {
 	fmt.Printf("TestUnicode\n")
 
@@ -274,6 +295,8 @@ func TestUnicode(t *testing.T) {
 	}
 }
 
+// Boards must be generated lazily (one update per node actually needed), with
+// the right stones and capture counts at the end of a real game.
 func TestBoard(t *testing.T) {
 	fmt.Printf("TestBoard\n")
 
@@ -314,6 +337,8 @@ func TestBoard(t *testing.T) {
 	}
 }
 
+// Group info methods: Stones, Liberties, HasLiberties, DestroyGroup. They
+// must also tolerate illegal positions and invalid points without crashing.
 func TestGroups(t *testing.T) {
 	fmt.Printf("TestGroups\n")
 
@@ -368,6 +393,8 @@ func TestGroups(t *testing.T) {
 	board.Singleton("ZZ")
 }
 
+// The board cache must fill as boards are requested, and be purged for all
+// affected nodes when a board-altering property or structure change occurs.
 func TestCache(t *testing.T) {
 	fmt.Printf("TestCache\n")
 
@@ -422,6 +449,7 @@ func TestCache(t *testing.T) {
 	}
 }
 
+// Copy must copy a node's properties but not its family relationships.
 func TestNodeCopy(t *testing.T) {
 	fmt.Printf("TestNodeCopy\n")
 
@@ -451,6 +479,8 @@ func TestNodeCopy(t *testing.T) {
 	}
 }
 
+// Property editing basics: AddValue ignores duplicates, SetValue replaces all
+// values, and deleting the last value deletes the key.
 func TestNodeUpdates(t *testing.T) {
 	fmt.Printf("TestNodeUpdates\n")
 
@@ -513,6 +543,7 @@ func TestNodeUpdates(t *testing.T) {
 	expect_vals(node, "AB", 0)
 }
 
+// LoadRoot must return the root node only, with no children attached.
 func TestRootLoader(t *testing.T) {
 	fmt.Printf("TestRootLoader\n")
 
@@ -527,6 +558,7 @@ func TestRootLoader(t *testing.T) {
 	}
 }
 
+// GetLine must return the whole path from the root to the node, inclusive.
 func TestLine(t *testing.T) {
 	fmt.Printf("TestLine\n")
 
@@ -544,6 +576,8 @@ func TestLine(t *testing.T) {
 	}
 }
 
+// Direct board edits: Play fails on occupied points, while ForceStone always
+// succeeds; both must leave the correct player to move.
 func TestBoardEdits(t *testing.T) {
 	fmt.Printf("TestBoardEdits\n")
 
@@ -577,6 +611,8 @@ func TestBoardEdits(t *testing.T) {
 	expect_next_player(board, WHITE)
 }
 
+// Playing thousands of random (sometimes offboard or illegal) moves directly
+// on a board, and via node.Play(), must give identical boards and errors.
 func TestLegalMovesEquivalence(t *testing.T) {
 	fmt.Printf("TestLegalMovesEquivalence\n")
 
@@ -617,6 +653,8 @@ func TestLegalMovesEquivalence(t *testing.T) {
 	}
 }
 
+// Same idea with forced stones and setup properties: direct board edits must
+// match boards generated from the equivalent SGF nodes.
 func TestForcedMovesEquivalence(t *testing.T) {
 	fmt.Printf("TestForcedMovesEquivalence\n")
 
@@ -677,6 +715,8 @@ func TestForcedMovesEquivalence(t *testing.T) {
 	}
 }
 
+// A parsed tree must serialise back to the exact input string (fragile in
+// principle, since key order is arbitrary in SGF).
 func TestLoadSGF(t *testing.T) {
 	fmt.Printf("TestLoadSGF\n")
 	sgf := "(;GM[1]FF[4]CA[UTF-8]AP[Sabaki:0.52.2]KM[6.5]SZ[13]DT[2023-03-30];B[aa];W[ba];B[ca])"
@@ -689,6 +729,7 @@ func TestLoadSGF(t *testing.T) {
 	}
 }
 
+// Errors from the underlying writer must be propagated when saving.
 func TestWriteTreeError(t *testing.T) {
 	fmt.Printf("TestWriteTreeError\n")
 
@@ -697,6 +738,7 @@ func TestWriteTreeError(t *testing.T) {
 	}
 }
 
+// A literal % in a value must not be mangled by any printf-style path.
 func TestPercentageSignInComment(t *testing.T) {
 	fmt.Printf("TestPercentageSignInComment\n")
 	sgfData := "(;C[test%test])"
@@ -919,5 +961,204 @@ func TestSetupPlayer(t *testing.T) {
 	}
 	if _, ok := node.GetValue("W"); !ok {
 		t.Errorf("Play() at handicap root did not choose White")
+	}
+}
+
+// -------------------------------------------------------------------------------------------------
+// Rectangular boards, i.e. SZ[width:height]...
+
+// RootBoardSize must handle both SZ formats, defaulting to 19x19 whenever the
+// value is missing, malformed, or out of range.
+func TestRectangularSZ(t *testing.T) {
+	fmt.Printf("TestRectangularSZ\n")
+
+	tests := []struct {
+		sgf				string
+		width, height	int
+	}{
+		{"(;GM[1]SZ[19])", 19, 19},
+		{"(;GM[1]SZ[19:9])", 19, 9},
+		{"(;GM[1]SZ[9:19])", 9, 19},
+		{"(;GM[1]SZ[52:52])", 52, 52},			// Spec says square must not use this format, but tolerate it
+		{"(;GM[1])", 19, 19},					// No SZ at all
+		{"(;GM[1]SZ[foo])", 19, 19},
+		{"(;GM[1]SZ[19:])", 19, 19},
+		{"(;GM[1]SZ[:9])", 19, 19},
+		{"(;GM[1]SZ[0:5])", 19, 19},
+		{"(;GM[1]SZ[53:19])", 19, 19},
+	}
+
+	for _, test := range tests {
+		root, err := LoadSGF(test.sgf)
+		if err != nil {
+			t.Errorf("%q did not load: %v", test.sgf, err)
+			continue
+		}
+		width, height := root.RootBoardSize()
+		if width != test.width || height != test.height {
+			t.Errorf("%q gave size %dx%d, expected %dx%d", test.sgf, width, height, test.width, test.height)
+		}
+	}
+}
+
+// A board from a rectangular game must have the right dimensions, and the x
+// and y bounds must not be interchangeable.
+func TestRectangularBoard(t *testing.T) {
+	fmt.Printf("TestRectangularBoard\n")
+
+	// 19 wide, 9 tall, with stones in two corners. The final B[dj] is
+	// off-board (though it would be fine on 19x19) and is thus a pass...
+
+	root, err := LoadSGF("(;GM[1]FF[4]SZ[19:9];B[sa];W[si];B[dj])")
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	board := root.GetEnd().Board()
+
+	if board.Width != 19 || board.Height != 9 {
+		t.Errorf("Board was %dx%d, expected 19x9", board.Width, board.Height)
+	}
+
+	if board.Get("sa") != BLACK || board.Get("si") != WHITE {
+		t.Errorf("Corner stones not as expected")
+	}
+
+	if board.Player != WHITE {
+		t.Errorf("Off-board move did not act as a pass")
+	}
+
+	if ValidPoint("dj", 19, 9) || ValidPoint("dj", 19, 19) == false {
+		t.Errorf("ValidPoint bounds not as expected")
+	}
+
+	// String() must produce Height rows of Width points. This is a regression
+	// test: the loop bounds were once transposed, panicking on any board with
+	// Width != Height...
+
+	lines := strings.Split(strings.TrimRight(board.String(), "\n"), "\n")
+	if len(lines) != 9 {
+		t.Errorf("Board printout had %d rows, expected 9", len(lines))
+	}
+	for _, line := range lines {
+		if len(line) != 19 * 2 {				// Each point prints as 2 characters
+			t.Errorf("Board printout row had length %d, expected 38", len(line))
+		}
+	}
+
+	// Adjacency at the edges of a 19x9 board...
+
+	if len(AdjacentPoints("si", 19, 9)) != 2 {	// Bottom right corner
+		t.Errorf("Corner had wrong number of adjacent points")
+	}
+	if len(AdjacentPoints("se", 19, 9)) != 3 {	// Middle of right edge
+		t.Errorf("Edge point had wrong number of adjacent points")
+	}
+
+	// Point lists (e.g. AB[hd:ie] style rectangles) are bounded by both
+	// dimensions...
+
+	if len(ParsePointList("hd:ie", 9, 5)) != 4 {
+		t.Errorf("ParsePointList not as expected")
+	}
+	if ParsePointList("hd:if", 9, 5) != nil {	// "if" is off a 9x5 board
+		t.Errorf("Point list going off-board should be nil")
+	}
+
+	// Boards of transposed dimensions are not equal...
+
+	if NewBoard(9, 5).Equals(NewBoard(5, 9)) {
+		t.Errorf("Boards of transposed dimensions compared equal")
+	}
+}
+
+// Captures and suicide detection must work at the edges of a rectangular
+// board; in particular there must be no phantom liberties off the short sides.
+func TestRectangularCaptures(t *testing.T) {
+	fmt.Printf("TestRectangularCaptures\n")
+
+	// On a 9x5 board, capture a stone in the bottom right corner...
+
+	root := NewTree(9, 5)
+	root.AddValue("AB", Point(8, 4))
+	root.AddValue("AW", Point(7, 4))
+
+	node, err := root.PlayColour(Point(8, 3), WHITE)
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	board := node.Board()
+
+	if board.Get(Point(8, 4)) != EMPTY {
+		t.Errorf("Corner stone was not captured")
+	}
+	if board.CapturesBy[WHITE] != 1 {
+		t.Errorf("Wrong capture count")
+	}
+
+	// Playing back into that corner would now be suicide...
+
+	if _, err := node.PlayColour(Point(8, 4), BLACK); err == nil {
+		t.Errorf("Corner suicide was allowed")
+	}
+}
+
+// GTP coordinates on a rectangular board: the row number is counted from the
+// bottom, so the conversion depends on the height.
+func TestRectangularGTP(t *testing.T) {
+	fmt.Printf("TestRectangularGTP\n")
+
+	tests := map[string]string{		// For a board 9 wide and 5 tall
+		"A5": "aa",					// Top left
+		"A1": "ae",					// Bottom left
+		"J5": "ia",					// Top right (no I in GTP)
+		"J1": "ie",					// Bottom right
+		"A6": "",					// Too high
+		"K1": "",					// Too far right
+	}
+
+	for s, expected := range tests {
+		if result := ParseGTP(s, 9, 5); result != expected {
+			t.Errorf("ParseGTP(%q, 9, 5) returned %q, expected %q", s, result, expected)
+		}
+	}
+}
+
+// NewTree must emit SZ[w:h] only when the board is not square, and a
+// rectangular game must survive a save / load cycle intact.
+func TestRectangularRoundTrip(t *testing.T) {
+	fmt.Printf("TestRectangularRoundTrip\n")
+
+	if sz, _ := NewTree(13, 13).GetValue("SZ"); sz != "13" {
+		t.Errorf("Square SZ was %q, expected \"13\"", sz)
+	}
+
+	root := NewTree(19, 9)
+	if sz, _ := root.GetValue("SZ"); sz != "19:9" {
+		t.Errorf("Rectangular SZ was %q, expected \"19:9\"", sz)
+	}
+
+	node, err := root.Play(Point(18, 8))
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+	node, err = node.Play(Point(0, 0))
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	reload, err := LoadSGF(root.SGF())
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+
+	width, height := reload.RootBoardSize()
+	if width != 19 || height != 9 {
+		t.Errorf("Reloaded size was %dx%d, expected 19x9", width, height)
+	}
+
+	if reload.GetEnd().Board().Equals(node.Board()) == false {
+		t.Errorf("Reloaded board did not equal the original")
 	}
 }

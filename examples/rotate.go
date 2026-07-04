@@ -13,7 +13,13 @@ func main() {
 
 	root := sgf.LoadArgOrQuit(1)							// Equivalent to sgf.Load(os.Args[1])
 	nodes := root.TreeNodes()
-	boardsize := root.RootBoardSize()
+
+	width, height := root.RootBoardSize()
+	if width != height {
+		fmt.Printf("rotate: rectangular boards not supported\n")
+		os.Exit(1)
+	}
+	boardsize := width
 
 	for _, node := range nodes {
 		rotate(node, boardsize)
@@ -29,7 +35,7 @@ func rotate(node *sgf.Node, boardsize int) {
 	for _, key := range []string{"AB", "AW", "AE", "B", "CR", "MA", "SL", "SQ", "TR", "W"} {
 		all_values := node.AllValues(key)
 		for i, val := range all_values {
-			x, y, onboard := sgf.ParsePoint(val, boardsize)
+			x, y, onboard := sgf.ParsePoint(val, boardsize, boardsize)
 			if onboard {
 				all_values[i] = sgf.Point(boardsize - 1 - y, x)
 			}

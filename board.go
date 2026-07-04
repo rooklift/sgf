@@ -14,7 +14,8 @@ var HoshiString = "."	// Can be changed. Used when printing the board.
 // relatively costly, and should probably be avoided if batch processing many
 // files.
 type Board struct {
-	Size				int
+	Width				int
+	Height				int
 	Player				Colour
 	Ko					string
 
@@ -22,22 +23,22 @@ type Board struct {
 	CapturesBy			map[Colour]int
 }
 
-// NewBoard returns an empty board of specified size.
-func NewBoard(sz int) *Board {
+// NewBoard returns an empty board of specified width and height.
+func NewBoard(width, height int) *Board {
 
-	if sz < 1 || sz > 52 {
-		panic(fmt.Sprintf("NewBoard(): bad size %d", sz))
+	if width < 1 || width > 52 || height < 1 || height > 52 {
+		panic(fmt.Sprintf("NewBoard(): bad size %d %d", width, height))
 	}
 
 	board := new(Board)
-
-	board.Size = sz
+	board.Width = width
+	board.Height = height
 	board.Player = BLACK
 	board.ClearKo()
 
-	board.State = make([][]Colour, sz)
-	for x := 0; x < sz; x++ {
-		board.State[x] = make([]Colour, sz)
+	board.State = make([][]Colour, width)
+	for x := 0; x < width; x++ {
+		board.State[x] = make([]Colour, height)
 	}
 
 	board.CapturesBy = make(map[Colour]int)
@@ -50,14 +51,14 @@ func NewBoard(sz int) *Board {
 // Equals returns true if the two boards are the same, including ko status,
 // captures, and next player to move.
 func (self *Board) Equals(other *Board) bool {
-	if self.Size != other.Size || self.Player != other.Player || self.Ko != other.Ko {
+	if self.Width != other.Width || self.Height != other.Height || self.Player != other.Player || self.Ko != other.Ko {
 		return false
 	}
 	if self.CapturesBy[BLACK] != other.CapturesBy[BLACK] || self.CapturesBy[WHITE] != other.CapturesBy[WHITE] {
 		return false
 	}
-	for x := 0; x < self.Size; x++ {
-		for y := 0; y < self.Size; y++ {
+	for x := 0; x < self.Width; x++ {
+		for y := 0; y < self.Height; y++ {
 			if self.State[x][y] != other.State[x][y] {
 				return false
 			}
@@ -73,16 +74,17 @@ func (self *Board) Copy() *Board {
 
 	// Easy stuff...
 
-	ret.Size = self.Size
+	ret.Width = self.Width
+	ret.Height = self.Height
 	ret.Player = self.Player
 	ret.Ko = self.Ko
 
 	// State...
 
-	ret.State = make([][]Colour, ret.Size)
-	for x := 0; x < ret.Size; x++ {
-		ret.State[x] = make([]Colour, ret.Size)
-		for y := 0; y < ret.Size; y++ {
+	ret.State = make([][]Colour, ret.Width)
+	for x := 0; x < ret.Width; x++ {
+		ret.State[x] = make([]Colour, ret.Height)
+		for y := 0; y < ret.Height; y++ {
 			ret.State[x][y] = self.State[x][y]
 		}
 	}
@@ -99,7 +101,7 @@ func (self *Board) Copy() *Board {
 // Get returns the colour at the specified point. The argument should be an SGF
 // coordinate, e.g. "dd".
 func (self *Board) Get(p string) Colour {
-	x, y, onboard := ParsePoint(p, self.Size)
+	x, y, onboard := ParsePoint(p, self.Width, self.Height)
 	if onboard == false {
 		return EMPTY
 	}
@@ -145,10 +147,10 @@ func (self *Board) String() string {
 
 	var b bytes.Buffer
 
-	ko_x, ko_y, _ := ParsePoint(self.Ko, self.Size)		// Usually -1, -1
+	ko_x, ko_y, _ := ParsePoint(self.Ko, self.Width, self.Height)		// Usually -1, -1
 
-	for y := 0; y < self.Size; y++ {
-		for x := 0; x < self.Size; x++ {
+	for y := 0; y < self.Height; y++ {
+		for x := 0; x < self.Width; x++ {
 			c := self.State[x][y]
 			if c == BLACK {
 				b.WriteString(" X")
@@ -157,7 +159,7 @@ func (self *Board) String() string {
 			} else if ko_x == x && ko_y == y {
 				b.WriteString(" :")
 			} else {
-				if IsStarPoint(Point(x, y), self.Size) {
+				if self.Width == self.Height && IsStarPoint(Point(x, y), self.Width) {
 					b.WriteString(" ")
 					b.WriteString(HoshiString)
 				} else {
@@ -178,7 +180,7 @@ func (self *Board) ko_square_finder(p string) string {
 
 	var hits []string
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.Width, self.Height) {
 		if self.Get(a) == EMPTY {
 			hits = append(hits, a)
 		}

@@ -66,7 +66,7 @@ func (self *Node) PassColour(colour Colour) *Node {
 	for _, child := range self.children {
 		if child.ValueCount(key) == 1 {											// Ignore any illegal nodes with 2 or more...
 			mv, _ := child.GetValue(key)
-			if ValidPoint(mv, board.Size) == false {
+			if ValidPoint(mv, board.Width, board.Height) == false {
 				return child
 			}
 		}

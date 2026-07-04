@@ -10,7 +10,7 @@ func main() {
 
 	// Start a new game tree and get the root node...
 
-	root := sgf.NewTree(19)
+	root := sgf.NewTree(19, 19)
 	node := root
 
 	// Here we create the ancient Chinese pattern...
@@ -78,8 +78,8 @@ func main() {
 
 	board := node.Board()                   // Note that this is a deep copy
 
-	for x := 0; x < board.Size; x++ {
-		for y := 0; y < board.Size; y++ {
+	for x := 0; x < board.Width; x++ {
+		for y := 0; y < board.Height; y++ {
 			if board.State[x][y] == sgf.WHITE {
 				node.AddValue("TR", sgf.Point(x, y))
 			}

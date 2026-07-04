@@ -24,7 +24,7 @@ func (self *Board) stones_recurse(p string, colour Colour, touched map[string]bo
 	touched[p] = true
 	ret = append(ret, p)
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.Width, self.Height) {
 		if self.get_fast(a) == colour {
 			if touched[a] == false {
 				ret = self.stones_recurse(a, colour, touched, ret)
@@ -56,7 +56,7 @@ func (self *Board) has_liberties_recurse(p string, colour Colour, touched map[st
 
 	touched[p] = true
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.Width, self.Height) {
 		a_colour := self.get_fast(a)
 		if a_colour == EMPTY {
 			return true
@@ -91,7 +91,7 @@ func (self *Board) liberties_recurse(p string, colour Colour, touched map[string
 	// Note that this function uses the touched map in a different way from others.
 	// Note the constant returning and updating of ret since appends are not visible to caller otherwise.
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.Width, self.Height) {
 		t := touched[a]
 		if t == false {
 			touched[a] = true
@@ -116,7 +116,7 @@ func (self *Board) Singleton(p string) bool {
 		return false
 	}
 
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.Width, self.Height) {
 		if self.get_fast(a) == colour {
 			return false
 		}
@@ -140,7 +140,7 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 		return false, fmt.Errorf("colour not BLACK or WHITE")
 	}
 
-	x, y, onboard := ParsePoint(p, self.Size)
+	x, y, onboard := ParsePoint(p, self.Width, self.Height)
 
 	if onboard == false {
 		return false, fmt.Errorf("invalid or off-board string %q", p)
@@ -157,7 +157,7 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 	}
 
 	has_own_liberties := false
-	for _, a := range AdjacentPoints(p, self.Size) {
+	for _, a := range AdjacentPoints(p, self.Width, self.Height) {
 		if self.get_fast(a) == EMPTY {
 			has_own_liberties = true
 			break
@@ -174,7 +174,7 @@ func (self *Board) LegalColour(p string, colour Colour) (bool, error) {
 
 		allowed := false
 
-		for _, a := range AdjacentPoints(p, self.Size) {
+		for _, a := range AdjacentPoints(p, self.Width, self.Height) {
 			if self.get_fast(a) == colour.Opposite() {
 				if len(self.Liberties(a)) == 1 {
 					allowed = true

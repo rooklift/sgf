@@ -11,28 +11,34 @@ const alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 // NewTree returns a root node for a game of the given board size, with various
 // sensible properties.
-func NewTree(size int) *Node {
+func NewTree(width, height int) *Node {
 
 	// Creates a new root node with standard properties.
 
-	if size < 1 || size > 52 {
-		panic(fmt.Sprintf("NewTree(): invalid size %v", size))
+	if width < 1 || width > 52 || height < 1 || height > 52 {
+		panic(fmt.Sprintf("NewTree(): invalid size %vx%v", width, height))
 	}
 
 	node := NewNode(nil)
 
 	node.SetValue("GM", "1")
 	node.SetValue("FF", "4")
-	node.SetValue("SZ", strconv.Itoa(size))
+
+	if width == height {
+		node.SetValue("SZ", strconv.Itoa(width))
+	} else {
+		node.SetValue("SZ", strconv.Itoa(width) + ":" + strconv.Itoa(height))
+	}
 
 	return node
 }
 
 // AdjacentPoints returns a slice of all points (formatted as SGF coordinates,
-// e.g. "dd") that are adjacent to the given point, on the given board size.
-func AdjacentPoints(p string, size int) []string {
+// e.g. "dd") that are adjacent to the given point, given a board width and
+// height.
+func AdjacentPoints(p string, width, height int) []string {
 
-	x, y, onboard := ParsePoint(p, size)
+	x, y, onboard := ParsePoint(p, width, height)
 
 	if onboard == false {
 		return nil
@@ -43,13 +49,13 @@ func AdjacentPoints(p string, size int) []string {
 	if x > 0 {
 		ret = append(ret, byte_to_string(alpha[x - 1]) + byte_to_string(p[1]))		// Left
 	}
-	if x < size - 1 {
+	if x < width - 1 {
 		ret = append(ret, byte_to_string(alpha[x + 1]) + byte_to_string(p[1]))		// Right
 	}
 	if y > 0 {
 		ret = append(ret, byte_to_string(p[0]) + byte_to_string(alpha[y - 1]))		// Up
 	}
-	if y < size - 1 {
+	if y < height - 1 {
 		ret = append(ret, byte_to_string(p[0]) + byte_to_string(alpha[y + 1]))		// Down
 	}
 
@@ -60,11 +66,11 @@ func byte_to_string(b byte) string {	// One cannot do string(b) because string()
 	return string([]byte{b})			// therefore if b > 127 it will necessarily return a string of length >= 2
 }
 
-// ParsePoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
-// the x and y values (zeroth-indexed) of that point, as well as a boolean value
-// indicating whether the coordinates were on the board. If they were not, the
-// coordinates returned are always -1, -1.
-func ParsePoint(p string, size int) (x, y int, onboard bool) {
+// ParsePoint takes an SGF coordinate (e.g. "dd") and a board width and height,
+// and returns the x and y values (zeroth-indexed) of that point, as well as a
+// boolean value indicating whether the coordinates were on the board. If they
+// were not, the coordinates returned are always -1, -1.
+func ParsePoint(p string, width, height int) (x, y int, onboard bool) {
 
 	// e.g. "cd" --> 2,3
 
@@ -83,7 +89,7 @@ func ParsePoint(p string, size int) (x, y int, onboard bool) {
 	if p[0] >= 'A' && p[0] <= 'Z' { x = int(p[0]) - 39 }
 	if p[1] >= 'A' && p[1] <= 'Z' { y = int(p[1]) - 39 }
 
-	onboard = x >= 0 && x < size && y >= 0 && y < size
+	onboard = x >= 0 && x < width && y >= 0 && y < height
 
 	if onboard == false {
 		return -1, -1, false
@@ -92,11 +98,12 @@ func ParsePoint(p string, size int) (x, y int, onboard bool) {
 	}
 }
 
-// ValidPoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
-// a boolean indicating whether the coordinate is on the board. Internally, the
-// library considers all moves that fail this test to be pass-moves.
-func ValidPoint(p string, size int) bool {
-	_, _, onboard := ParsePoint(p, size)
+// ValidPoint takes an SGF coordinate (e.g. "dd") and board width and height,
+// and returns a boolean indicating whether the coordinate is on the board.
+// Internally, the library considers all moves that fail this test to be
+// pass-moves.
+func ValidPoint(p string, width, height int) bool {
+	_, _, onboard := ParsePoint(p, width, height)
 	return onboard
 }
 
@@ -113,6 +120,7 @@ func Point(x, y int) string {
 // Black's handicap stones, for the specified board size and handicap (max
 // handicap: 9). The tygem argument indicates whether the 3rd stone in an H3
 // game should be in the top left. Works poorly for very small board sizes.
+// Assumes a square board.
 func HandicapPoints(size, handicap int, tygem bool) []string {
 
 	if size < 4 || handicap < 2 {
@@ -172,7 +180,7 @@ func HandicapPoints(size, handicap int, tygem bool) []string {
 }
 
 // IsStarPoint takes an SGF coordinate (e.g. "dd") and a board size, and returns
-// true if it would be considered a star (hoshi) point.
+// true if it would be considered a star (hoshi) point. Assumes a square board.
 func IsStarPoint(p string, size int) bool {
 
 	starpoints := HandicapPoints(size, 9, false)
@@ -186,9 +194,9 @@ func IsStarPoint(p string, size int) bool {
 	return false
 }
 
-// ParsePointList takes an SGF rectangle (e.g. "dd:fg") and a board size, and
-// returns a slice containing all points indicated.
-func ParsePointList(s string, size int) []string {
+// ParsePointList takes an SGF rectangle (e.g. "dd:fg") and a board width and
+// height, and returns a slice containing all points indicated.
+func ParsePointList(s string, width, height int) []string {
 
 	if len(s) != 5 || s[2] != ':' {
 		return nil
@@ -197,8 +205,8 @@ func ParsePointList(s string, size int) []string {
 	first := s[:2]
 	second := s[3:]
 
-	x1, y1, onboard1 := ParsePoint(first, size)
-	x2, y2, onboard2 := ParsePoint(second, size)
+	x1, y1, onboard1 := ParsePoint(first, width, height)
+	x2, y2, onboard2 := ParsePoint(second, width, height)
 
 	if onboard1 == false || onboard2 == false {
 		return nil
@@ -223,9 +231,9 @@ func ParsePointList(s string, size int) []string {
 	return ret
 }
 
-// ParseGTP takes a GTP formatted string (e.g. "D16") and a board size, and
-// returns the SGF coordinate (e.g. "dd") or "" if invalid.
-func ParseGTP(s string, size int) string {
+// ParseGTP takes a GTP formatted string (e.g. "D16") and board width and
+// height, and returns the SGF coordinate (e.g. "dd") or "" if invalid.
+func ParseGTP(s string, width, height int) string {
 
 	if len(s) < 2 || len(s) > 3 {
 		return ""
@@ -249,9 +257,9 @@ func ParseGTP(s string, size int) string {
 	}
 
 	up, _ := strconv.Atoi(s[1:])
-	y := size - up
+	y := height - up
 
-	if x < 0 || x >= size || y < 0 || y >= size {
+	if x < 0 || x >= width || y < 0 || y >= height {
 		return ""
 	}
 

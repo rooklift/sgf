@@ -188,6 +188,11 @@ func (self *Node) SetValues(key string, values []string) {
 	}
 }
 
+// HasKey returns true if the given key exists in this node.
+func (self *Node) HasKey(key string) bool {
+	return self.key_index(key) != -1
+}
+
 // KeyCount returns the number of keys a node has.
 func (self *Node) KeyCount() int {
 	return len(self.props)
